@@ -1,10 +1,9 @@
-import React from 'react';
-import { createRoot } from 'react-dom/client';
+import $ from 'jquery';
 import './style.scss';
 
-function App() {
-  return <div className="test">All the REACT are belong to us!</div>;
-}
-
-const root = createRoot(document.getElementById('main'));
-root.render(<App />);
+let num = 0;
+$('#main').html(`You've been on this page for ${num} seconds!`);
+setInterval(() => {
+  num += 1;
+  $('#main').html(`You've been on this page for ${num} seconds!`);
+}, 1000);
