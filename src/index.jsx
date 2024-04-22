@@ -2,12 +2,20 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route, NavLink, useParams } from 'react-router-dom';
 import './style.scss';
+import Counter from './components/counter';
+import Controls from './components/controls';
 
 const About = (props) => {
   return <div> All there is to know about me </div>;
 };
 const Welcome = (props) => {
-  return <div>Welcome</div>;
+  return (
+    <div>
+      Welcome
+      <Counter />
+      <Controls />
+    </div>
+  );
 };
 const Test = (props) => {
   const { id } = useParams();
