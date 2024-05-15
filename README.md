@@ -1,4 +1,4 @@
-# Project Name
+# Harmonize
 
 ![Team Photo](src/img/team_photo_1.jpg?raw=true)
 
@@ -10,10 +10,10 @@ Harmonize, a Spotify-based app that aspires to create a social community among m
 
 
 ## Architecture
-- Frontend:
+- [Frontend](https://github.com/dartmouth-cs52-24s/project-client-spotify-sharing):
   - React
   - Chakra UI
-- Backend
+- [Backend](https://github.com/dartmouth-cs52-24s/harmonize-api):
   - MongoDB
   - Express
   - Spotify API
@@ -21,8 +21,12 @@ Harmonize, a Spotify-based app that aspires to create a social community among m
 TODO:  descriptions of code organization and tools and libraries used
 
 ## Setup
-
 TODO: how to get the project dev environment up and running, npm install etc
+Frontend:
+- Clone Repo, npm install, npm run dev
+
+Backend:
+- Clone Repo, npm install, npm start
 
 ## Deployment
 
