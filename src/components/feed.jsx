@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 // import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
-import { getToken } from '../utils/SpotifyAuth';
+import { updateToken } from '../utils/SpotifyAuth';
 
 function Feed() {
   const allPosts = useStore((store) => store.postSlice.all);
@@ -13,7 +13,7 @@ function Feed() {
 
   useEffect(() => {
     fetchAllPosts();
-    getToken();
+    updateToken();
   }, []);
 
   const renderPosts = () => {
