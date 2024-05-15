@@ -4,11 +4,12 @@ import { immer } from 'zustand/middleware/immer';
 
 const useStore = create(
   persist(devtools(immer((set) => ({
-    count: 0,
-    increment: () => set((draftState) => { draftState.count += 1; }, false, 'count/increment'),
-    decrement: () => set((draftState) => { draftState.count -= 1; }, false, 'count/decrement'),
+    userID: '',
+    token: '',
+    setUserID: (userID) => set((state) => { state.userID = userID; }),
+    setToken: (token) => set((state) => { state.token = token; }),
   }))), {
-    name: 'counter-storage',
+    name: 'user-storage',
   }),
 );
 
