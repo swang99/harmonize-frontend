@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 // import React, { useEffect, useState } from 'react';
 // import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -6,15 +6,32 @@ import { motion } from 'framer-motion';
 import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
 import { updateToken } from '../utils/SpotifyAuth';
+import { getUserTopTracks } from '../utils/spotify-api';
 
 function Feed() {
+  const [tokenUpdated, setTokenUpdated] = useState(false);
   const allPosts = useStore((store) => store.postSlice.all);
   const fetchAllPosts = useStore((store) => store.postSlice.fetchAllPosts);
 
   useEffect(() => {
     fetchAllPosts();
-    updateToken();
+    const fetchData = async () => {
+      try {
+        await updateToken().then(() => setTokenUpdated(true));
+      } catch (error) {
+        console.error('Failed to update token or fetch top tracks:', error);
+      }
+    };
+    fetchData();
   }, []);
+
+  useEffect(() => {
+    console.log('Token updated:', tokenUpdated);
+    console.log('Token:', localStorage.getItem('access_token'));
+    if (tokenUpdated) {
+      getUserTopTracks();
+    }
+  }, [tokenUpdated]);
 
   const renderPosts = () => {
     return allPosts.map((post) => (

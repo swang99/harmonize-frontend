@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const clientId = '28aa68c6ae6243589d5733382d57d5c2';
 const redirectUri = 'http://localhost:5173/home';
-const scope = 'user-read-private user-read-email';
+const scope = 'user-read-private user-read-email user-top-read';
 const authUrl = new URL('https://accounts.spotify.com/authorize');
 
 const generateRandomString = (length) => {
@@ -85,15 +85,10 @@ const isTokenValid = () => {
 };
 
 const updateToken = async () => {
-  if (!localStorage.getItem('access_token') || !localStorage.getItem('refresh_token') || !localStorage.getItem('expires_at')) {
-    console.log('No token found. Redirecting to Spotify Auth...');
-    redirectToSpotifyAuth();
-  }
-
   if (!isTokenValid()) {
     console.log('Token is expired or not valid. Fetching a new token...');
     // Logic to fetch a new token and update local storage
-    getNewToken();
+    await getNewToken();
   } else {
     console.log('Token is still valid. No need to fetch a new one.');
   }
