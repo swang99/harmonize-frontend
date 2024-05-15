@@ -66,3 +66,31 @@ export async function getEmbedFromSearch(query) {
 }
 
 /* Get a user's top tracks */
+export async function getUserTopTracks() {
+  if (!accessToken) {
+    throw new Error('Access token is missing. Please authenticate.');
+  }
+
+  const url = 'https://api.spotify.com/v1/me/top/tracks?time_range=short_term&limit=20';
+
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log(data); // You can handle the data in any way you need, such as rendering it in your UI
+    return data;
+  } catch (error) {
+    console.error('Error retrieving top tracks:', error);
+    throw new Error('Error retrieving top tracks');
+  }
+}

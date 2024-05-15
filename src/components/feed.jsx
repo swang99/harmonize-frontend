@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
 import { updateToken } from '../utils/SpotifyAuth';
+import { getUserTopTracks } from '../utils/spotify-api';
 
 function Feed() {
   const allPosts = useStore((store) => store.postSlice.all);
@@ -14,6 +15,8 @@ function Feed() {
   useEffect(() => {
     fetchAllPosts();
     updateToken();
+    const data = getUserTopTracks();
+    console.log(data);
   }, []);
 
   const renderPosts = () => {
