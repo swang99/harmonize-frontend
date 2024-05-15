@@ -1,6 +1,6 @@
 import { Box, Button, Flex, Heading } from '@chakra-ui/react';
 import React from 'react';
-import { redirectToSpotifyAuth } from '../utils/spotify';
+import redirectToSpotifyAuth from '../utils/SpotifyAuth';
 
 const Login = () => {
   return (

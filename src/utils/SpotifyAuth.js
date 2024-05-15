@@ -22,8 +22,8 @@ const redirectToSpotifyAuth = async () => {
   const hashed = await sha256(codeVerifier);
   const codeChallenge = base64encode(hashed);
 
-  const clientId = 'YOUR_CLIENT_ID';
-  const redirectUri = 'http://localhost:8080';
+  const clientId = '28aa68c6ae6243589d5733382d57d5c2';
+  const redirectUri = 'http://localhost:5173/home';
   const scope = 'user-read-private user-read-email';
   const authUrl = new URL('https://accounts.spotify.com/authorize');
 
@@ -43,4 +43,4 @@ const redirectToSpotifyAuth = async () => {
   window.location.href = authUrl.toString();
 };
 
-export default { redirectToSpotifyAuth };
+export default redirectToSpotifyAuth;
