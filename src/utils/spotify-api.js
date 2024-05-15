@@ -22,3 +22,24 @@ export default async function getEmbedUrl(trackId) {
     throw error;
   }
 }
+
+export async function searchSpotify(query) {
+  const { accessToken } = useStore.getState();
+  try {
+    const response = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=track&limit=5`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Request failed');
+    }
+
+    const data = await response.json();
+    return data.tracks.items;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+}
