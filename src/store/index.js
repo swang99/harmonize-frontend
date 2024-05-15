@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
+import createPostSlice from './post-slice';
+import createProfileSlice from './profile-slice';
 
 const useStore = create(
-  persist(devtools(immer((set) => ({
-    userID: '',
-    token: '',
-    setUserID: (userID) => set((state) => { state.userID = userID; }),
-    setToken: (token) => set((state) => { state.token = token; }),
+  persist(devtools(immer((...args) => ({
+    postSlice: createPostSlice(...args),
+    profileSlice: createProfileSlice(...args),
   }))), {
     name: 'user-storage',
   }),
