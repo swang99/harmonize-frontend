@@ -12,6 +12,11 @@ const testProfile = {
 
 function Profile(props) {
   const { id } = useParams();
+
+  /* useEffect(() => {
+    fetchAllPosts();
+  }, []); */
+
   return (
     <div>
       <div className="profile-banner">
