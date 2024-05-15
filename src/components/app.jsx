@@ -3,6 +3,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { ChakraProvider } from '@chakra-ui/react';
 import AnimatedRoutes from './animated-routes';
+import NavBar from './nav-bar';
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
           theme="light"
         />
         <div className="w-screen h-screen overflow-hidden bg-green-light">
+          <NavBar />
           <AnimatedRoutes />
         </div>
       </BrowserRouter>
