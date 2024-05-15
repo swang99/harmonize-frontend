@@ -43,7 +43,7 @@ const redirectToSpotifyAuth = async () => {
   window.location.href = authUrl.toString();
 };
 
-const getToken = async () => {
+const getNewToken = async () => {
   // stored in the previous step
   const codeVerifier = localStorage.getItem('code_verifier');
   const urlParams = new URLSearchParams(window.location.search);
@@ -68,10 +68,28 @@ const getToken = async () => {
   const response = await body.json();
   console.log(response);
 
-  // store the token in local storage with the expiration time
+  // store the access and refresh tokens in local storage
   localStorage.setItem('access_token', response.access_token);
+  localStorage.setItem('refresh_token', response.refresh_token);
+
+  // store the expiration time in local storage
   const expiresAt = new Date().getTime() + response.expires_in * 1000; // Convert expiresIn to milliseconds and add to current time
   localStorage.setItem('expires_at', expiresAt);
 };
 
-export { redirectToSpotifyAuth, getToken };
+const isTokenValid = () => {
+  const expiresAt = localStorage.getItem('expires_at');
+  return new Date().getTime() < expiresAt;
+};
+
+const updateToken = async () => {
+  if (!isTokenValid()) {
+    console.log('Token is expired or not valid. Fetching a new token...');
+    // Logic to fetch a new token and update local storage
+    getNewToken();
+  } else {
+    console.log('Token is still valid. No need to fetch a new one.');
+  }
+};
+
+export { isTokenValid, updateToken, redirectToSpotifyAuth, getNewToken };
