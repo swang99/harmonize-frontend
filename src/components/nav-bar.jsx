@@ -19,6 +19,11 @@ const NavBar = () => {
           Profile
         </NavLink>
       </div>
+      <div>
+        <NavLink to="/search">
+          Search
+        </NavLink>
+      </div>
     </div>
   );
 };

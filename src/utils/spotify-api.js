@@ -43,7 +43,7 @@ export async function searchSpotify(query) {
 }
 
 /* Get Spotify URLs from a search query */
-export async function searchSpotifyUrls(query) {
+export async function searchSpotifyIDs(query) {
   try {
     const items = await searchSpotify(query);
     return items.map((track) => track.id);
@@ -56,7 +56,7 @@ export async function searchSpotifyUrls(query) {
 /* Get All Embed URLs from a searchSpotifyUrls call */
 export async function getEmbedFromSearch(query) {
   try {
-    const urls = await searchSpotifyUrls(query);
+    const urls = await searchSpotifyIDs(query);
     const embeds = await Promise.all(urls.map((url) => getEmbedUrl(url)));
     return embeds;
   } catch (error) {
