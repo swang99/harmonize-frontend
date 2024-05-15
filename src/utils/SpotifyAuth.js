@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const clientId = '28aa68c6ae6243589d5733382d57d5c2';
 const redirectUri = 'http://localhost:5173/home';
 const scope = 'user-read-private user-read-email';
@@ -97,4 +99,28 @@ const updateToken = async () => {
   }
 };
 
-export { isTokenValid, updateToken, redirectToSpotifyAuth, getNewToken };
+// !!! create new Profile right after auth but right before loading homepage
+const createProfile = async () => {
+  const accessToken = localStorage.getItem('access_token');
+  if (!accessToken) {
+    console.log('No access token found, please authenticate');
+    return;
+  }
+
+  try {
+    const response = await axios.get('https://api.spotify.com/v1/me', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const userData = response.data;
+    console.log(userData);
+    return userData;
+  } catch (error) {
+    console.error('Failed to fetch user data:', error.message);
+    throw new Error('Failed to fetch user data');
+  }
+};
+
+export { isTokenValid, updateToken, redirectToSpotifyAuth, getNewToken, createProfile };
