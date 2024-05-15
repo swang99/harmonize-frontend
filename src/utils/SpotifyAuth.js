@@ -86,7 +86,7 @@ const updateToken = async () => {
   if (!isTokenValid()) {
     console.log('Token is expired or not valid. Fetching a new token...');
     // Logic to fetch a new token and update local storage
-    getNewToken();
+    await getNewToken();
   } else {
     console.log('Token is still valid. No need to fetch a new one.');
   }

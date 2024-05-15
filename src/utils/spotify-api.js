@@ -1,7 +1,6 @@
-const accessToken = localStorage.getItem('access_token');
-
 /* Get Embed URL from Spotify Track ID */
 export default async function getEmbedUrl(trackId) {
+  const accessToken = localStorage.getItem('access_token');
   try {
     const response = await fetch(`https://api.spotify.com/v1/tracks/${trackId}`, {
       headers: {
@@ -22,6 +21,7 @@ export default async function getEmbedUrl(trackId) {
 
 /* Search Spotify API for tracks */
 export async function searchSpotify(query) {
+  const accessToken = localStorage.getItem('access_token');
   console.log(`Access Token: ${accessToken}`);
   try {
     const response = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=track&limit=5`, {
@@ -67,6 +67,8 @@ export async function getEmbedFromSearch(query) {
 
 /* Get a user's top tracks */
 export async function getUserTopTracks() {
+  const accessToken = localStorage.getItem('access_token');
+  console.log('Access Token:', accessToken);
   if (!accessToken) {
     throw new Error('Access token is missing. Please authenticate.');
   }
