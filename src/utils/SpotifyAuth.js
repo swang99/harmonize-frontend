@@ -83,6 +83,11 @@ const isTokenValid = () => {
 };
 
 const updateToken = async () => {
+  if (!localStorage.getItem('access_token') || !localStorage.getItem('refresh_token') || !localStorage.getItem('expires_at')) {
+    console.log('No token found. Redirecting to Spotify Auth...');
+    redirectToSpotifyAuth();
+  }
+
   if (!isTokenValid()) {
     console.log('Token is expired or not valid. Fetching a new token...');
     // Logic to fetch a new token and update local storage
