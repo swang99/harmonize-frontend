@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router';
-import axios from 'axios';
+// import axios from 'axios';
 import createProfileSlice from '../store/profile-slice';
 
 /* const testProfile = {

@@ -99,7 +99,7 @@ const createProfile = async () => {
   const accessToken = localStorage.getItem('access_token');
   if (!accessToken) {
     console.log('No access token found, please authenticate');
-    return;
+    throw new Error('No access token found, please authenticate');
   }
 
   try {
