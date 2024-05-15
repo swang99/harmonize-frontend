@@ -1,21 +1,17 @@
-import useStore from '../store';
-
+/* Get Embed URL from Spotify Track ID */
 export default async function getEmbedUrl(trackId) {
-  const { accessToken } = useStore.getState();
+  const accessToken = localStorage.getItem('access_token');
   try {
     const response = await fetch(`https://api.spotify.com/v1/tracks/${trackId}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-
     if (!response.ok) {
       throw new Error('Request failed');
     }
-
     const data = await response.json();
-    const trackUri = data.uri;
-    const embedUrl = `https://open.spotify.com/embed/track/${trackUri.split(':')[2]}`;
+    const embedUrl = `https://open.spotify.com/embed/track/${data.id}`;
     return embedUrl;
   } catch (error) {
     console.error('Error:', error);
@@ -23,8 +19,10 @@ export default async function getEmbedUrl(trackId) {
   }
 }
 
+/* Search Spotify API for tracks */
 export async function searchSpotify(query) {
-  const { accessToken } = useStore.getState();
+  const accessToken = localStorage.getItem('access_token');
+  console.log(`Access Token: ${accessToken}`);
   try {
     const response = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=track&limit=5`, {
       headers: {
@@ -38,6 +36,29 @@ export async function searchSpotify(query) {
 
     const data = await response.json();
     return data.tracks.items;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+}
+
+/* Get Spotify URLs from a search query */
+export async function searchSpotifyUrls(query) {
+  try {
+    const items = await searchSpotify(query);
+    return items.map((track) => track.id);
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+}
+
+/* Get All Embed URLs from a searchSpotifyUrls call */
+export async function getEmbedFromSearch(query) {
+  try {
+    const urls = await searchSpotifyUrls(query);
+    const embeds = await Promise.all(urls.map((url) => getEmbedUrl(url)));
+    return embeds;
   } catch (error) {
     console.error('Error:', error);
     throw error;
