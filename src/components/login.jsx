@@ -1,5 +1,6 @@
 import { Box, Button, Flex, Heading } from '@chakra-ui/react';
 import React from 'react';
+import { redirectToSpotifyAuth } from '../utils/spotify';
 
 const Login = () => {
   return (
@@ -8,10 +9,7 @@ const Login = () => {
         <Heading mb="6" color="white" textAlign="center">
           Login
         </Heading>
-        <Button colorScheme="teal" size="lg" mb="4">Login with Spotify</Button>
-        <Button colorScheme="gray" size="lg">
-          Sign Up
-        </Button>
+        <Button colorScheme="green" size="lg" mb="4" onClick={redirectToSpotifyAuth}>Login with Spotify</Button>
       </Flex>
     </Box>
   );
