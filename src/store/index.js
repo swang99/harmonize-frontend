@@ -6,6 +6,7 @@ import createProfileSlice from './profile-slice';
 
 const useStore = create(
   devtools(immer((...args) => ({
+    accessToken: '',
     postSlice: createPostSlice(...args),
     profileSlice: createProfileSlice(...args),
   }))),
