@@ -553,3 +553,15 @@ video {
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
 }
+
+.h-screen {
+  height: 100vh;
+}
+
+.w-screen {
+  width: 100vw;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
