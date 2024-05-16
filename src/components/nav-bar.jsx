@@ -15,8 +15,13 @@ const NavBar = () => {
         </NavLink>
       </div>
       <div>
-        <NavLink to="/user/:userID">
+        <NavLink to="/users/test1">
           Profile
+        </NavLink>
+      </div>
+      <div>
+        <NavLink to="/search">
+          Search
         </NavLink>
       </div>
     </div>
