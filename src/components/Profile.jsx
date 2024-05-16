@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 // import axios from 'axios';
-import createProfileSlice from '../store/profile-slice';
-
+import useStore from '../store';
 /* const testProfile = {
   name: 'Stephen Wang',
   email: 'swang@secret.io',
@@ -14,22 +13,35 @@ import createProfileSlice from '../store/profile-slice';
 
 function Profile(props) {
   const { id } = useParams();
-  const { profile, fetchProfile } = createProfileSlice();
+  const profile = useStore((store) => store.profileSlice.profile);
+  const fetchProfile = useStore((store) => store.profileSlice.fetchProfile);
+  const [profileFetched, setProfileFetched] = useState(false);
 
   useEffect(() => {
-    fetchProfile(id);
+    fetchProfile(id).then(setProfileFetched(true)).then(console.log(profile));
   }, []);
+
+  const renderProfile = () => {
+    if (profileFetched) {
+      return (
+        <div>
+          <div className="profile-banner">
+            <h1> {profile.name} </h1>
+            {/* <h2> {profile.followers.length} followers, {profile.following.length} following </h2> */}
+            <p> ID: {id} </p>
+          </div>
+          <div className="highlights">
+            {/* {profile.highlights.map((h) => <p> {h} </p>)} */}
+          </div>
+        </div>
+      );
+    }
+    return <p> Loading... </p>;
+  };
 
   return (
     <div>
-      <div className="profile-banner">
-        <h1> {profile.name} </h1>
-        <h2> {profile.followers.length} followers, {profile.following.length} following </h2>
-        <p> ID: {id} </p>
-      </div>
-      <div className="highlights">
-        {profile.highlights.map((h) => <p> {h} </p>)}
-      </div>
+      {renderProfile()}
     </div>
   );
 }
