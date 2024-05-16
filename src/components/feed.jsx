@@ -26,8 +26,6 @@ function Feed() {
   }, []);
 
   useEffect(() => {
-    console.log('Token updated:', tokenUpdated);
-    console.log('Token:', localStorage.getItem('access_token'));
     if (tokenUpdated) {
       getUserTopTracks();
     }

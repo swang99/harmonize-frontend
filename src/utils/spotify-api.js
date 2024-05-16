@@ -1,17 +1,15 @@
+import axios from 'axios';
+
 /* Get Embed URL from Spotify Track ID */
 export default async function getEmbedUrl(trackId) {
   const accessToken = localStorage.getItem('access_token');
   try {
-    const response = await fetch(`https://api.spotify.com/v1/tracks/${trackId}`, {
+    const response = await axios.get(`https://api.spotify.com/v1/tracks/${trackId}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    if (!response.ok) {
-      throw new Error('Request failed');
-    }
-    const data = await response.json();
-    const embedUrl = `https://open.spotify.com/embed/track/${data.id}`;
+    const embedUrl = `https://open.spotify.com/embed/track/${response.data.id}`;
     return embedUrl;
   } catch (error) {
     console.error('Error:', error);
@@ -24,18 +22,18 @@ export async function searchSpotify(query) {
   const accessToken = localStorage.getItem('access_token');
   console.log(`Access Token: ${accessToken}`);
   try {
-    const response = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=track&limit=5`, {
+    const response = await axios.get('https://api.spotify.com/v1/search', {
+      params: {
+        q: query,
+        type: 'track',
+        limit: 5,
+      },
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
     });
 
-    if (!response.ok) {
-      throw new Error('Request failed');
-    }
-
-    const data = await response.json();
-    return data.tracks.items;
+    return response.data.tracks.items;
   } catch (error) {
     console.error('Error:', error);
     throw error;
@@ -56,8 +54,8 @@ export async function searchSpotifyIDs(query) {
 /* Get All Embed URLs from a searchSpotifyUrls call */
 export async function getEmbedFromSearch(query) {
   try {
-    const urls = await searchSpotifyIDs(query);
-    const embeds = await Promise.all(urls.map((url) => getEmbedUrl(url)));
+    const ids = await searchSpotifyIDs(query);
+    const embeds = await Promise.all(ids.map((id) => getEmbedUrl(id)));
     return embeds;
   } catch (error) {
     console.error('Error:', error);
@@ -73,24 +71,19 @@ export async function getUserTopTracks() {
     throw new Error('Access token is missing. Please authenticate.');
   }
 
-  const url = 'https://api.spotify.com/v1/me/top/tracks?time_range=short_term&limit=20';
-
   try {
-    const response = await fetch(url, {
-      method: 'GET',
+    const response = await axios.get('https://api.spotify.com/v1/me/top/tracks', {
+      params: {
+        time_range: 'short_term',
+        limit: 20,
+      },
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
       },
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    console.log(data); // You can handle the data in any way you need, such as rendering it in your UI
-    return data;
+    console.log(response.data); // You can handle the data in any way you need, such as rendering it in your UI
+    return response.data;
   } catch (error) {
     console.error('Error retrieving top tracks:', error);
     throw new Error('Error retrieving top tracks');
