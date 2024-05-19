@@ -1,12 +1,15 @@
 import { Flex, Link, useColorModeValue } from '@chakra-ui/react';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import useStore from '../store';
 
 const NavBar = () => {
   // Using Chakra UI components and hooks for styling
   const linkColor = useColorModeValue('blue.500', 'blue.200');
   const linkHoverColor = useColorModeValue('blue.700', 'blue.300');
   const navBg = useColorModeValue('gray.100', 'gray.900');
+
+  const userID = useStore((store) => store.profileSlice.profile.userID);
 
   return (
     <Flex
@@ -32,7 +35,7 @@ const NavBar = () => {
         </Link>
         <Link
           as={RouterLink}
-          to="/users/test1"
+          to={`/users/${userID}`}
           px={2}
           py={1}
           rounded="md"
