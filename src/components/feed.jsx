@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 // import React, { useEffect, useState } from 'react';
 // import { NavLink } from 'react-router-dom';
@@ -6,14 +5,21 @@ import { motion } from 'framer-motion';
 // import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
-import NavBar from './nav-bar';
 import { updateToken } from '../utils/SpotifyAuth';
-import { getUserTopTracks } from '../utils/spotify-api';
+import { getUserProfile, getUserTopArtists, getUserTopTracks } from '../utils/spotify-api';
 
 function Feed() {
+  // keep track of whether the token has been updated
   const [tokenUpdated, setTokenUpdated] = useState(false);
+
+  // getting posts from the store
   const allPosts = useStore((store) => store.postSlice.all);
   const fetchAllPosts = useStore((store) => store.postSlice.fetchAllPosts);
+
+  //
+  const [userProfile, setUserProfile] = useState(null);
+  const [topTracks, setTopTracks] = useState(null);
+  const [topArtists, setTopArtists] = useState(null);
 
   useEffect(() => {
     fetchAllPosts();
@@ -28,10 +34,26 @@ function Feed() {
   }, []);
 
   useEffect(() => {
-    if (tokenUpdated) {
-      getUserTopTracks();
+    async function fetchUserData() {
+      if (tokenUpdated) {
+        try {
+          const profile = await getUserProfile();
+          setUserProfile(profile);
+          const tracks = await getUserTopTracks();
+          setTopTracks(tracks);
+          const artists = await getUserTopArtists();
+          setTopArtists(artists);
+        } catch (error) {
+          console.error('Failed to fetch user data:', error);
+        }
+      }
     }
+    fetchUserData();
   }, [tokenUpdated]);
+
+  useEffect(() => {
+    console.log(userProfile, topTracks, topArtists);
+  }, [userProfile, topTracks, topArtists]);
 
   const renderPosts = () => {
     return allPosts.map((post) => (
@@ -41,20 +63,17 @@ function Feed() {
       </div>
     ));
   };
-
   return (
-    <>
-      {/* <NavBar /> */}
-      <motion.div
-        initial={{ x: -1000, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        exit={{ x: 1000, opacity: 0 }}
-        transition={{ duration: 0.5, type: 'spring', stiffness: 50, damping: 12 }}
-      >
-        Feed
-        {renderPosts()}
-      </motion.div>
-    </>
+    <motion.div
+      initial={{ x: -1000, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      exit={{ x: 1000, opacity: 0 }}
+      transition={{ duration: 0.5, type: 'spring', stiffness: 50, damping: 12 }}
+    >
+      Feed
+      {renderPosts()}
+    </motion.div>
   );
 }
+
 export default Feed;
