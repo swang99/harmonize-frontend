@@ -64,7 +64,7 @@ export default function createProfileSlice(set, get) {
         await get().profileSlice.fetchProfile(userID);
         const { existingProfile } = get().profileSlice;
         // If profile doesn't exist, create a new profile with basic info
-        if (existingProfile.userID === '') {
+        if (!existingProfile || !existingProfile.userID) {
           // If not, create a new profile:
           const newProfile = {
             userID,
