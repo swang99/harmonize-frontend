@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-// import axios from 'axios';
 import useStore from '../store';
 /* const testProfile = {
   name: 'Stephen Wang',
@@ -18,7 +17,7 @@ function Profile(props) {
   const [profileFetched, setProfileFetched] = useState(false);
 
   useEffect(() => {
-    fetchProfile(id).then(setProfileFetched(true)).then(console.log(profile));
+    fetchProfile(id).then(setProfileFetched(true));
   }, []);
 
   const renderProfile = () => {
@@ -26,9 +25,9 @@ function Profile(props) {
       return (
         <div>
           <div className="profile-banner">
-            <h1> {profile.name} </h1>
+            <h1> Name: {profile.name} </h1>
             {/* <h2> {profile.followers.length} followers, {profile.following.length} following </h2> */}
-            <p> ID: {id} </p>
+            <p> ID: {profile.userID} </p>
           </div>
           <div className="highlights">
             {/* {profile.highlights.map((h) => <p> {h} </p>)} */}

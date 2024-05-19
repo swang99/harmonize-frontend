@@ -15,12 +15,14 @@ export default function createProfileSlice(set, get) {
       topTracks: [],
       topArtists: [],
       playlists: [],
+      posts: [],
+      id: '',
     },
 
-    fetchProfile: async (id) => {
-    // GET: get profile by id
+    fetchProfile: async (userID) => {
+    // GET: get profile by userID
       try {
-        const response = await axios.get(`${ROOT_URL}/users/${id}`);
+        const response = await axios.get(`${ROOT_URL}/users/${userID}`);
         set(({ profileSlice }) => { profileSlice.profile = response.data; }, false, 'users/fetchProfile');
       } catch (error) {
         get().errorSlice.newError(error.message);
