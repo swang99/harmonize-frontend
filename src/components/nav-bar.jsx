@@ -1,81 +1,52 @@
-import { Flex, Link, useColorModeValue } from '@chakra-ui/react';
+import { Flex, Button, useColorModeValue } from '@chakra-ui/react';
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
-  // Using Chakra UI components and hooks for styling
-  const linkColor = useColorModeValue('blue.500', 'blue.200');
-  const linkHoverColor = useColorModeValue('blue.700', 'blue.300');
-  const navBg = useColorModeValue('gray.100', 'gray.900');
+  const linkHoverColor = useColorModeValue('teal.700', 'pink.500');
+  const navBg = useColorModeValue('gray.100', 'gray.800');
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // TODO: Implement logout functionality
+    console.log('Logged out');
+  };
+
+  const links = [
+    { to: '/home', label: 'Home' },
+    { to: '/users/test1', label: 'Profile' },
+    { to: '/search', label: 'Search' },
+  ];
 
   return (
-    <Flex
-      bg={navBg}
-      p={4}
-      justifyContent="space-between"
-      alignItems="center"
-    >
+    <Flex bg={navBg} p={4} justifyContent="space-between" alignItems="center">
       <Flex align="center">
-        <Link
-          as={RouterLink}
-          to="/home"
-          px={2}
-          py={1}
-          rounded="md"
-          color={linkColor}
-          _hover={{
-            textDecoration: 'none',
-            color: linkHoverColor,
-          }}
-        >
-          Home
-        </Link>
-        <Link
-          as={RouterLink}
-          to="/users/test1"
-          px={2}
-          py={1}
-          rounded="md"
-          color={linkColor}
-          _hover={{
-            textDecoration: 'none',
-            color: linkHoverColor,
-          }}
-        >
-          Profile
-        </Link>
-        <Link
-          as={RouterLink}
-          to="/search"
-          px={2}
-          py={1}
-          rounded="md"
-          color={linkColor}
-          _hover={{
-            textDecoration: 'none',
-            color: linkHoverColor,
-          }}
-        >
-          Search
-        </Link>
+        {links.map((link) => (
+          <Button
+            key={link.to}
+            onClick={() => navigate(link.to)}
+            mx={2}
+            colorScheme="teal"
+            variant="ghost"
+            _hover={{
+              color: linkHoverColor,
+              variant: 'solid',
+            }}
+          >
+            {link.label}
+          </Button>
+        ))}
       </Flex>
-      <Link
-        href="/"
-        onClick={() => {
-          // TODO: Implement logout functionality
-          return null;
-        }}
-        px={2}
-        py={1}
+      <Button
+        onClick={handleLogout}
+        px={4}
+        py={2}
         rounded="md"
-        color={linkColor}
-        _hover={{
-          textDecoration: 'none',
-          color: linkHoverColor,
-        }}
+        colorScheme="red"
+        variant="solid"
       >
         Logout
-      </Link>
+      </Button>
     </Flex>
   );
 };

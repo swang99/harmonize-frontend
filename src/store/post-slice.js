@@ -2,8 +2,8 @@ import axios from 'axios';
 
 export default function createPostSlice(set, get) {
   // const ROOT_URL = 'https://platform-api-b-sheldon.onrender.com/api';
-  const ROOT_URL = 'http://localhost:9090/api';
-  // const ROOT_URL = 'https://harmonize-api-r808.onrender.com/';
+  // const ROOT_URL = 'http://localhost:9090/api';
+  const ROOT_URL = 'https://harmonize-api-r808.onrender.com/';
 
   return {
     all: [],
