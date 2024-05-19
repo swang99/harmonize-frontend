@@ -1,7 +1,15 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { useAuth } from './login/auth-context';
 
 const NavBar = () => {
+  const { logout } = useAuth();
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    logout(); // Ensure that logout is being called when the button is clicked
+  };
+
   return (
     <div>
       <div>
@@ -10,9 +18,9 @@ const NavBar = () => {
         </NavLink>
       </div>
       <div>
-        <NavLink to="/">
-          Login
-        </NavLink>
+        <a href="/" onClick={handleLogout}>
+          Logout
+        </a>
       </div>
       <div>
         <NavLink to="/users/test1">
