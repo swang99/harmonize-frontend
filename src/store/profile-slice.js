@@ -15,22 +15,24 @@ export default function createProfileSlice(set, get) {
       topTracks: [],
       topArtists: [],
       playlists: [],
+      posts: [],
+      id: '',
     },
 
-    fetchProfile: async (id) => {
-    // GET: get profile by id
+    fetchProfile: async (userID) => {
+    // GET: get profile by userID
       try {
-        const response = await axios.get(`${ROOT_URL}/users/${id}`);
+        const response = await axios.get(`${ROOT_URL}/users/${userID}`);
         set(({ profileSlice }) => { profileSlice.profile = response.data; }, false, 'users/fetchProfile');
       } catch (error) {
         get().errorSlice.newError(error.message);
       }
     },
 
-    updateProfile: async (id, profile) => {
+    updateProfile: async (userID, profile) => {
     // PUT: update profile by id
       try {
-        const response = await axios.put(`${ROOT_URL}/users/${id}`, profile);
+        const response = await axios.put(`${ROOT_URL}/users/${userID}`, profile);
         set(({ profileSlice }) => { profileSlice.profile = response.data; }, false, 'users/updateProfile');
       } catch (error) {
         get().errorSlice.newError(error.message);
@@ -47,15 +49,43 @@ export default function createProfileSlice(set, get) {
       }
     },
 
-    deleteProfile: async (id) => {
+    deleteProfile: async (userID) => {
     // DELETE: takes id of the profile to delete
       try {
-        await axios.delete(`${ROOT_URL}/users/${id}`);
+        await axios.delete(`${ROOT_URL}/users/${userID}`);
         set(({ profileSlice }) => { profileSlice.profile = null; }, false, 'users/deleteProfile');
       } catch (error) {
         get().errorSlice.newError(error.message);
       }
     },
+    handleLogin: async (userID, profile, tracks, artists) => {
+      try {
+        // Try to fetch profile of user
+        await get().profileSlice.fetchProfile(userID);
+        const { existingProfile } = get().profileSlice;
+        // If profile doesn't exist, create a new profile with basic info
+        if (!existingProfile || !existingProfile.userID) {
+          // If not, create a new profile:
+          const newProfile = {
+            userID,
+            name: profile.display_name,
+            email: profile.email,
+            followers: [],
+            following: [],
+            highlights: [],
+            topTracks: [tracks.items],
+            topArtists: [artists.items],
+            playlists: [],
+            posts: [],
+          };
+          await get().profileSlice.createProfile(newProfile);
+          await get().profileSlice.fetchProfile(userID);
+        }
+      } catch (error) {
+        get().errorSlice.newError(error.message);
+      }
+    },
+
   };
   /* return {
     name: '',
