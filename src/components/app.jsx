@@ -4,6 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import { ChakraProvider } from '@chakra-ui/react';
 import AnimatedRoutes from './animated-routes';
 import NavBar from './nav-bar';
+import { AuthProvider } from './login/auth-context';
 
 const App = () => {
   return (
@@ -21,12 +22,22 @@ const App = () => {
           pauseOnHover
           theme="light"
         />
-        <div className="w-screen h-screen overflow-hidden bg-green-light">
-          <NavBar />
-          <AnimatedRoutes />
-        </div>
+        <AuthProvider>
+          <div className="w-screen h-screen overflow-hidden bg-green-light">
+            <AuthWrapper />
+          </div>
+        </AuthProvider>
       </BrowserRouter>
     </ChakraProvider>
+  );
+};
+
+const AuthWrapper = () => {
+  return (
+    <>
+      <NavBar />
+      <AnimatedRoutes />
+    </>
   );
 };
 

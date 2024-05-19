@@ -2,7 +2,7 @@ import { AnimatePresence } from 'framer-motion';
 import React from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import Feed from './feed';
-import Login from './login';
+import Login from './login/login';
 import Profile from './Profile';
 import SearchBar from './search-bar';
 
