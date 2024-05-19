@@ -1,9 +1,8 @@
 import axios from 'axios';
 
-const accessToken = localStorage.getItem('access_token');
-
 /* Get Embed URL from Spotify Track ID */
 export default async function getEmbedUrl(trackId) {
+  const accessToken = localStorage.getItem('access_token');
   try {
     const response = await axios.get(`https://api.spotify.com/v1/tracks/${trackId}`, {
       headers: {
@@ -20,6 +19,7 @@ export default async function getEmbedUrl(trackId) {
 
 /* Search Spotify API for tracks */
 export async function searchSpotify(query) {
+  const accessToken = localStorage.getItem('access_token');
   console.log(`Access Token: ${accessToken}`);
   try {
     const response = await axios.get('https://api.spotify.com/v1/search', {
@@ -65,6 +65,8 @@ export async function getEmbedFromSearch(query) {
 
 /* Get a user's top tracks */
 export async function getUserTopTracks() {
+  const accessToken = localStorage.getItem('access_token');
+  console.log('Access Token:', accessToken);
   if (!accessToken) {
     throw new Error('Access token is missing. Please authenticate.');
   }
@@ -80,47 +82,10 @@ export async function getUserTopTracks() {
       },
     });
 
-    console.log(response.data);
+    console.log(response.data); // You can handle the data in any way you need, such as rendering it in your UI
     return response.data;
   } catch (error) {
     console.error('Error retrieving top tracks:', error);
     throw new Error('Error retrieving top tracks');
-  }
-}
-
-export async function getUserTopArtists() {
-  try {
-    const response = await axios.get('https://api.spotify.com/v1/me/top/artists', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      params: {
-        time_range: 'short_term',
-        limit: 20,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error retrieving top artists:', error);
-    throw error;
-  }
-}
-// get the user's profile parameteres
-export async function getUserProfile() {
-  const url = 'https://api.spotify.com/v1/me';
-  const headers = {
-    Authorization: `Bearer ${accessToken}`,
-  };
-
-  try {
-    const response = await fetch(url, { headers });
-    if (!response.ok) {
-      throw new Error(`Failed to fetch user data: ${response.statusText}`);
-    }
-    const data = await response.json();
-    return data; // This will return the user profile data
-  } catch (error) {
-    console.error('Error fetching user profile:', error);
-    throw error; // Rethrow the error for further handling
   }
 }

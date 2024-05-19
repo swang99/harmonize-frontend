@@ -8,20 +8,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
 import NavBar from './nav-bar';
 import { updateToken } from '../utils/SpotifyAuth';
-import { getUserProfile, getUserTopArtists, getUserTopTracks } from '../utils/spotify-api';
+import { getUserTopTracks } from '../utils/spotify-api';
 
 function Feed() {
-  // keep track of whether the token has been updated
   const [tokenUpdated, setTokenUpdated] = useState(false);
-
-  // getting posts from the store
   const allPosts = useStore((store) => store.postSlice.all);
   const fetchAllPosts = useStore((store) => store.postSlice.fetchAllPosts);
-
-  //
-  const [userProfile, setUserProfile] = useState(null);
-  const [topTracks, setTopTracks] = useState(null);
-  const [topArtists, setTopArtists] = useState(null);
 
   useEffect(() => {
     fetchAllPosts();
@@ -36,26 +28,10 @@ function Feed() {
   }, []);
 
   useEffect(() => {
-    async function fetchUserData() {
-      if (tokenUpdated) {
-        try {
-          const profile = await getUserProfile();
-          setUserProfile(profile);
-          const tracks = await getUserTopTracks();
-          setTopTracks(tracks);
-          const artists = await getUserTopArtists();
-          setTopArtists(artists);
-        } catch (error) {
-          console.error('Failed to fetch user data:', error);
-        }
-      }
+    if (tokenUpdated) {
+      getUserTopTracks();
     }
-    fetchUserData();
   }, [tokenUpdated]);
-
-  useEffect(() => {
-    console.log(userProfile, topTracks, topArtists);
-  }, [userProfile, topTracks, topArtists]);
 
   const renderPosts = () => {
     return allPosts.map((post) => (
