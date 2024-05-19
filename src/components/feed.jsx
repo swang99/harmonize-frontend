@@ -11,10 +11,12 @@ import { getUserProfile, getUserTopArtists, getUserTopTracks } from '../utils/sp
 function Feed() {
   // keep track of whether the token has been updated
   const [tokenUpdated, setTokenUpdated] = useState(false);
+  // const [profileLoaded, setProfileLoaded] = useState(false);
 
   // getting posts from the store
   const allPosts = useStore((store) => store.postSlice.all);
   const fetchAllPosts = useStore((store) => store.postSlice.fetchAllPosts);
+  const handleLogin = useStore((store) => store.profileSlice.handleLogin);
 
   //
   const [userProfile, setUserProfile] = useState(null);
@@ -43,6 +45,8 @@ function Feed() {
           setTopTracks(tracks);
           const artists = await getUserTopArtists();
           setTopArtists(artists);
+          await handleLogin(profile.id, profile, tracks, artists);
+          // setProfileLoaded(true);
         } catch (error) {
           console.error('Failed to fetch user data:', error);
         }
