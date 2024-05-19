@@ -16,7 +16,7 @@ function Feed() {
   const allPosts = useStore((store) => store.postSlice.all);
   const fetchAllPosts = useStore((store) => store.postSlice.fetchAllPosts);
 
-  //
+  // store the user's profile, top tracks, and top artists
   const [userProfile, setUserProfile] = useState(null);
   const [topTracks, setTopTracks] = useState(null);
   const [topArtists, setTopArtists] = useState(null);

@@ -88,6 +88,7 @@ export async function getUserTopTracks() {
   }
 }
 
+/* get a user's top artists */
 export async function getUserTopArtists() {
   try {
     const response = await axios.get('https://api.spotify.com/v1/me/top/artists', {
