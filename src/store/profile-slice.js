@@ -20,6 +20,17 @@ const createProfileSlice = (set, get) => ({
     }
   },
 
+  fetchOtherProfile: async (userID) => {
+    try {
+      console.log(`Fetching profile for userID: ${userID}`);
+      const response = await axios.get(`${ROOT_URL}users/${userID}`);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch profile:', error.message);
+      return get().errorSlice.newError(error.message);
+    }
+  },
+
   updateProfile: async (userID, profile) => {
     try {
       console.log(`Updating profile for userID: ${userID}`);
