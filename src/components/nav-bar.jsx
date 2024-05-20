@@ -17,37 +17,35 @@ const NavBar = () => {
   ].filter(Boolean); // Filter out null values
 
   return (
-    profile ? (
-      <Flex bg={navBg} p={4} justifyContent="space-between" alignItems="center">
-        <Flex align="center">
-          {links.map((link) => (
-            <Button
-              key={link.to}
-              onClick={() => navigate(link.to)}
-              mx={2}
-              colorScheme="teal"
-              variant="ghost"
-              _hover={{
-                color: 'teal.800',
-                variant: 'solid',
-              }}
-            >
-              {link.label}
-            </Button>
-          ))}
-        </Flex>
-        <Button
-          onClick={logout}
-          px={4}
-          py={2}
-          rounded="md"
-          colorScheme="red"
-          variant="solid"
-        >
-          Logout
-        </Button>
+    <Flex bg={navBg} p={4} justifyContent="space-between" alignItems="center">
+      <Flex align="center">
+        {links.map((link) => (
+          <Button
+            key={link.to}
+            onClick={() => navigate(link.to)}
+            mx={2}
+            colorScheme="teal"
+            variant="ghost"
+            _hover={{
+              color: 'teal.800',
+              variant: 'solid',
+            }}
+          >
+            {link.label}
+          </Button>
+        ))}
       </Flex>
-    ) : (null)
+      <Button
+        onClick={logout}
+        px={4}
+        py={2}
+        rounded="md"
+        colorScheme="red"
+        variant="solid"
+      >
+        Logout
+      </Button>
+    </Flex>
   );
 };
 
