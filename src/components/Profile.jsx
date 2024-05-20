@@ -4,6 +4,7 @@ import { Box, Text, Avatar, Flex, Heading, VStack, Spacer, HStack, Grid } from '
 import { motion } from 'framer-motion';
 import useStore from '../store';
 import Post from './post';
+import { updateToken } from '../utils/SpotifyAuth';
 
 function Profile(props) {
   const { id } = useParams();
@@ -20,6 +21,7 @@ function Profile(props) {
     const fetchProfileData = async () => {
       try {
         await fetchProfile(id);
+        await updateToken();
         setProfileFetched(true);
       } catch (error) {
         console.error('Failed to fetch profile:', error);
