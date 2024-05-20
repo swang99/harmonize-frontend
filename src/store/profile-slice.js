@@ -4,7 +4,7 @@ export default function createProfileSlice(set, get) {
   const ROOT_URL = 'https://harmonize-api-r808.onrender.com/api';
 
   return {
-    profile: {
+    currentProfile: {
       userID: '',
       name: '',
       email: '',
@@ -18,7 +18,7 @@ export default function createProfileSlice(set, get) {
       id: '',
     },
 
-    currentProfile: null, // Initialize currentProfile to hold fetched profile data
+    // currentProfile: null, // Initialize currentProfile to hold fetched profile data
 
     fetchProfile: async (userID) => {
       // GET: get profile by userID

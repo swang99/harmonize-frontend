@@ -1,11 +1,14 @@
 import { Flex, Button, useColorModeValue } from '@chakra-ui/react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import useStore from '../store';
 
 const NavBar = () => {
   const linkHoverColor = useColorModeValue('teal.700', 'pink.500');
   const navBg = useColorModeValue('gray.100', 'gray.800');
   const navigate = useNavigate();
+
+  const profile = useStore((store) => store.profileSlice.currentProfile);
 
   const handleLogout = () => {
     // TODO: Implement logout functionality
@@ -14,7 +17,7 @@ const NavBar = () => {
 
   const links = [
     { to: '/home', label: 'Home' },
-    { to: '/users/test1', label: 'Profile' },
+    { to: `/users/${profile.name}`, label: 'Profile' },
     { to: '/search', label: 'Search' },
   ];
 
