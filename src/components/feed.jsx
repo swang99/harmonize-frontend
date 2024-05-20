@@ -28,7 +28,7 @@ function Feed() {
 
   useEffect(() => {
     fetchAllPosts();
-    const fetchData = async () => {
+    const update = async () => {
       try {
         await updateToken();
         setTokenUpdated(true);
@@ -36,7 +36,7 @@ function Feed() {
         console.error('Failed to update token or fetch top tracks:', error);
       }
     };
-    fetchData();
+    update();
   }, []);
 
   useEffect(() => {
