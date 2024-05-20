@@ -103,7 +103,6 @@ const refreshAccessToken = async () => {
       },
     });
 
-    console.log('setting tokens', response.data.access_token, response.data.refresh_token);
     localStorage.setItem('access_token', response.data.access_token);
     localStorage.setItem('refresh_token', response.data.refresh_token);
 
@@ -125,9 +124,7 @@ const isTokenValid = () => {
 /* Checks if a refresh token exists and redirects to Spotify auth if not */
 const checkForRefreshToken = async () => {
   const refreshToken = localStorage.getItem('refresh_token');
-  console.log('Checking for refresh token: ', refreshToken);
   if (!refreshToken || refreshToken === 'undefined') {
-    console.log('Undefined Refresh Token: Redirecting to auth');
     await redirectToSpotifyAuth();
     return false;
   }
@@ -155,4 +152,14 @@ const updateToken = async () => {
   return true;
 };
 
-export { refreshAccessToken, checkForRefreshToken, isTokenValid, updateToken, redirectToSpotifyAuth, getNewToken };
+// logout the user
+const logout = async () => {
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
+  localStorage.removeItem('expires_at');
+
+  // redirect to the home page
+  window.location.href = '/';
+};
+
+export { logout, refreshAccessToken, checkForRefreshToken, isTokenValid, updateToken, redirectToSpotifyAuth, getNewToken };

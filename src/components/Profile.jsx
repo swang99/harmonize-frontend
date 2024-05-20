@@ -3,14 +3,6 @@ import { useParams } from 'react-router';
 import { Box, Text, Avatar, Flex, Heading, VStack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import useStore from '../store';
-/* const testProfile = {
-  name: 'Stephen Wang',
-  email: 'swang@secret.io',
-  password: '',
-  followers: ['User 1', 'User 2'],
-  following: ['User 3', 'User 4'],
-  highlights: ['Perfect Melody', 'Airplanes', 'Moves Like Jagger'],
-}; */
 
 function Profile(props) {
   const { id } = useParams();
@@ -19,50 +11,33 @@ function Profile(props) {
   const [profileFetched, setProfileFetched] = useState(false);
 
   useEffect(() => {
-    fetchProfile(id).then(setProfileFetched(true)).then(console.log(profile));
-  }, []);
+    const fetchProfileData = async () => {
+      try {
+        await fetchProfile(id);
+        setProfileFetched(true);
+      } catch (error) {
+        console.error('Failed to fetch profile:', error);
+      }
+    };
 
-  const renderTotalPosts = profile.posts ? profile.posts.length : 0;
-  const renderUserPosts = () => {
-    if (!profile.posts || !profile.posts.length) return <Text>No posts yet!</Text>;
-    return profile.posts.map((post, index) => (
-      <Flex
-        key={post.id}
-        bg="blue.800"
-        p={4}
-        borderRadius="md"
-        justify="space-between"
-        align="center"
-      >
-        <Box>
-          <Heading as="h4" size="sm">
-            {post.title}
-          </Heading>
-          <Text>
-            {post.artistName}, {post.artistAlbum}, {post.releaseYear}
-          </Text>
-        </Box>
-        <Box textAlign="right">
-          <Text>{post.timeAgo}</Text>
-          <Text as="u">view in feed</Text>
-        </Box>
-      </Flex>
-    ));
-  };
+    fetchProfileData();
+  }, [id, fetchProfile]);
+
   const renderProfile = () => {
-    if (!profileFetched) {
+    if (!profileFetched || !profile) {
       return <Text>Loading...</Text>;
     }
+    console.log('Profile: ', profile);
     return (
       <Box p={4} bg="blue.900" color="white" minH="100vh" overflow="hidden" position="absolute" width="100vw">
         <Flex justify="space-between" align="center" my={10} mx="auto" width="75%">
           <Avatar size="2xl" name={profile.name} />
           <Heading as="h1" size="lg">
-            {profile.userID}
+            {profile.name}
           </Heading>
           <Box>
             <Heading as="h2" size="md">
-              total posts: {renderTotalPosts}
+              total posts: {profile.posts ? profile.posts.length : 0}
             </Heading>
             <Text>most recent artist: Frank Sinatra</Text>
           </Box>
@@ -72,7 +47,26 @@ function Profile(props) {
             post history:
           </Heading>
           <VStack align="stretch">
-            {renderUserPosts}
+            {profile.posts && profile.posts.length > 0 ? (
+              profile.posts.map((post) => (
+                <Flex key={post.id} bg="blue.800" p={4} borderRadius="md" justify="space-between" align="center">
+                  <Box>
+                    <Heading as="h4" size="sm">
+                      {post.title}
+                    </Heading>
+                    <Text>
+                      {post.artistName}, {post.artistAlbum}, {post.releaseYear}
+                    </Text>
+                  </Box>
+                  <Box textAlign="right">
+                    <Text>{post.timeAgo}</Text>
+                    <Text as="u">view in feed</Text>
+                  </Box>
+                </Flex>
+              ))
+            ) : (
+              <Text>No posts yet!</Text>
+            )}
           </VStack>
         </Box>
       </Box>

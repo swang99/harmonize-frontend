@@ -20,7 +20,6 @@ export default async function getEmbedUrl(trackId) {
 /* Search Spotify API for tracks */
 export async function searchSpotify(query) {
   const accessToken = await localStorage.getItem('access_token');
-  console.log(`Access Token: ${accessToken}`);
   try {
     const response = await axios.get('https://api.spotify.com/v1/search', {
       params: {
@@ -81,7 +80,6 @@ export async function getUserTopTracks() {
       },
     });
 
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Error retrieving top tracks:', error);

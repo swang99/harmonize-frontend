@@ -1,25 +1,25 @@
 import { Flex, Button, useColorModeValue } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useStore from '../store';
+import { logout } from '../utils/SpotifyAuth';
 
 const NavBar = () => {
   const linkHoverColor = useColorModeValue('teal.700', 'pink.500');
   const navBg = useColorModeValue('gray.100', 'gray.800');
   const navigate = useNavigate();
-
   const profile = useStore((store) => store.profileSlice.currentProfile);
-
-  const handleLogout = () => {
-    // TODO: Implement logout functionality
-    console.log('Logged out');
-  };
+  console.log('Profile:', profile);
 
   const links = [
     { to: '/home', label: 'Home' },
-    { to: `/users/${profile.name}`, label: 'Profile' },
+    profile ? { to: `/users/${profile.userID}`, label: 'Profile' } : null,
     { to: '/search', label: 'Search' },
-  ];
+  ].filter(Boolean); // Filter out null values
+
+  useEffect(() => {
+    console.log('Profile:', profile);
+  }, [profile]);
 
   return (
     <Flex bg={navBg} p={4} justifyContent="space-between" alignItems="center">
@@ -41,7 +41,7 @@ const NavBar = () => {
         ))}
       </Flex>
       <Button
-        onClick={handleLogout}
+        onClick={logout}
         px={4}
         py={2}
         rounded="md"

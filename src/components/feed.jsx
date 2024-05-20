@@ -9,21 +9,22 @@ import { updateToken } from '../utils/SpotifyAuth';
 import { getCurrentUserPlaylists, getRecentlyPlayedTracks, getUserProfile, getUserTopArtists, getUserTopTracks } from '../utils/spotify-api';
 
 function Feed() {
-  // keep track of whether the token has been updated
-  const [tokenUpdated, setTokenUpdated] = useState(false);
-  // const [profileLoaded, setProfileLoaded] = useState(false);
+  const [tokenUpdated, setTokenUpdated] = useState(false); // track if token is loaded
+  const [dataLoaded, setDataLoaded] = useState(false); // track if user data is loaded
 
   // getting posts from the store
   const allPosts = useStore((store) => store.postSlice.all);
   const fetchAllPosts = useStore((store) => store.postSlice.fetchAllPosts);
   const handleLogin = useStore((store) => store.profileSlice.handleLogin);
 
-  // store the user's profile, top tracks, and top artists
-  const [userProfile, setUserProfile] = useState(null);
-  const [topTracks, setTopTracks] = useState(null);
-  const [topArtists, setTopArtists] = useState(null);
-  const [userPlaylists, setUserPlaylists] = useState(null);
-  const [recentlyPlayedTracks, setRecentlyPlayedTracks] = useState(null);
+  // store the user's profile, top tracks, top artists, playlists, and recently played tracks
+  const [userData, setUserData] = useState({
+    profile: null,
+    topTracks: null,
+    topArtists: null,
+    userPlaylists: null,
+    recentlyPlayedTracks: null,
+  });
 
   useEffect(() => {
     fetchAllPosts();
@@ -50,11 +51,14 @@ function Feed() {
             getRecentlyPlayedTracks(),
           ]);
 
-          setUserProfile(profile);
-          setTopTracks(tracks);
-          setTopArtists(artists);
-          setUserPlaylists(playlists);
-          setRecentlyPlayedTracks(recents);
+          setUserData({
+            profile,
+            topTracks: tracks,
+            topArtists: artists,
+            userPlaylists: playlists,
+            recentlyPlayedTracks: recents,
+          });
+          setDataLoaded(true);
         } catch (error) {
           console.error('Failed to fetch user data:', error);
         }
@@ -64,11 +68,11 @@ function Feed() {
   }, [tokenUpdated]);
 
   useEffect(() => {
-    if (userProfile && topTracks && topArtists) {
-      console.log('Recent:', recentlyPlayedTracks);
-      handleLogin(userProfile.id, userProfile, topTracks, topArtists, userPlaylists);
+    if (dataLoaded) {
+      const { profile, topTracks, topArtists, userPlaylists } = userData;
+      handleLogin(profile.id, profile, topTracks, topArtists, userPlaylists);
     }
-  }, [userProfile, topTracks, topArtists, userPlaylists, recentlyPlayedTracks]);
+  }, [dataLoaded, userData]);
 
   const renderPosts = () => {
     return allPosts.map((post) => (
