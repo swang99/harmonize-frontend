@@ -1,12 +1,15 @@
 import axios from 'axios';
 
+const ROOT_URL = 'https://project-api-spotify-sharing.onrender.com/api/';
+// const ROOT_URL = 'http://localhost:9090/api/';
+
 const createProfileSlice = (set, get) => ({
   currentProfile: null, // Initialize to null to indicate no profile is loaded yet
 
   fetchProfile: async (userID) => {
     try {
       console.log(`Fetching profile for userID: ${userID}`);
-      const response = await axios.get(`https://harmonize-api-r808.onrender.com/api/users/${userID}`);
+      const response = await axios.get(`${ROOT_URL}users/${userID}`);
       set((state) => ({
         profileSlice: { ...state.profileSlice, currentProfile: response.data },
       }), false, 'users/fetchProfile');
@@ -20,7 +23,7 @@ const createProfileSlice = (set, get) => ({
   updateProfile: async (userID, profile) => {
     try {
       console.log(`Updating profile for userID: ${userID}`);
-      const response = await axios.put(`https://harmonize-api-r808.onrender.com/api/users/${userID}`, profile);
+      const response = await axios.put(`${ROOT_URL}users/${userID}`, profile);
       set((state) => ({
         profileSlice: { ...state.profileSlice, currentProfile: response.data },
       }), false, 'users/updateProfile');
@@ -34,7 +37,7 @@ const createProfileSlice = (set, get) => ({
   createProfile: async (profile) => {
     try {
       console.log('Creating new profile:', profile);
-      const response = await axios.post('https://harmonize-api-r808.onrender.com/api/users', profile);
+      const response = await axios.post(`${ROOT_URL}/users`, profile);
       set((state) => ({
         profileSlice: { ...state.profileSlice, currentProfile: response.data },
       }), false, 'users/createProfile');
@@ -48,7 +51,7 @@ const createProfileSlice = (set, get) => ({
   deleteProfile: async (userID) => {
     try {
       console.log(`Deleting profile for userID: ${userID}`);
-      await axios.delete(`https://harmonize-api-r808.onrender.com/api/users/${userID}`);
+      await axios.delete(`${ROOT_URL}users/${userID}`);
       set((state) => ({
         profileSlice: { ...state.profileSlice, currentProfile: null },
       }), false, 'users/deleteProfile');
