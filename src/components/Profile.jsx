@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { Box, Text, Avatar, Flex, Heading, VStack } from '@chakra-ui/react';
+import { Box, Text, Avatar, Flex, Heading, VStack, Spacer, HStack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import useStore from '../store';
 
@@ -28,47 +28,61 @@ function Profile(props) {
       return <Text>Loading...</Text>;
     }
     return (
-      <Box p={4} bg="blue.900" color="white" minH="100vh" overflow="hidden" position="absolute" width="100vw">
-        <Flex justify="space-between" align="center" my={10} mx="auto" width="75%">
-          <Avatar size="2xl" name={profile.name} />
-          <Heading as="h1" size="lg">
-            {profile.name}
-          </Heading>
+      <Flex py={5} px={10} bg="teal.600" color="white" minH="100vh" overflow="hidden" position="absolute" width="100vw" justify="center">
+        <VStack p="5%" w="100%" maxW="1000px">
+          <HStack p={10} bg="white" borderRadius="xl" justify="space-between" align="center" width="100%" spacing={10} color="gray.900">
+            <Avatar w="150px" h="auto" name={profile.name} src={profile.photo} />
+            <VStack justify="flex-start" align="flex-start" mb={8}>
+              <Heading as="h1" size="xl" color="gray.900">
+                {profile.name}
+              </Heading>
+              <Text size="md" fontWeight="bold">Total Posts: {profile.posts.length}</Text>
+            </VStack>
+            <Spacer />
+            <VStack justify="flex-start" align="center" mb={8}>
+              <Heading as="h3" size="md">{profile.followers.length}</Heading>
+              <Text size="md">Followers</Text>
+            </VStack>
+            <VStack justify="flex-start" align="center" mb={8}>
+              <Heading as="h3" size="md">{profile.followers.length}</Heading>
+              <Text size="md">Following</Text>
+            </VStack>
+          </HStack>
           <Box>
             <Heading as="h2" size="md">
               total posts: {profile.posts ? profile.posts.length : 0}
             </Heading>
             <Text>most recent artist: Frank Sinatra</Text>
           </Box>
-        </Flex>
-        <Box>
-          <Heading as="h3" size="md" mb={2}>
-            post history:
-          </Heading>
-          <VStack align="stretch">
-            {profile.posts && profile.posts.length > 0 ? (
-              profile.posts.map((post) => (
-                <Flex key={post.id} bg="blue.800" p={4} borderRadius="md" justify="space-between" align="center">
-                  <Box>
-                    <Heading as="h4" size="sm">
-                      {post.title}
-                    </Heading>
-                    <Text>
-                      {post.artistName}, {post.artistAlbum}, {post.releaseYear}
-                    </Text>
-                  </Box>
-                  <Box textAlign="right">
-                    <Text>{post.timeAgo}</Text>
-                    <Text as="u">view in feed</Text>
-                  </Box>
-                </Flex>
-              ))
-            ) : (
-              <Text>No posts yet!</Text>
-            )}
-          </VStack>
-        </Box>
-      </Box>
+          <Box>
+            <Heading as="h3" size="md" mb={2}>
+              post history:
+            </Heading>
+            <VStack align="stretch">
+              {profile.posts && profile.posts.length > 0 ? (
+                profile.posts.map((post) => (
+                  <Flex key={post.id} bg="blue.800" p={4} borderRadius="md" justify="space-between" align="center">
+                    <Box>
+                      <Heading as="h4" size="sm">
+                        {post.title}
+                      </Heading>
+                      <Text>
+                        {post.artistName}, {post.artistAlbum}, {post.releaseYear}
+                      </Text>
+                    </Box>
+                    <Box textAlign="right">
+                      <Text>{post.timeAgo}</Text>
+                      <Text as="u">view in feed</Text>
+                    </Box>
+                  </Flex>
+                ))
+              ) : (
+                <Text>No posts yet!</Text>
+              )}
+            </VStack>
+          </Box>
+        </VStack>
+      </Flex>
     );
   };
 
