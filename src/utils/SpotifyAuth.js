@@ -3,7 +3,7 @@ import axios from 'axios';
 const clientId = '28aa68c6ae6243589d5733382d57d5c2';
 // const clientSecret = '2ab36ec92e4046bfbf86ffa669d02fc7';
 const redirectUri = 'http://localhost:5173/home';
-const scope = 'user-read-private user-read-email user-top-read';
+const scope = 'user-read-private user-read-email user-top-read user-read-recently-played';
 const authUrl = new URL('https://accounts.spotify.com/authorize');
 
 /* Utility functions for generating the code challenge */
@@ -50,39 +50,36 @@ const redirectToSpotifyAuth = async () => {
 
 /* Fetches a new token using the code from the URL */
 const getNewToken = async () => {
-  // stored in the previous step
   const codeVerifier = localStorage.getItem('code_verifier');
   const urlParams = new URLSearchParams(window.location.search);
   const code = urlParams.get('code');
   const url = 'https://accounts.spotify.com/api/token';
 
-  const payload = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: new URLSearchParams({
+  try {
+    const response = await axios.post(url, new URLSearchParams({
       client_id: clientId,
       grant_type: 'authorization_code',
       code,
       redirect_uri: redirectUri,
       code_verifier: codeVerifier,
-    }),
-  };
+    }), {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
 
-  const body = await fetch(url, payload);
-  const response = await body.json();
-  console.log(response);
+    // store the access and refresh tokens in local storage
+    localStorage.setItem('access_token', response.data.access_token);
+    localStorage.setItem('refresh_token', response.data.refresh_token);
 
-  console.log('setting tokens', response.access_token, response.refresh_token);
-  // store the access and refresh tokens in local storage
-  localStorage.setItem('access_token', response.access_token);
-  localStorage.setItem('refresh_token', response.refresh_token);
-
-  // store the expiration time in local storage
-  const expiresAt = new Date().getTime() + response.expires_in * 1000; // Convert expiresIn to milliseconds and add to current time
-  localStorage.setItem('expires_at', expiresAt);
-  window.history.replaceState({}, document.title, window.location.pathname);
+    // store the expiration time in local storage
+    const expiresAt = new Date().getTime() + response.data.expires_in * 1000; // Convert expiresIn to milliseconds and add to current time
+    localStorage.setItem('expires_at', expiresAt);
+    window.history.replaceState({}, document.title, window.location.pathname);
+  } catch (error) {
+    console.error('Failed to get new token:', error);
+    throw error; // rethrow the error to handle it in the caller
+  }
 };
 
 /* fetches a new access token using the existing refresh token */
@@ -94,32 +91,24 @@ const refreshAccessToken = async () => {
     }
 
     const url = 'https://accounts.spotify.com/api/token';
-    const payload = {
-      method: 'POST',
+    const payload = new URLSearchParams({
+      grant_type: 'refresh_token',
+      refresh_token: refreshToken,
+      client_id: clientId,
+    });
+
+    const response = await axios.post(url, payload, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: new URLSearchParams({
-        grant_type: 'refresh_token',
-        refresh_token: refreshToken,
-        client_id: clientId,
-      }),
-    };
+    });
 
-    const body = await fetch(url, payload);
-    if (!body.ok) {
-      throw new Error('Failed to refresh access token');
-    }
-
-    const response = await body.json();
-    console.log(response);
-
-    console.log('setting tokens', response.access_token, response.refresh_token);
-    localStorage.setItem('access_token', response.access_token);
-    localStorage.setItem('refresh_token', response.refresh_token);
+    console.log('setting tokens', response.data.access_token, response.data.refresh_token);
+    localStorage.setItem('access_token', response.data.access_token);
+    localStorage.setItem('refresh_token', response.data.refresh_token);
 
     // store the expiration time in local storage
-    const expiresAt = new Date().getTime() + response.expires_in * 1000; // Convert expiresIn to milliseconds and add to current time
+    const expiresAt = new Date().getTime() + response.data.expires_in * 1000; // Convert expiresIn to milliseconds and add to current time
     localStorage.setItem('expires_at', expiresAt);
   } catch (error) {
     console.error('Error refreshing access token:', error);
@@ -163,30 +152,7 @@ const updateToken = async () => {
       console.log('Token still valid - no need to refresh');
     }
   }
+  return true;
 };
 
-// !!! create new Profile right after auth but right before loading homepage
-const createProfile = async () => {
-  const accessToken = localStorage.getItem('access_token');
-  if (!accessToken) {
-    console.log('No access token found, please authenticate');
-    throw new Error('No access token found, please authenticate');
-  }
-
-  try {
-    const response = await axios.get('https://api.spotify.com/v1/me', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    const userData = response.data;
-    console.log(userData);
-    return userData;
-  } catch (error) {
-    console.error('Failed to fetch user data:', error.message);
-    throw new Error('Failed to fetch user data');
-  }
-};
-
-export { refreshAccessToken, checkForRefreshToken, isTokenValid, updateToken, redirectToSpotifyAuth, getNewToken, createProfile };
+export { refreshAccessToken, checkForRefreshToken, isTokenValid, updateToken, redirectToSpotifyAuth, getNewToken };

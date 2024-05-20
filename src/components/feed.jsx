@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
 import { updateToken } from '../utils/SpotifyAuth';
-import { getCurrentUserPlaylists, getUserProfile, getUserTopArtists, getUserTopTracks } from '../utils/spotify-api';
+import { getCurrentUserPlaylists, getRecentlyPlayedTracks, getUserProfile, getUserTopArtists, getUserTopTracks } from '../utils/spotify-api';
 
 function Feed() {
   // keep track of whether the token has been updated
@@ -23,12 +23,14 @@ function Feed() {
   const [topTracks, setTopTracks] = useState(null);
   const [topArtists, setTopArtists] = useState(null);
   const [userPlaylists, setUserPlaylists] = useState(null);
+  const [recentlyPlayedTracks, setRecentlyPlayedTracks] = useState(null);
 
   useEffect(() => {
     fetchAllPosts();
     const fetchData = async () => {
       try {
-        await updateToken().then(() => setTokenUpdated(true));
+        await updateToken();
+        setTokenUpdated(true);
       } catch (error) {
         console.error('Failed to update token or fetch top tracks:', error);
       }
@@ -40,17 +42,19 @@ function Feed() {
     async function fetchUserData() {
       if (tokenUpdated) {
         try {
-          const [profile, tracks, artists, playlists] = await Promise.all([
+          const [profile, tracks, artists, playlists, recents] = await Promise.all([
             getUserProfile(),
             getUserTopTracks(),
             getUserTopArtists(),
             getCurrentUserPlaylists(),
+            getRecentlyPlayedTracks(),
           ]);
 
           setUserProfile(profile);
           setTopTracks(tracks);
           setTopArtists(artists);
           setUserPlaylists(playlists);
+          setRecentlyPlayedTracks(recents);
         } catch (error) {
           console.error('Failed to fetch user data:', error);
         }
@@ -61,10 +65,10 @@ function Feed() {
 
   useEffect(() => {
     if (userProfile && topTracks && topArtists) {
-      console.log(userProfile.id, userProfile, topTracks, topArtists, userPlaylists);
+      console.log('Recent:', recentlyPlayedTracks);
       handleLogin(userProfile.id, userProfile, topTracks, topArtists, userPlaylists);
     }
-  }, [userProfile, topTracks, topArtists]);
+  }, [userProfile, topTracks, topArtists, userPlaylists, recentlyPlayedTracks]);
 
   const renderPosts = () => {
     return allPosts.map((post) => (

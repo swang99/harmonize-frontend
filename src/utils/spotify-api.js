@@ -1,9 +1,8 @@
 import axios from 'axios';
 
-const accessToken = localStorage.getItem('access_token');
-
 /* Get Embed URL from Spotify Track ID */
 export default async function getEmbedUrl(trackId) {
+  const accessToken = await localStorage.getItem('access_token');
   try {
     const response = await axios.get(`https://api.spotify.com/v1/tracks/${trackId}`, {
       headers: {
@@ -20,6 +19,7 @@ export default async function getEmbedUrl(trackId) {
 
 /* Search Spotify API for tracks */
 export async function searchSpotify(query) {
+  const accessToken = await localStorage.getItem('access_token');
   console.log(`Access Token: ${accessToken}`);
   try {
     const response = await axios.get('https://api.spotify.com/v1/search', {
@@ -65,6 +65,7 @@ export async function getEmbedFromSearch(query) {
 
 /* Get a user's top tracks */
 export async function getUserTopTracks() {
+  const accessToken = localStorage.getItem('access_token');
   if (!accessToken) {
     throw new Error('Access token is missing. Please authenticate.');
   }
@@ -90,6 +91,7 @@ export async function getUserTopTracks() {
 
 /* get a user's top artists */
 export async function getUserTopArtists() {
+  const accessToken = await localStorage.getItem('access_token');
   try {
     const response = await axios.get('https://api.spotify.com/v1/me/top/artists', {
       headers: {
@@ -109,6 +111,7 @@ export async function getUserTopArtists() {
 
 // get the user's profile parameteres
 export async function getUserProfile() {
+  const accessToken = await localStorage.getItem('access_token');
   const url = 'https://api.spotify.com/v1/me';
   const headers = {
     Authorization: `Bearer ${accessToken}`,
@@ -128,7 +131,8 @@ export async function getUserProfile() {
 }
 
 /* Function to get the current user's playlists */
-export const getCurrentUserPlaylists = async () => {
+export async function getCurrentUserPlaylists() {
+  const accessToken = await localStorage.getItem('access_token');
   try {
     const response = await axios.get('https://api.spotify.com/v1/me/playlists', {
       headers: {
@@ -141,4 +145,24 @@ export const getCurrentUserPlaylists = async () => {
     console.error('Error fetching user playlists from Spotify:', error);
     throw error;
   }
-};
+}
+
+// Function to get the current user's recently played tracks from Spotify API
+export async function getRecentlyPlayedTracks() {
+  const accessToken = await localStorage.getItem('access_token');
+  try {
+    const response = await axios.get('https://api.spotify.com/v1/me/player/recently-played', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      params: {
+        limit: 20,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching recently played tracks from Spotify:', error);
+    throw error;
+  }
+}
