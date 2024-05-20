@@ -15,7 +15,6 @@ import { getItemData } from '../utils/spotify-api';
 const Post = (props) => {
   const [postData, setPostData] = useState(null);
   const [postFetched, setPostFetched] = useState(false);
-  console.log('Props: ', props);
 
   useEffect(() => {
     const fetchPostData = async () => {

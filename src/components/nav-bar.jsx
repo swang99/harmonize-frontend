@@ -8,7 +8,6 @@ const NavBar = () => {
   const navBg = useColorModeValue('gray.100', 'gray.800');
   const navigate = useNavigate();
   const profile = useStore((store) => store.profileSlice.currentProfile);
-  console.log('Profile:', profile);
 
   const links = [
     { to: '/home', label: 'Home' },
@@ -21,7 +20,7 @@ const NavBar = () => {
       <Flex align="center">
         {links.map((link) => (
           <Button
-            key={link.to}
+            key={link.label}
             onClick={() => navigate(link.to)}
             mx={2}
             colorScheme="teal"

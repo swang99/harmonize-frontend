@@ -137,16 +137,11 @@ const updateToken = async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const code = urlParams.get('code');
   if (code) {
-    console.log('Code found in URL - getting new token');
     await getNewToken();
   } else if (checkForRefreshToken()) {
-    console.log('Refresh Token exists');
     // if current token expired, get a new one
     if (!isTokenValid()) {
-      console.log('Access Token expired - refreshing');
       await refreshAccessToken();
-    } else {
-      console.log('Token still valid - no need to refresh');
     }
   }
   return true;
