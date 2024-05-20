@@ -14,7 +14,7 @@ function Feed() {
 
   // getting posts from the store
   const allPosts = useStore((store) => store.postSlice.all);
-  const fetchAllPosts = useStore((store) => store.postSlice.fetchAllPosts);
+  const fetchAllPosts = useStore((store) => store.postSlice.loadFeed);
   const handleLogin = useStore((store) => store.profileSlice.handleLogin);
 
   // store the user's profile, top tracks, top artists, playlists, and recently played tracks

@@ -1,5 +1,6 @@
 export default function createPostSlice(set, get) {
   return {
+    all: [],
     createPost: async (userID, post) => {
       const existingProfile = get().profileSlice.currentProfile;
       if (existingProfile.userID !== userID) {
@@ -54,6 +55,7 @@ export default function createPostSlice(set, get) {
       const followeeProfiles = await Promise.all(following.map((followeeID) => get().profileSlice.fetchOtherProfile(followeeID)));
       const posts = followeeProfiles.flatMap((followeeProfile) => followeeProfile.posts);
       posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      set((state) => ({ postSlice: { ...state.postSlice, all: posts } }), false, 'posts/loadFeed');
       return posts;
     },
   };
