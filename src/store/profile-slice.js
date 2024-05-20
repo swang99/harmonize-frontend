@@ -72,7 +72,7 @@ const createProfileSlice = (set, get) => ({
           email: profile.email,
           followers: [],
           following: [],
-          photo: profile.images ? profile.images[1].url : '',
+          photo: profile.images && profile.images.length > 1 ? profile.images[1].url : '',
           highlights: [],
           topTracks: tracks.items.map((item) => item.id),
           topArtists: artists.items.map((item) => item.id),
@@ -82,10 +82,11 @@ const createProfileSlice = (set, get) => ({
         await get().profileSlice.createProfile(newProfile);
       } else {
         console.log('Updating existing profile during login');
+        console.log('Existing profile:', existingProfile);
         const updatedProfile = {
           ...existingProfile,
           name: profile.display_name,
-          photo: profile.images ? profile.images[1].url : '',
+          photo: profile.images && profile.images.length > 1 ? profile.images[1].url : '',
           email: profile.email,
           topTracks: tracks.items.map((item) => item.id),
           topArtists: artists.items.map((item) => item.id),
