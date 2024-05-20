@@ -10,10 +10,10 @@ Harmonize, a Spotify-based app that aspires to create a social community among m
 
 
 ## Architecture
-- [Frontend](https://github.com/dartmouth-cs52-24s/project-client-spotify-sharing):
+- [Frontend](https://harmonize-client.onrender.com) [Repo](https://github.com/dartmouth-cs52-24s/project-client-spotify-sharing):
   - React
   - Chakra UI
-- [Backend](https://github.com/dartmouth-cs52-24s/harmonize-api):
+- [Backend](https://harmonize-api-r808.onrender.com) [Repo](https://github.com/dartmouth-cs52-24s/harmonize-api):
   - MongoDB
   - Express
   - Spotify API
