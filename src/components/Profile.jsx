@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { Box, Text, Avatar, Flex, Heading, VStack, Spacer, HStack } from '@chakra-ui/react';
+import { Box, Text, Avatar, Flex, Heading, VStack, Spacer, HStack, Grid } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import useStore from '../store';
+import Post from './post';
 
 function Profile(props) {
   const { id } = useParams();
   const profile = useStore((store) => store.profileSlice.currentProfile);
   const fetchProfile = useStore((store) => store.profileSlice.fetchProfile);
   const [profileFetched, setProfileFetched] = useState(false);
+  const testPostProps = {
+    id: '5hXEcqQhEjfZdbIZLO8mf2',
+    type: 'track',
+    comment: 'This is a test comment',
+  };
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -49,16 +55,7 @@ function Profile(props) {
             </VStack>
           </HStack>
           <Box>
-            <Heading as="h2" size="md">
-              total posts: {profile.posts ? profile.posts.length : 0}
-            </Heading>
-            <Text>most recent artist: Frank Sinatra</Text>
-          </Box>
-          <Box>
-            <Heading as="h3" size="md" mb={2}>
-              post history:
-            </Heading>
-            <VStack align="stretch">
+            <Grid templateColumns="repeat(3, 1fr)" gap={6}>
               {profile.posts && profile.posts.length > 0 ? (
                 profile.posts.map((post) => (
                   <Flex key={post.id} bg="blue.800" p={4} borderRadius="md" justify="space-between" align="center">
@@ -77,9 +74,9 @@ function Profile(props) {
                   </Flex>
                 ))
               ) : (
-                <Text>No posts yet!</Text>
+                <Post id={testPostProps.id} comment={testPostProps.comment} type={testPostProps.type} />
               )}
-            </VStack>
+            </Grid>
           </Box>
         </VStack>
       </Flex>

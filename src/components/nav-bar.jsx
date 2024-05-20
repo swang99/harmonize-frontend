@@ -5,7 +5,6 @@ import useStore from '../store';
 import { logout } from '../utils/SpotifyAuth';
 
 const NavBar = () => {
-  const linkHoverColor = useColorModeValue('teal.700', 'pink.500');
   const navBg = useColorModeValue('gray.100', 'gray.800');
   const navigate = useNavigate();
   const profile = useStore((store) => store.profileSlice.currentProfile);
@@ -29,7 +28,7 @@ const NavBar = () => {
               colorScheme="teal"
               variant="ghost"
               _hover={{
-                color: linkHoverColor,
+                color: 'teal.800',
                 variant: 'solid',
               }}
             >

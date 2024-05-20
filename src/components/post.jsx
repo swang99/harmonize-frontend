@@ -1,60 +1,33 @@
-import React from 'react';
-import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react';
+import { Card, GridItem } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { getItemData } from '../utils/spotify-api';
 
-const Post = () => {
+const Post = (props) => {
+  const [postData, setPostData] = useState(null);
+  const [postFetched, setPostFetched] = useState(false);
+  console.log('Props: ', props);
+
+  useEffect(() => {
+    const fetchPostData = async () => {
+      try {
+        const itemData = await getItemData(props.id, props.type);
+        setPostData(itemData);
+        setPostFetched(true);
+      } catch (error) {
+        console.error('Failed to fetch post data:', error);
+      }
+    };
+    fetchPostData();
+  }, []);
+
+  useEffect(() => {
+    if (postFetched) {
+      console.log('PostFetched:', postFetched, 'Post data:', postData);
+    }
+  }, [postFetched]);
+
   return (
-    <Card maxW="md">
-      <CardHeader>
-        <Flex spacing="4">
-          <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-            <Avatar name="Bob Joe" src="https://st3.depositphotos.com/4060975/17707/v/450/depositphotos_177073010-stock-illustration-male-vector-icon.jpg" />
-
-            <Box>
-              <Heading size="sm">Bob Joe</Heading>
-              <Text>Musician, Dartmouth</Text>
-              <Text>Type (artist, album, song, playlist)</Text>
-            </Box>
-
-          </Flex>
-          <IconButton
-            variant="ghost"
-            colorScheme="gray"
-            aria-label="See menu"
-            icon={<BsThreeDotsVertical />}
-          />
-        </Flex>
-      </CardHeader>
-      <CardBody>
-        <Text>
-          Check out this new song I've been listening to!
-        </Text>
-      </CardBody>
-      <Image
-        objectFit="cover"
-        src="https://i.tribune.com.pk/media/images/647803-music-1387469249/647803-music-1387469249.jpg"
-        alt="Song"
-      />
-
-      <CardFooter
-        justify="space-between"
-        flexWrap="wrap"
-        sx={{
-          '& > button': {
-            minW: '136px',
-          },
-        }}
-      >
-        <Button flex="1" variant="ghost" leftIcon={<BiLike />}>
-          Like
-        </Button>
-        <Button flex="1" variant="ghost" leftIcon={<BiChat />}>
-          Comment
-        </Button>
-        <Button flex="1" variant="ghost" leftIcon={<BiShare />}>
-          Share
-        </Button>
-      </CardFooter>
-    </Card>
+    <GridItem colSpan={1}><Card>{props.comment}</Card></GridItem>
   );
 };
 
