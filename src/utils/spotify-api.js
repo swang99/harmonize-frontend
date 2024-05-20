@@ -106,6 +106,7 @@ export async function getUserTopArtists() {
     throw error;
   }
 }
+
 // get the user's profile parameteres
 export async function getUserProfile() {
   const url = 'https://api.spotify.com/v1/me';
@@ -125,3 +126,19 @@ export async function getUserProfile() {
     throw error; // Rethrow the error for further handling
   }
 }
+
+/* Function to get the current user's playlists */
+export const getCurrentUserPlaylists = async () => {
+  try {
+    const response = await axios.get('https://api.spotify.com/v1/me/playlists', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user playlists from Spotify:', error);
+    throw error;
+  }
+};

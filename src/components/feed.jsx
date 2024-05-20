@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
 import { updateToken } from '../utils/SpotifyAuth';
-import { getUserProfile, getUserTopArtists, getUserTopTracks } from '../utils/spotify-api';
+import { getCurrentUserPlaylists, getUserProfile, getUserTopArtists, getUserTopTracks } from '../utils/spotify-api';
 
 function Feed() {
   // keep track of whether the token has been updated
@@ -22,6 +22,7 @@ function Feed() {
   const [userProfile, setUserProfile] = useState(null);
   const [topTracks, setTopTracks] = useState(null);
   const [topArtists, setTopArtists] = useState(null);
+  const [userPlaylists, setUserPlaylists] = useState(null);
 
   useEffect(() => {
     fetchAllPosts();
@@ -39,14 +40,17 @@ function Feed() {
     async function fetchUserData() {
       if (tokenUpdated) {
         try {
-          const profile = await getUserProfile();
+          const [profile, tracks, artists, playlists] = await Promise.all([
+            getUserProfile(),
+            getUserTopTracks(),
+            getUserTopArtists(),
+            getCurrentUserPlaylists(),
+          ]);
+
           setUserProfile(profile);
-          const tracks = await getUserTopTracks();
           setTopTracks(tracks);
-          const artists = await getUserTopArtists();
           setTopArtists(artists);
-          await handleLogin(profile.id, profile, tracks, artists);
-          // setProfileLoaded(true);
+          setUserPlaylists(playlists);
         } catch (error) {
           console.error('Failed to fetch user data:', error);
         }
@@ -56,7 +60,10 @@ function Feed() {
   }, [tokenUpdated]);
 
   useEffect(() => {
-    console.log(userProfile, topTracks, topArtists);
+    if (userProfile && topTracks && topArtists) {
+      console.log(userProfile.id, userProfile, topTracks, topArtists, userPlaylists);
+      handleLogin(userProfile.id, userProfile, topTracks, topArtists, userPlaylists);
+    }
   }, [userProfile, topTracks, topArtists]);
 
   const renderPosts = () => {
