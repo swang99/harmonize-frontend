@@ -14,7 +14,7 @@ function Feed() {
 
   // getting posts from the store
   const allPosts = useStore((store) => store.postSlice.all);
-  const fetchAllPosts = useStore((store) => store.postSlice.loadFeed);
+  const loadFeed = useStore((store) => store.postSlice.loadFeed);
   const handleLogin = useStore((store) => store.profileSlice.handleLogin);
 
   // store the user's profile, top tracks, top artists, playlists, and recently played tracks
@@ -27,7 +27,6 @@ function Feed() {
   });
 
   useEffect(() => {
-    fetchAllPosts();
     const update = async () => {
       try {
         await updateToken();
@@ -68,14 +67,21 @@ function Feed() {
   }, [tokenUpdated]);
 
   useEffect(() => {
-    if (dataLoaded) {
-      const { profile, topTracks, topArtists, userPlaylists } = userData;
-      handleLogin(profile, topTracks, topArtists, userPlaylists);
-      console.log('User data loaded:', userData);
-    }
+    const loadFeedData = async () => {
+      if (dataLoaded) {
+        const { profile, topTracks, topArtists, userPlaylists } = userData;
+        await handleLogin(profile, topTracks, topArtists, userPlaylists);
+        console.log('User data loaded:', userData);
+        await loadFeed(profile.userID);
+      }
+    };
+    loadFeedData();
   }, [dataLoaded, userData]);
 
   const renderPosts = () => {
+    if (!allPosts || allPosts.length === 0) {
+      return <p>No posts to show</p>;
+    }
     return allPosts.map((post) => (
       <div key={post.id}>
         <h1>{post.title}</h1>
