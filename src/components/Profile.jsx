@@ -25,9 +25,9 @@ function Profile(props) {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
+        await fetchProfile(id);
         if (id === currentProfile.userID) { // If the profile is the current user's profile, fetch the profile from the store
           setIsOwnProfile(true);
-          await fetchProfile(id);
           setProfile(currentProfile);
         } else { // Otherwise, fetch the profile from the server
           setIsOwnProfile(false);
