@@ -70,7 +70,8 @@ function Feed() {
   useEffect(() => {
     if (dataLoaded) {
       const { profile, topTracks, topArtists, userPlaylists } = userData;
-      handleLogin(profile.id, profile, topTracks, topArtists, userPlaylists);
+      handleLogin(profile, topTracks, topArtists, userPlaylists);
+      console.log('User data loaded:', userData);
     }
   }, [dataLoaded, userData]);
 

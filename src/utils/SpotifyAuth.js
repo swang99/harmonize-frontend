@@ -157,6 +157,7 @@ const logout = async () => {
   localStorage.removeItem('access_token');
   localStorage.removeItem('refresh_token');
   localStorage.removeItem('expires_at');
+  localStorage.removeItem('code_verifier');
 
   // redirect to the home page
   window.location.href = '/';

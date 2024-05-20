@@ -59,19 +59,21 @@ const createProfileSlice = (set, get) => ({
     }
   },
 
-  handleLogin: async (userID, profile, tracks, artists, playlists) => {
+  handleLogin: async (profile, tracks, artists, playlists) => {
     try {
-      await get().profileSlice.fetchProfile(userID);
+      await get().profileSlice.fetchProfile(profile.id);
       const existingProfile = get().profileSlice.currentProfile;
 
-      if (!existingProfile || existingProfile.userID !== userID) {
+      console.log('Image', profile.images[0].url);
+      if (!existingProfile || existingProfile.userID !== profile.id) {
         console.log('Creating new profile during login');
         const newProfile = {
-          userID,
+          userID: profile.id,
           name: profile.display_name,
           email: profile.email,
           followers: [],
           following: [],
+          photo: profile.images[0].url,
           highlights: [],
           topTracks: tracks.items.map((item) => item.id),
           topArtists: artists.items.map((item) => item.id),
@@ -83,14 +85,17 @@ const createProfileSlice = (set, get) => ({
         console.log('Updating existing profile during login');
         const updatedProfile = {
           ...existingProfile,
+          name: profile.display_name,
+          photo: profile.images[0].url,
+          email: profile.email,
           topTracks: tracks.items.map((item) => item.id),
           topArtists: artists.items.map((item) => item.id),
           playlists: playlists.items.map((item) => item.id),
         };
-        await get().profileSlice.updateProfile(userID, updatedProfile);
+        await get().profileSlice.updateProfile(profile.id, updatedProfile);
       }
 
-      await get().profileSlice.fetchProfile(userID);
+      await get().profileSlice.fetchProfile(profile.id);
     } catch (error) {
       console.error('Failed to handle login:', error.message);
       get().errorSlice.newError(error.message);

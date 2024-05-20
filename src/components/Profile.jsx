@@ -27,7 +27,6 @@ function Profile(props) {
     if (!profileFetched || !profile) {
       return <Text>Loading...</Text>;
     }
-    console.log('Profile: ', profile);
     return (
       <Box p={4} bg="blue.900" color="white" minH="100vh" overflow="hidden" position="absolute" width="100vw">
         <Flex justify="space-between" align="center" my={10} mx="auto" width="75%">

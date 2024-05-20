@@ -1,5 +1,5 @@
-import { Flex, Button, useColorModeValue } from '@chakra-ui/react';
-import React, { useEffect } from 'react';
+import { Button, Flex, useColorModeValue } from '@chakra-ui/react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import useStore from '../store';
 import { logout } from '../utils/SpotifyAuth';
@@ -13,13 +13,9 @@ const NavBar = () => {
 
   const links = [
     { to: '/home', label: 'Home' },
-    profile ? { to: `/users/${profile.userID}`, label: 'Profile' } : null,
+    profile ? { to: `/users/${profile.userID}`, label: 'Profile' } : { label: 'Profile' },
     { to: '/search', label: 'Search' },
   ].filter(Boolean); // Filter out null values
-
-  useEffect(() => {
-    console.log('Profile:', profile);
-  }, [profile]);
 
   return (
     <Flex bg={navBg} p={4} justifyContent="space-between" alignItems="center">
