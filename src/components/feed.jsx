@@ -5,12 +5,12 @@ import { motion } from 'framer-motion';
 // import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
-import { updateToken } from '../utils/SpotifyAuth';
 import { getCurrentUserPlaylists, getRecentlyPlayedTracks, getUserProfile, getUserTopArtists, getUserTopTracks } from '../utils/spotify-api';
+import { updateToken } from '../utils/SpotifyAuth';
 
 function Feed() {
-  const [tokenUpdated, setTokenUpdated] = useState(false); // track if token is loaded
   const [dataLoaded, setDataLoaded] = useState(false); // track if user data is loaded
+  const [tokenUpdated, setTokenUpdated] = useState(false); // track if token is updated
 
   // getting posts from the store
   const allPosts = useStore((store) => store.postSlice.all);

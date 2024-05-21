@@ -68,21 +68,23 @@ const getNewToken = async () => {
       },
     });
 
-    // store the access and refresh tokens in local storage
+    // Store the access and refresh tokens in local storage
     localStorage.setItem('access_token', response.data.access_token);
     localStorage.setItem('refresh_token', response.data.refresh_token);
 
-    // store the expiration time in local storage
-    const expiresAt = new Date().getTime() + response.data.expires_in * 1000; // Convert expiresIn to milliseconds and add to current time
+    // Store the expiration time in local storage
+    const expiresAt = new Date().getTime() + response.data.expires_in * 1000; // Convert expires_in to milliseconds and add to current time
     localStorage.setItem('expires_at', expiresAt);
     window.history.replaceState({}, document.title, window.location.pathname);
+
+    return response.data.access_token; // Return the new access token
   } catch (error) {
     console.error('Failed to get new token:', error);
-    throw error; // rethrow the error to handle it in the caller
+    throw error; // Rethrow the error to handle it in the caller
   }
 };
 
-/* fetches a new access token using the existing refresh token */
+/* Fetches a new access token using the existing refresh token */
 const refreshAccessToken = async () => {
   try {
     const refreshToken = localStorage.getItem('refresh_token');
@@ -106,16 +108,18 @@ const refreshAccessToken = async () => {
     localStorage.setItem('access_token', response.data.access_token);
     localStorage.setItem('refresh_token', response.data.refresh_token);
 
-    // store the expiration time in local storage
-    const expiresAt = new Date().getTime() + response.data.expires_in * 1000; // Convert expiresIn to milliseconds and add to current time
+    // Store the expiration time in local storage
+    const expiresAt = new Date().getTime() + response.data.expires_in * 1000; // Convert expires_in to milliseconds and add to current time
     localStorage.setItem('expires_at', expiresAt);
+
+    return response.data.access_token; // Return the new access token
   } catch (error) {
     console.error('Error refreshing access token:', error);
     throw error; // Optionally rethrow the error if you want to handle it further up the call stack
   }
 };
 
-/* checks if a token is still valid using expiration time */
+/* Checks if a token is still valid using expiration time */
 const isTokenValid = () => {
   const expiresAt = localStorage.getItem('expires_at');
   return new Date().getTime() < expiresAt;
@@ -133,23 +137,22 @@ const checkForRefreshToken = async () => {
 
 /* Checks if a token is valid and fetches a new one if not */
 const updateToken = async () => {
-  // check if we have a code in the URL
+  // Check if we have a code in the URL
   const urlParams = new URLSearchParams(window.location.search);
   const code = urlParams.get('code');
   if (code) {
-    console.log('Code found in URL - getting new token');
-    await getNewToken();
+    const token = await getNewToken();
+    return token;
   } else if (checkForRefreshToken()) {
-    console.log('Refresh Token exists');
-    // if current token expired, get a new one
+    // If current token expired, get a new one
     if (!isTokenValid()) {
-      console.log('Access Token expired - refreshing');
-      await refreshAccessToken();
+      const token = await refreshAccessToken();
+      return token;
     } else {
-      console.log('Token still valid - no need to refresh');
+      return localStorage.getItem('access_token');
     }
   }
-  return true;
+  return null; // In case no valid token is found and no refresh token is available
 };
 
 // logout the user

@@ -16,11 +16,12 @@ const NavBar = () => {
   ].filter(Boolean); // Filter out null values
 
   return (
+    profile && (
     <Flex bg={navBg} p={4} justifyContent="space-between" alignItems="center">
       <Flex align="center">
         {links.map((link) => (
           <Button
-            key={link.to}
+            key={link.label}
             onClick={() => navigate(link.to)}
             mx={2}
             colorScheme="teal"
@@ -45,6 +46,7 @@ const NavBar = () => {
         Logout
       </Button>
     </Flex>
+    )
   );
 };
 

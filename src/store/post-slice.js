@@ -51,12 +51,15 @@ export default function createPostSlice(set, get) {
     },
 
     loadFeed: async (userID) => {
-      const { following } = get().profileSlice.currentProfile;
-      const followeeProfiles = await Promise.all(following.map((followeeID) => get().profileSlice.fetchOtherProfile(followeeID)));
-      const posts = followeeProfiles.flatMap((followeeProfile) => followeeProfile.posts);
-      posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      set((state) => ({ postSlice: { ...state.postSlice, all: posts } }), false, 'posts/loadFeed');
-      return posts;
+      const following = get().profileSlice.currentProfile;
+      if (following) {
+        const followeeProfiles = await Promise.all(following.map((followeeID) => get().profileSlice.fetchOtherProfile(followeeID)));
+        const posts = followeeProfiles.flatMap((followeeProfile) => followeeProfile.posts);
+        posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        set((state) => ({ postSlice: { ...state.postSlice, all: posts } }), false, 'posts/loadFeed');
+        return posts;
+      }
+      return [];
     },
   };
 }
