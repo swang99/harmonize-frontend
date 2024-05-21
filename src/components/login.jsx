@@ -3,6 +3,7 @@ import { Box, Button, Heading, VStack } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { redirectToSpotifyAuth } from '../utils/SpotifyAuth';
+import SpotifyPlayer from './web-player';
 
 const Login = () => {
   const navigate = useNavigate();

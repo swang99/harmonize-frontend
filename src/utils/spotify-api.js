@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useStore } from 'zustand';
 
 /**
  * Get the embed URL for a Spotify track.
@@ -142,8 +143,7 @@ export async function getUserTopArtists() {
  * @returns {Promise<Object>} A promise that resolves to the user profile data.
  * @throws {Error} If there is an error fetching the user profile data.
  */
-export async function getUserProfile() {
-  const accessToken = await localStorage.getItem('access_token');
+export async function getUserProfile(accessToken) {
   const url = 'https://api.spotify.com/v1/me';
   const headers = {
     Authorization: `Bearer ${accessToken}`,

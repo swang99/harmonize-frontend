@@ -16,6 +16,7 @@ const NavBar = () => {
   ].filter(Boolean); // Filter out null values
 
   return (
+    profile && (
     <Flex bg={navBg} p={4} justifyContent="space-between" alignItems="center">
       <Flex align="center">
         {links.map((link) => (
@@ -45,6 +46,7 @@ const NavBar = () => {
         Logout
       </Button>
     </Flex>
+    )
   );
 };
 

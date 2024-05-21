@@ -5,17 +5,17 @@ import { motion } from 'framer-motion';
 // import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
-import { updateToken } from '../utils/SpotifyAuth';
 import { getCurrentUserPlaylists, getRecentlyPlayedTracks, getUserProfile, getUserTopArtists, getUserTopTracks } from '../utils/spotify-api';
 
 function Feed() {
-  const [tokenUpdated, setTokenUpdated] = useState(false); // track if token is loaded
   const [dataLoaded, setDataLoaded] = useState(false); // track if user data is loaded
 
   // getting posts from the store
   const allPosts = useStore((store) => store.postSlice.all);
   const loadFeed = useStore((store) => store.postSlice.loadFeed);
   const handleLogin = useStore((store) => store.profileSlice.handleLogin);
+  const token = useStore((store) => store.spotifySlice.token);
+  const setToken = useStore((store) => store.spotifySlice.setToken);
 
   // store the user's profile, top tracks, top artists, playlists, and recently played tracks
   const [userData, setUserData] = useState({
@@ -29,8 +29,7 @@ function Feed() {
   useEffect(() => {
     const update = async () => {
       try {
-        await updateToken();
-        setTokenUpdated(true);
+        await setToken();
       } catch (error) {
         console.error('Failed to update token or fetch top tracks:', error);
       }
@@ -39,11 +38,15 @@ function Feed() {
   }, []);
 
   useEffect(() => {
+    console.log('Updated token:', token);
+  }, [token]);
+
+  useEffect(() => {
     async function fetchUserData() {
-      if (tokenUpdated) {
+      if (token) {
         try {
           const [profile, tracks, artists, playlists, recents] = await Promise.all([
-            getUserProfile(),
+            getUserProfile(token),
             getUserTopTracks(),
             getUserTopArtists(),
             getCurrentUserPlaylists(),
@@ -64,7 +67,7 @@ function Feed() {
       }
     }
     fetchUserData();
-  }, [tokenUpdated]);
+  }, [token]);
 
   useEffect(() => {
     const loadFeedData = async () => {
