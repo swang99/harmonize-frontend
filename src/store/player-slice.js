@@ -2,30 +2,13 @@
 // store/spotifySlice.js
 import { updateToken } from '../utils/SpotifyAuth';
 
-export default function createSpotifySlice(set, get) {
+export default function createPlayerSlice(set, get) {
   return {
-    token: null,
     player: null,
     activated: false,
 
-    getToken: () => get().token,
-
-    setToken: async () => {
-      console.log('Setting token');
-      try {
-        const newToken = await updateToken();
-        if (newToken && newToken !== get().token) {
-          set((state) => ({ spotifySlice: { ...state.spotifySlice, token: newToken } }));
-        } else {
-          console.log('Token already set');
-        }
-      } catch (error) {
-        console.error('Failed to update token:', error);
-      }
-    },
-
     initializePlayer: () => {
-      const { token, setPlayer, refreshToken } = get();
+      const token = localStorage.getItem('access_token');
       if (token) {
         const script = document.createElement('script');
         script.src = `https://sdk.scdn.co/spotify-player.js?v=${Date.now()}`; // Prevent caching
@@ -34,12 +17,15 @@ export default function createSpotifySlice(set, get) {
 
         window.onSpotifyWebPlaybackSDKReady = () => {
           const spotifyPlayer = new window.Spotify.Player({
-            name: 'Harmonize Web Player',
-            getOAuthToken: (cb) => { refreshToken(cb); },
+            name: 'Harmonize',
+            getOAuthToken: async (cb) => {
+              const updatedToken = await updateToken();
+              cb(updatedToken);
+            },
             volume: 0.5,
           });
 
-          // set the player in the storke
+          // Set the player in the store
           set({ player: spotifyPlayer });
 
           spotifyPlayer.on('initialization_error', ({ message }) => {
@@ -49,7 +35,7 @@ export default function createSpotifySlice(set, get) {
           // Ready
           spotifyPlayer.addListener('ready', ({ device_id }) => {
             console.log('Ready with Device ID', device_id);
-            setPlayer(spotifyPlayer);
+            set((state) => ({ ...state, player: spotifyPlayer }));
           });
 
           // Not Ready
@@ -74,6 +60,7 @@ export default function createSpotifySlice(set, get) {
           document.head.removeChild(script);
         };
       } else {
+        console.error('No access token found');
         return () => {};
       }
     },

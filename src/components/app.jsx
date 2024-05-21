@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import AnimatedRoutes from './animated-routes';
 import NavBar from './nav-bar';
+import SpotifyPlayer from './web-player';
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
         <div className="w-screen h-screen overflow-hidden bg-green-light">
           <NavBar />
           <AnimatedRoutes />
+          <SpotifyPlayer />
         </div>
       </BrowserRouter>
     </ChakraProvider>

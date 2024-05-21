@@ -6,16 +6,16 @@ import { motion } from 'framer-motion';
 import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
 import { getCurrentUserPlaylists, getRecentlyPlayedTracks, getUserProfile, getUserTopArtists, getUserTopTracks } from '../utils/spotify-api';
+import { updateToken } from '../utils/SpotifyAuth';
 
 function Feed() {
   const [dataLoaded, setDataLoaded] = useState(false); // track if user data is loaded
+  const [tokenUpdated, setTokenUpdated] = useState(false); // track if token is updated
 
   // getting posts from the store
   const allPosts = useStore((store) => store.postSlice.all);
   const loadFeed = useStore((store) => store.postSlice.loadFeed);
   const handleLogin = useStore((store) => store.profileSlice.handleLogin);
-  const token = useStore((store) => store.spotifySlice.token);
-  const setToken = useStore((store) => store.spotifySlice.setToken);
 
   // store the user's profile, top tracks, top artists, playlists, and recently played tracks
   const [userData, setUserData] = useState({
@@ -29,7 +29,8 @@ function Feed() {
   useEffect(() => {
     const update = async () => {
       try {
-        await setToken();
+        await updateToken();
+        setTokenUpdated(true);
       } catch (error) {
         console.error('Failed to update token or fetch top tracks:', error);
       }
@@ -38,15 +39,11 @@ function Feed() {
   }, []);
 
   useEffect(() => {
-    console.log('Updated token:', token);
-  }, [token]);
-
-  useEffect(() => {
     async function fetchUserData() {
-      if (token) {
+      if (tokenUpdated) {
         try {
           const [profile, tracks, artists, playlists, recents] = await Promise.all([
-            getUserProfile(token),
+            getUserProfile(),
             getUserTopTracks(),
             getUserTopArtists(),
             getCurrentUserPlaylists(),
@@ -67,7 +64,7 @@ function Feed() {
       }
     }
     fetchUserData();
-  }, [token]);
+  }, [tokenUpdated]);
 
   useEffect(() => {
     const loadFeedData = async () => {
