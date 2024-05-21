@@ -5,17 +5,19 @@ import { motion } from 'framer-motion';
 import useStore from '../store';
 import Post from './post';
 import { updateToken } from '../utils/SpotifyAuth';
+import { getUserProfile } from '../utils/spotify-api';
 
 function Profile(props) {
   const { id } = useParams();
-  const currentProfile = useStore((store) => store.profileSlice.currentProfile);
   const fetchProfile = useStore((store) => store.profileSlice.fetchProfile);
   const fetchOtherProfile = useStore((store) => store.profileSlice.fetchOtherProfile);
   const updateProfile = useStore((store) => store.profileSlice.updateProfile);
   const [profileFetched, setProfileFetched] = useState(false);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [tokenUpdated, setTokenUpdated] = useState(false); // track if token is loaded
   const [profile, setProfile] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
   const testPostProps = {
     id: '5hXEcqQhEjfZdbIZLO8mf2',
     type: 'track',
@@ -23,17 +25,31 @@ function Profile(props) {
   };
 
   useEffect(() => {
-    const fetchProfileData = async () => {
+    const update = async () => {
       try {
-        await fetchProfile(id);
-        if (id === currentProfile.userID) { // If the profile is the current user's profile, fetch the profile from the store
+        await updateToken();
+        setTokenUpdated(true);
+      } catch (error) {
+        console.error('Failed to update token:', error);
+      }
+    };
+    update();
+  }, []);
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      const userSpotifyProfile = await getUserProfile();
+      setUserProfile(await fetchOtherProfile(userSpotifyProfile.id));
+      try {
+        if (id === userSpotifyProfile.id) { // If the profile is the current user's profile, fetch the profile from the store
+          const loadedProfile = await fetchProfile(id);
           setIsOwnProfile(true);
-          setProfile(currentProfile);
+          setProfile(loadedProfile);
         } else { // Otherwise, fetch the profile from the server
           setIsOwnProfile(false);
           const otherProfile = await fetchOtherProfile(id);
           setProfile(otherProfile);
-          if (currentProfile.following.includes(id)) {
+          if (userProfile.following.includes(id)) {
             setIsFollowing(true);
           }
         }
@@ -43,26 +59,27 @@ function Profile(props) {
         console.error('Failed to fetch profile:', error);
       }
     };
-
-    fetchProfileData();
-  }, [id, fetchProfile]);
+    if (tokenUpdated) {
+      fetchProfileData();
+    }
+  }, [id, tokenUpdated]);
 
   const handleFollow = async () => {
     // Update current profile following list
     const updatedProfile = {
-      ...currentProfile,
-      following: [...currentProfile.following, id],
+      ...userProfile,
+      following: [...userProfile.following, id],
     };
-    await updateProfile(currentProfile.userID, updatedProfile);
+    await updateProfile(userProfile.userID, updatedProfile);
     setIsFollowing(true);
   };
   const handleUnfollow = async () => {
     // Update current profile following list
     const updatedProfile = {
-      ...currentProfile,
-      following: currentProfile.following.filter((followeeID) => followeeID !== id),
+      ...userProfile,
+      following: userProfile.following.filter((followeeID) => followeeID !== id),
     };
-    await updateProfile(currentProfile.userID, updatedProfile);
+    await updateProfile(userProfile.userID, updatedProfile);
     setIsFollowing(false);
   };
 
@@ -83,7 +100,7 @@ function Profile(props) {
   };
 
   const renderProfile = () => {
-    if (!profileFetched || !currentProfile) {
+    if (!profileFetched || !userProfile) {
       return <Text>Loading...</Text>;
     } else if (!profile) {
       return <Text>Profile not found</Text>;
