@@ -1,13 +1,22 @@
 /* eslint-disable camelcase */
 // store/spotifySlice.js
 import { updateToken } from '../utils/SpotifyAuth';
+import { playTrack, switchPlaybackDevice } from '../utils/spotify-api';
 
 export default function createPlayerSlice(set, get) {
   return {
     player: null,
+    deviceId: '',
     activated: false,
+    paused: false,
+    currentTrack: {
+      name: '',
+      album: {
+        images: [{ url: '' }],
+      },
+    },
 
-    initializePlayer: () => {
+    initializePlayer: async () => {
       const token = localStorage.getItem('access_token');
       if (token) {
         const script = document.createElement('script');
@@ -26,7 +35,9 @@ export default function createPlayerSlice(set, get) {
           });
 
           // Set the player in the store
-          set({ player: spotifyPlayer });
+          set((state) => ({
+            playerSlice: { ...state.playerSlice, player: spotifyPlayer },
+          }));
 
           spotifyPlayer.on('initialization_error', ({ message }) => {
             console.error('Failed to initialize', message);
@@ -35,7 +46,9 @@ export default function createPlayerSlice(set, get) {
           // Ready
           spotifyPlayer.addListener('ready', ({ device_id }) => {
             console.log('Ready with Device ID', device_id);
-            set((state) => ({ ...state, player: spotifyPlayer }));
+            set((state) => ({
+              playerSlice: { ...state.playerSlice, deviceId: device_id },
+            }));
           });
 
           // Not Ready
@@ -48,6 +61,18 @@ export default function createPlayerSlice(set, get) {
           spotifyPlayer.addListener('authentication_error', ({ message }) => { console.error(message); });
           spotifyPlayer.addListener('account_error', ({ message }) => { console.error(message); });
           spotifyPlayer.addListener('playback_error', ({ message }) => { console.error(message); });
+
+          // Add player_state_changed listener
+          spotifyPlayer.addListener('player_state_changed', (state) => {
+            if (state) {
+              set(({
+                playerSlice: { ...state.playerSlice,
+                  paused: !state.paused,
+                  currentTrack: state.track_window.current_track,
+                  activated: true },
+              }));
+            }
+          });
 
           spotifyPlayer.connect();
         };
@@ -64,21 +89,14 @@ export default function createPlayerSlice(set, get) {
         return () => {};
       }
     },
-
-    playSong: (uri) => {
-      const state = get();
-      if (state.player && uri) {
-        state.player._options.getOAuthToken((accessToken) => {
-          fetch('https://api.spotify.com/v1/me/player/play', {
-            method: 'PUT',
-            body: JSON.stringify({ uris: [uri] }),
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${accessToken}`,
-            },
-          });
-        });
+    playTrack: async (trackId) => {
+      // activate player if not yet activated
+      if (!get().playerSlice.activated) {
+        get().playerSlice.player.activateElement();
       }
+      await switchPlaybackDevice(get().playerSlice.deviceId);
+      await playTrack(trackId);
     },
+
   };
 }

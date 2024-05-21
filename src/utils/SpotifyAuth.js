@@ -3,7 +3,7 @@ import axios from 'axios';
 const clientId = '28aa68c6ae6243589d5733382d57d5c2';
 // const clientSecret = '2ab36ec92e4046bfbf86ffa669d02fc7';
 const redirectUri = 'http://localhost:5173/home';
-const scope = 'user-read-private user-read-email user-top-read user-read-recently-played streaming';
+const scope = 'user-read-private user-read-email user-top-read user-read-recently-played streaming user-read-playback-state';
 const authUrl = new URL('https://accounts.spotify.com/authorize');
 
 /* Utility functions for generating the code challenge */
@@ -162,7 +162,7 @@ const logout = async () => {
   localStorage.removeItem('expires_at');
   localStorage.removeItem('code_verifier');
 
-  // redirect to the home page
+  // redirect to the login page
   window.location.href = '/';
 };
 

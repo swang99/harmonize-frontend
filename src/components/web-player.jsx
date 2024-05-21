@@ -1,13 +1,14 @@
 /* eslint-disable camelcase */
 import { Box, Button, Text } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import { updateToken } from '../utils/SpotifyAuth';
 import useStore from '../store';
+import { updateToken } from '../utils/SpotifyAuth';
 
 const SpotifyPlayer = () => {
-  const player = useStore((store) => store.playerSlice.player);
+  const playerSlice = useStore((store) => store.playerSlice);
   const initializePlayer = useStore((store) => store.playerSlice.initializePlayer);
   const [tokenUpdated, setTokenUpdated] = useState(false);
+  const playTrack = useStore((store) => store.playerSlice.playTrack);
 
   useEffect(() => {
     const update = async () => {
@@ -22,9 +23,12 @@ const SpotifyPlayer = () => {
   }, []);
 
   useEffect(() => {
-    if (tokenUpdated) {
-      initializePlayer();
-    }
+    const initialize = async () => {
+      if (tokenUpdated) {
+        await initializePlayer();
+      }
+    };
+    initialize();
   }, [tokenUpdated]);
 
   return (
@@ -43,8 +47,8 @@ const SpotifyPlayer = () => {
       zIndex="1000"
     >
       <Text textColor="black">Spotify Player</Text>
-      {player && (
-      <Button onClick={() => player.togglePlay()} ml={4}>
+      {playerSlice && (
+      <Button onClick={() => playTrack('7tWsRN4De6t361FzF74Mtc')} ml={4}>
         Play/Pause
       </Button>
       )}

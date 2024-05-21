@@ -8,12 +8,10 @@ const createProfileSlice = (set, get) => ({
 
   fetchProfile: async (userID) => {
     try {
-      console.log(`Fetching profile for userID: ${userID}`);
       const response = await axios.get(`${ROOT_URL}users/${userID}`);
       await set((state) => ({
         profileSlice: { ...state.profileSlice, currentProfile: response.data },
       }), false, 'users/fetchProfile');
-      console.log('Profile fetched successfully:', response.data);
       return response.data;
     } catch (error) {
       console.error('Failed to fetch profile:', error.message);
@@ -24,7 +22,6 @@ const createProfileSlice = (set, get) => ({
 
   fetchOtherProfile: async (userID) => {
     try {
-      console.log(`Fetching other profile for userID: ${userID}`);
       const response = await axios.get(`${ROOT_URL}users/${userID}`);
       return response.data;
     } catch (error) {
@@ -35,12 +32,10 @@ const createProfileSlice = (set, get) => ({
 
   updateProfile: async (userID, profile) => {
     try {
-      console.log(`Updating profile for userID: ${userID}`);
       const response = await axios.put(`${ROOT_URL}users/${userID}`, profile);
       set((state) => ({
         profileSlice: { ...state.profileSlice, currentProfile: response.data },
       }), false, 'users/updateProfile');
-      console.log('Profile updated successfully:', response.data);
     } catch (error) {
       console.error('Failed to update profile:', error.message);
       get().errorSlice.newError(error.message);
@@ -49,12 +44,10 @@ const createProfileSlice = (set, get) => ({
 
   createProfile: async (profile) => {
     try {
-      console.log('Creating new profile:', profile);
       const response = await axios.post(`${ROOT_URL}/users`, profile);
       set((state) => ({
         profileSlice: { ...state.profileSlice, currentProfile: response.data },
       }), false, 'users/createProfile');
-      console.log('Profile created successfully:', response.data);
     } catch (error) {
       console.error('Failed to create profile:', error.message);
       get().errorSlice.newError(error.message);
@@ -63,12 +56,10 @@ const createProfileSlice = (set, get) => ({
 
   deleteProfile: async (userID) => {
     try {
-      console.log(`Deleting profile for userID: ${userID}`);
       await axios.delete(`${ROOT_URL}users/${userID}`);
       set((state) => ({
         profileSlice: { ...state.profileSlice, currentProfile: null },
       }), false, 'users/deleteProfile');
-      console.log('Profile deleted successfully');
     } catch (error) {
       console.error('Failed to delete profile:', error.message);
       get().errorSlice.newError(error.message);
@@ -81,7 +72,6 @@ const createProfileSlice = (set, get) => ({
       const existingProfile = get().profileSlice.currentProfile;
 
       if (!existingProfile || existingProfile.userID !== profile.id) {
-        console.log('Creating new profile during login');
         const newProfile = {
           userID: profile.id,
           name: profile.display_name,
@@ -97,8 +87,6 @@ const createProfileSlice = (set, get) => ({
         };
         await get().profileSlice.createProfile(newProfile);
       } else {
-        console.log('Updating existing profile during login');
-        console.log('Existing profile:', existingProfile);
         const updatedProfile = {
           ...existingProfile,
           name: profile.display_name,

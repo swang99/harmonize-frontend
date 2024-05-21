@@ -235,3 +235,82 @@ export async function getItemData(id, type) {
     throw error;
   }
 }
+
+/**
+ * Plays a specific track on Spotify.
+ *
+ * @param {string} trackId - The ID of the track to play.
+ * @returns {Promise<void>} - A promise that resolves when the track is played.
+ * @throws {Error} - If there is an error playing the track on Spotify.
+ */
+export async function playTrack(trackId) {
+  const accessToken = await localStorage.getItem('access_token');
+
+  try {
+    await axios.put(
+      'https://api.spotify.com/v1/me/player/play',
+      {
+        uris: [`spotify:track:${trackId}`],
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
+  } catch (error) {
+    console.error('Error Playing Track on Spotify', error);
+    throw error;
+  }
+}
+
+/**
+ * Switches the playback device on Spotify.
+ *
+ * @param {string} deviceId - The ID of the device to switch to.
+ * @returns {Promise<void>} - A promise that resolves when the playback device is switched.
+ * @throws {Error} - If there is an error switching the playback device on Spotify.
+ */
+export async function switchPlaybackDevice(deviceId) {
+  const accessToken = await localStorage.getItem('access_token');
+  console.log('Switching Playback Device on Spotify:', deviceId);
+  try {
+    const response = await axios.put(
+      'https://api.spotify.com/v1/me/player',
+      {
+        device_ids: [deviceId],
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
+    console.log('Switched Playback Device on Spotify:', response.data);
+  } catch (error) {
+    console.error('Error Switching Playback Device on Spotify', error);
+    throw error;
+  }
+}
+
+/**
+ * Retrieves the current playback state from Spotify, including the active device.
+ *
+ * @returns {Promise<Object>} - A promise that resolves to the current playback state.
+ * @throws {Error} - If there is an error fetching the current playback state from Spotify.
+ */
+export async function getCurrentDevice() {
+  const accessToken = localStorage.getItem('access_token');
+  try {
+    const response = await axios.get('https://api.spotify.com/v1/me/player', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error Fetching Current Playback from Spotify', error);
+    throw error;
+  }
+}

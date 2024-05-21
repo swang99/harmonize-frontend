@@ -71,7 +71,6 @@ function Feed() {
       if (dataLoaded) {
         const { profile, topTracks, topArtists, userPlaylists } = userData;
         await handleLogin(profile, topTracks, topArtists, userPlaylists);
-        console.log('User data loaded:', userData);
         await loadFeed(profile.userID);
       }
     };

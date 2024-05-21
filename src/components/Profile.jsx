@@ -48,7 +48,6 @@ function Profile(props) {
         } else { // Otherwise, fetch the profile from the server
           setIsOwnProfile(false);
           const otherProfile = await fetchOtherProfile(id);
-          console.log('Other profile:', otherProfile);
           setProfile(otherProfile);
         }
         await updateToken();
