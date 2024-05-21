@@ -39,7 +39,7 @@ function Profile(props) {
   useEffect(() => {
     const fetchProfileData = async () => {
       const userSpotifyProfile = await getUserProfile();
-      setUserProfile(await fetchOtherProfile(userSpotifyProfile.id));
+      setUserProfile(await fetchProfile(userSpotifyProfile.id));
       try {
         if (id === userSpotifyProfile.id) { // If the profile is the current user's profile, fetch the profile from the store
           const loadedProfile = await fetchProfile(id);
@@ -48,10 +48,8 @@ function Profile(props) {
         } else { // Otherwise, fetch the profile from the server
           setIsOwnProfile(false);
           const otherProfile = await fetchOtherProfile(id);
+          console.log('Other profile:', otherProfile);
           setProfile(otherProfile);
-          if (userProfile.following.includes(id)) {
-            setIsFollowing(true);
-          }
         }
         await updateToken();
         setProfileFetched(true);
@@ -64,22 +62,40 @@ function Profile(props) {
     }
   }, [id, tokenUpdated]);
 
+  useEffect(() => {
+    if (userProfile) {
+      if (userProfile.following.includes(id)) {
+        setIsFollowing(true);
+      }
+    }
+  }, [userProfile]);
+
   const handleFollow = async () => {
     // Update current profile following list
-    const updatedProfile = {
+    const updatedUserProfile = {
       ...userProfile,
       following: [...userProfile.following, id],
     };
-    await updateProfile(userProfile.userID, updatedProfile);
+    await updateProfile(userProfile.userID, updatedUserProfile);
+    const updatedProfile = {
+      ...profile,
+      followers: [...profile.followers, userProfile.userID],
+    };
+    await updateProfile(id, updatedProfile);
     setIsFollowing(true);
   };
   const handleUnfollow = async () => {
     // Update current profile following list
-    const updatedProfile = {
+    const updatedUserProfile = {
       ...userProfile,
       following: userProfile.following.filter((followeeID) => followeeID !== id),
     };
-    await updateProfile(userProfile.userID, updatedProfile);
+    await updateProfile(userProfile.userID, updatedUserProfile);
+    const updatedProfile = {
+      ...profile,
+      followers: profile.followers.filter((followerID) => followerID !== userProfile.userID),
+    };
+    await updateProfile(id, updatedProfile);
     setIsFollowing(false);
   };
 
@@ -122,7 +138,7 @@ function Profile(props) {
                 <Text size="md">Followers</Text>
               </VStack>
               <VStack justify="flex-start" align="center" mb={8}>
-                <Heading as="h3" size="md">{profile.followers.length}</Heading>
+                <Heading as="h3" size="md">{profile.following.length}</Heading>
                 <Text size="md">Following</Text>
               </VStack>
             </HStack>
@@ -173,7 +189,7 @@ function Profile(props) {
                     <Text size="md">Followers</Text>
                   </VStack>
                   <VStack justify="flex-start" align="center" mb={8}>
-                    <Heading as="h3" size="md">{profile.followers.length}</Heading>
+                    <Heading as="h3" size="md">{profile.following.length}</Heading>
                     <Text size="md">Following</Text>
                   </VStack>
                 </HStack>

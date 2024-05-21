@@ -24,7 +24,7 @@ const createProfileSlice = (set, get) => ({
 
   fetchOtherProfile: async (userID) => {
     try {
-      console.log(`Fetching profile for userID: ${userID}`);
+      console.log(`Fetching other profile for userID: ${userID}`);
       const response = await axios.get(`${ROOT_URL}users/${userID}`);
       return response.data;
     } catch (error) {
