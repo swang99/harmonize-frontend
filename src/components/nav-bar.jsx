@@ -8,7 +8,6 @@ const NavBar = () => {
   const navBg = useColorModeValue('gray.100', 'gray.800');
   const navigate = useNavigate();
   const profile = useStore((store) => store.profileSlice.currentProfile);
-  console.log('Profile:', profile);
 
   const links = [
     { to: '/home', label: 'Home' },

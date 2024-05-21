@@ -10,13 +10,15 @@ const createProfileSlice = (set, get) => ({
     try {
       console.log(`Fetching profile for userID: ${userID}`);
       const response = await axios.get(`${ROOT_URL}users/${userID}`);
-      set((state) => ({
+      await set((state) => ({
         profileSlice: { ...state.profileSlice, currentProfile: response.data },
       }), false, 'users/fetchProfile');
       console.log('Profile fetched successfully:', response.data);
+      return response.data;
     } catch (error) {
       console.error('Failed to fetch profile:', error.message);
       get().errorSlice.newError(error.message);
+      return null;
     }
   },
 
