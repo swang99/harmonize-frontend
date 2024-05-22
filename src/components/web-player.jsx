@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { Box, Button, Text } from '@chakra-ui/react';
+import { Button, HStack, Image, Spacer, Text } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 import useStore from '../store';
 
@@ -20,7 +20,7 @@ const SpotifyPlayer = () => {
 
   return (
     playerSlice && (
-    <Box
+    <HStack
       as="footer"
       position="fixed"
       bottom="0"
@@ -28,18 +28,18 @@ const SpotifyPlayer = () => {
       height="10vh"
       bg="gray.100"
       color="white"
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
+      justifyContent="left"
       zIndex="1000"
     >
+      <Image src={playerSlice.currentTrac && playerSlice.currentTrack.album.images[0].url} alt="Album cover" boxSize="50px" />
       <Text textColor="black">Spotify Player</Text>
-      {playerSlice && playerSlice.active && (
-      <Button onClick={null} ml={4}>
-        Play/Pause
-      </Button>
-      )}
-    </Box>
+      <Spacer />
+        {playerSlice && playerSlice.active && (
+        <Button onClick={null} ml={4}>
+          Play/Pause
+        </Button>
+        )}
+    </HStack>
     )
   );
 };
