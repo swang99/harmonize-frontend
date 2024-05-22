@@ -143,7 +143,7 @@ const createProfileSlice = (set, get) => ({
 
   unfollowProfile: async (followerProfile, followingProfile) => {
     try {
-      if (!followerProfile.following.includes(followingProfile.userID)) {
+      if (followerProfile.following.includes(followingProfile.userID)) {
         const updatedFollowerProfile = {
           ...followerProfile,
           following: followerProfile.following.filter((id) => id !== followingProfile.userID),
@@ -151,7 +151,7 @@ const createProfileSlice = (set, get) => ({
         await get().profileSlice.updateProfile(followerProfile.userID, updatedFollowerProfile);
       }
 
-      if (!followingProfile.followers.includes(followerProfile.userID)) {
+      if (followingProfile.followers.includes(followerProfile.userID)) {
         const updatedFollowingProfile = {
           ...followingProfile,
           followers: followingProfile.followers.filter((id) => id !== followerProfile.userID),
