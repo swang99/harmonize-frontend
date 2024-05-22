@@ -1,7 +1,11 @@
-import { Avatar, Box, Button, Flex, Grid, HStack, Heading, Spacer, Tab, TabList, TabPanel, TabPanels, Tabs, Text, VStack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
+import {
+  Box, Button, Text, Avatar, Flex, Heading, VStack, Spacer, HStack, Grid, Icon, Modal,
+  ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Input, useDisclosure, List, ListItem, Tab, Tabs, TabList, TabPanels, TabPanel,
+} from '@chakra-ui/react';
+import { IoPersonAdd } from 'react-icons/io5';
 import useStore from '../store';
 import { updateToken } from '../utils/SpotifyAuth';
 import { getUserProfile } from '../utils/spotify-api';
@@ -9,6 +13,7 @@ import Post from './post';
 
 function Profile(props) {
   const { id } = useParams();
+  const fetchAllProfiles = useStore((store) => store.profileSlice.fetchAllProfiles);
   const fetchProfile = useStore((store) => store.profileSlice.fetchProfile);
   const fetchOtherProfile = useStore((store) => store.profileSlice.fetchOtherProfile);
   const updateProfile = useStore((store) => store.profileSlice.updateProfile);
@@ -18,11 +23,16 @@ function Profile(props) {
   const [tokenUpdated, setTokenUpdated] = useState(false); // track if token is loaded
   const [profile, setProfile] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
+  const [allProfiles, setAllProfiles] = useState([]);
+  const [filteredProfiles, setFilteredProfiles] = useState([]);
   const testPostProps = {
     id: '5hXEcqQhEjfZdbIZLO8mf2',
     type: 'Track',
     comment: 'This is a test comment',
   };
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [friendName, setFriendName] = useState('');
 
   useEffect(() => {
     const update = async () => {
@@ -62,12 +72,41 @@ function Profile(props) {
   }, [id, tokenUpdated]);
 
   useEffect(() => {
+    const fetchAllProfilesData = async () => {
+      try {
+        const profiles = await fetchAllProfiles();
+        setAllProfiles(profiles);
+      } catch (error) {
+        console.error('Failed to fetch all profiles:', error);
+      }
+    };
+
+    fetchAllProfilesData();
+  }, [fetchAllProfiles]);
+
+  useEffect(() => {
     if (userProfile) {
       if (userProfile.following.includes(id)) {
         setIsFollowing(true);
       }
     }
   }, [userProfile]);
+
+  useEffect(() => {
+    if (friendName) {
+      const uniqueProfiles = new Set();
+      const filtered = allProfiles.filter((p) => {
+        if (p.name.toLowerCase().includes(friendName.toLowerCase()) && !uniqueProfiles.has(p.userID)) {
+          uniqueProfiles.add(p.userID);
+          return true;
+        }
+        return false;
+      });
+      setFilteredProfiles(filtered);
+    } else {
+      setFilteredProfiles([]);
+    }
+  }, [friendName, allProfiles]);
 
   const handleFollow = async () => {
     // Update current profile following list
@@ -83,7 +122,6 @@ function Profile(props) {
     await updateProfile(id, updatedProfile);
     setIsFollowing(true);
   };
-
   const handleUnfollow = async () => {
     // Update current profile following list
     const updatedUserProfile = {
@@ -97,6 +135,16 @@ function Profile(props) {
     };
     await updateProfile(id, updatedProfile);
     setIsFollowing(false);
+  };
+
+  const handleAddFriend = (friendId) => {
+    // Implement the logic to add a friend here
+    console.log(`Adding friend: ${friendId}`);
+    updateProfile(userProfile.userID, { ...userProfile, following: [...userProfile.following, friendId] });
+    const friendProfile = allProfiles.find((p) => p.userID === friendId);
+    updateProfile(friendId, { ...friendProfile, followers: [...friendProfile.followers, userProfile.userID] });
+    setFriendName('');
+    onClose();
   };
 
   const renderFollowButton = () => {
@@ -124,24 +172,38 @@ function Profile(props) {
       return (
         <Flex py={5} px={10} bg="teal.600" color="white" minH="100vh" overflow="hidden" position="absolute" width="100vw" justify="center">
           <VStack p="5%" w="100%" maxW="1000px">
-            <HStack p={10} bg="white" borderRadius="xl" justify="space-between" align="center" width="100%" spacing={10} color="gray.900">
-              <Avatar w="150px" h="auto" name={profile.name} src={profile.photo} />
-              <VStack justify="flex-start" align="flex-start" mb={8}>
-                <Heading as="h1" size="xl" color="gray.900">
-                  {profile.name}
-                </Heading>
-                <Text size="md" fontWeight="bold">Total Posts: {profile.posts.length}</Text>
-              </VStack>
-              <Spacer />
-              <VStack justify="flex-start" align="center" mb={8}>
-                <Heading as="h3" size="md">{profile.followers.length}</Heading>
-                <Text size="md">Followers</Text>
-              </VStack>
-              <VStack justify="flex-start" align="center" mb={8}>
-                <Heading as="h3" size="md">{profile.following.length}</Heading>
-                <Text size="md">Following</Text>
-              </VStack>
-            </HStack>
+            <Box position="relative">
+              <HStack p={10} bg="white" borderRadius="xl" justify="space-between" align="center" width="100%" spacing={10} color="gray.900">
+                <Avatar w="150px" h="auto" name={profile.name} src={profile.photo} />
+                <VStack justify="flex-start" align="flex-start" mb={8}>
+                  <Heading as="h1" size="xl" color="gray.900">
+                    {profile.name}
+                  </Heading>
+                  <Text size="md" fontWeight="bold">Total Posts: {profile.posts.length}</Text>
+                </VStack>
+                <Spacer />
+                <VStack justify="flex-start" align="center" mb={8}>
+                  <Heading as="h3" size="md">{profile.followers.length}</Heading>
+                  <Text size="md">Followers</Text>
+                </VStack>
+                <VStack justify="flex-start" align="center" mb={8}>
+                  <Heading as="h3" size="md">{profile.following.length}</Heading>
+                  <Text size="md">Following</Text>
+                </VStack>
+              </HStack>
+              <Icon
+                as={IoPersonAdd}
+                w={7}
+                h={7}
+                position="absolute"
+                right={4}
+                top={4}
+                cursor="pointer"
+                color="teal.600"
+                _hover={{ color: 'gray.500', transform: 'scale(1.1)' }}
+                onClick={onOpen}
+              />
+            </Box>
             <Tabs variant="unstyled" align="center" defaultIndex={0} mt={4}>
               <TabList>
                 <Tab
@@ -173,6 +235,40 @@ function Profile(props) {
               </TabPanels>
             </Tabs>
           </VStack>
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Add Friend</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <Input
+                  placeholder="Enter friend's name"
+                  value={friendName}
+                  onChange={(e) => setFriendName(e.target.value)}
+                />
+                {filteredProfiles.length > 0 && (
+                  <List mt={4} spacing={2}>
+                    {filteredProfiles.map((p) => (
+                      <ListItem
+                        key={p.userID}
+                        onClick={() => handleAddFriend(p.userID)}
+                        cursor="pointer"
+                        _hover={{ bg: 'gray.200' }}
+                      >
+                        <HStack>
+                          <Avatar size="sm" name={p.name} src={p.photo} />
+                          <Text>{p.name}</Text>
+                        </HStack>
+                      </ListItem>
+                    ))}
+                  </List>
+                )}
+              </ModalBody>
+              <ModalFooter>
+                <Button onClick={onClose}>Close</Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
         </Flex>
       );
     } else {
