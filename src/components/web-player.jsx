@@ -8,7 +8,8 @@ const SpotifyPlayer = () => {
   const playerSlice = useStore((store) => store.playerSlice);
   const initializePlayer = useStore((store) => store.playerSlice.initializePlayer);
   const [tokenUpdated, setTokenUpdated] = useState(false);
-  const playTrack = useStore((store) => store.playerSlice.playTrack);
+  const play = useStore((store) => store.playerSlice.playTrackInApp);
+  const paused = useStore((store) => store.playerSlice.paused);
 
   useEffect(() => {
     const update = async () => {
@@ -32,7 +33,7 @@ const SpotifyPlayer = () => {
   }, [tokenUpdated]);
 
   return (
-    tokenUpdated && (
+    !paused && (
     <Box
       as="footer"
       position="fixed"
@@ -48,7 +49,7 @@ const SpotifyPlayer = () => {
     >
       <Text textColor="black">Spotify Player</Text>
       {playerSlice && (
-      <Button onClick={() => playTrack('7tWsRN4De6t361FzF74Mtc')} ml={4}>
+      <Button onClick={() => play('7tWsRN4De6t361FzF74Mtc')} ml={4}>
         Play/Pause
       </Button>
       )}

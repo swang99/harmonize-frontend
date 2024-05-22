@@ -121,7 +121,7 @@ function Profile(props) {
       return <Text>Profile not found</Text>;
     } else if (isOwnProfile) {
       return (
-        <Flex py={5} px={10} bg="teal.600" color="white" minH="100vh" overflow="hidden" position="absolute" width="100vw" justify="center">
+        <Flex py={5} px={10} bg="teal.600" color="white" minH="100vh" overflow="scroll" justify="center">
           <VStack p="5%" w="100%" maxW="1000px">
             <HStack p={10} bg="white" borderRadius="xl" justify="space-between" align="center" width="100%" spacing={10} color="gray.900">
               <Avatar w="150px" h="auto" name={profile.name} src={profile.photo} />
@@ -145,24 +145,7 @@ function Profile(props) {
               <Grid templateColumns="repeat(3, 1fr)" gap={6}>
                 {profile.posts && profile.posts.length > 0 ? (
                   profile.posts.map((post) => (
-                    <Flex key={post.id} bg="blue.800" p={4} borderRadius="md" justify="space-between" align="center">
-                      <Box>
-                        <Heading as="h4" size="sm">
-                          {post.title}
-                        </Heading>
-                        <Text>
-                          {post.artistName}, {post.artistAlbum}, {post.releaseYear}
-                        </Text>
-                      </Box>
-                      <Box textAlign="right">
-                        <Text>{post.timeAgo}</Text>
-                        <Text as="u">view in feed</Text>
-                      </Box>
-                    </Flex>
-                  ))
-                ) : (
-                  <Post id={testPostProps.id} comment={testPostProps.comment} type={testPostProps.type} />
-                )}
+                    null))) : <Post id={testPostProps.id} comment={testPostProps.comment} type={testPostProps.type} />}
               </Grid>
             </Box>
           </VStack>
@@ -170,7 +153,7 @@ function Profile(props) {
       );
     } else {
       return (
-        <Flex py={5} px={10} bg="teal.600" color="white" minH="100vh" overflow="hidden" position="absolute" width="100vw" justify="center">
+        <Flex py={5} px={10} bg="teal.600" color="white" minH="100vh" overflow="auto" justify="center">
           <VStack p="5%" w="100%" maxW="1000px">
             <HStack p={10} bg="white" borderRadius="xl" justify="space-between" align="center" width="100%" spacing={10} color="gray.900">
               <Avatar w="150px" h="auto" name={profile.name} src={profile.photo} />

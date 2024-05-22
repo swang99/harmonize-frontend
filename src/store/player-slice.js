@@ -8,7 +8,7 @@ export default function createPlayerSlice(set, get) {
     player: null,
     deviceId: '',
     activated: false,
-    paused: false,
+    paused: true,
     currentTrack: {
       name: '',
       album: {
@@ -89,7 +89,7 @@ export default function createPlayerSlice(set, get) {
         return () => {};
       }
     },
-    playTrack: async (trackId) => {
+    playTrackInApp: async (trackId) => {
       // activate player if not yet activated
       if (!get().playerSlice.activated) {
         get().playerSlice.player.activateElement();
