@@ -11,6 +11,8 @@ export default function createPostSlice(set, get) {
         ...existingProfile,
         posts: [post, ...existingProfile.posts],
       };
+      console.log('These are posts: ', updatedProfile.posts);
+
       set((state) => ({
         profileSlice: { ...state.profileSlice, currentProfile: updatedProfile },
       }), false, 'users/createPost');

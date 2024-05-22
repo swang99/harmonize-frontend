@@ -18,15 +18,10 @@ function Profile(props) {
   const [profileFetched, setProfileFetched] = useState(false);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
-  const [tokenUpdated, setTokenUpdated] = useState(false); // track if token is loaded
+  const [tokenUpdated, setTokenUpdated] = useState(false);
   const [profile, setProfile] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [filteredProfiles, setFilteredProfiles] = useState([]);
-  const testPostProps = {
-    id: '5hXEcqQhEjfZdbIZLO8mf2',
-    type: 'Track',
-    comment: 'This is a test comment',
-  };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [friendName, setFriendName] = useState('');
@@ -48,11 +43,11 @@ function Profile(props) {
       const userSpotifyProfile = await getUserProfile();
       setUserProfile(await fetchProfile(userSpotifyProfile.id));
       try {
-        if (id === userSpotifyProfile.id) { // If the profile is the current user's profile, fetch the profile from the store
+        if (id === userSpotifyProfile.id) {
           const loadedProfile = await fetchProfile(id);
           setIsOwnProfile(true);
           setProfile(loadedProfile);
-        } else { // Otherwise, fetch the profile from the server
+        } else {
           setIsOwnProfile(false);
           const otherProfile = await fetchOtherProfile(id);
           setProfile(otherProfile);
@@ -91,6 +86,7 @@ function Profile(props) {
     await followProfile(userProfile, profile);
     setIsFollowing(true);
   };
+
   const handleUnfollow = async () => {
     await unfollowProfile(userProfile, profile);
     setIsFollowing(false);
@@ -181,8 +177,11 @@ function Profile(props) {
                   <Box py={5}>
                     <Grid templateColumns="repeat(3, 1fr)" gap={6}>
                       {profile.posts && profile.posts.length > 0 ? (
-                        profile.posts.map((post) => (null))) : (
-                          <Post id={testPostProps.id} comment={testPostProps.comment} type={testPostProps.type} profile={profile} isOwnProfile={isOwnProfile} />
+                        profile.posts.map((post) => (
+                          <Post key={post.id} id={post.id} comment={post.comment} type={post.type} profile={profile} isOwnProfile={isOwnProfile} />
+                        ))
+                      ) : (
+                        <Text>No posts yet.</Text>
                       )}
                     </Grid>
                   </Box>
@@ -257,23 +256,10 @@ function Profile(props) {
               <Grid templateColumns="repeat(3, 1fr)" gap={6}>
                 {profile.posts && profile.posts.length > 0 ? (
                   profile.posts.map((post) => (
-                    <Flex key={post.id} bg="blue.800" p={4} borderRadius="md" justify="space-between" align="center">
-                      <Box>
-                        <Heading as="h4" size="sm">
-                          {post.title}
-                        </Heading>
-                        <Text>
-                          {post.artistName}, {post.artistAlbum}, {post.releaseYear}
-                        </Text>
-                      </Box>
-                      <Box textAlign="right">
-                        <Text>{post.timeAgo}</Text>
-                        <Text as="u">view in feed</Text>
-                      </Box>
-                    </Flex>
+                    <Post key={post.id} id={post.id} type={post.type} comment={post.comment} />
                   ))
                 ) : (
-                  <Post id={testPostProps.id} comment={testPostProps.comment} type={testPostProps.type} />
+                  <Text>No posts yet.</Text>
                 )}
               </Grid>
             </Box>
