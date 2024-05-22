@@ -1,3 +1,5 @@
+import { Avatar, Box, Button, Flex, Grid, HStack, Heading, Spacer, Tab, TabList, TabPanel, TabPanels, Tabs, Text, VStack } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import {
@@ -7,9 +9,9 @@ import {
 import { motion } from 'framer-motion';
 import { IoPersonAdd } from 'react-icons/io5';
 import useStore from '../store';
-import Post from './post';
 import { updateToken } from '../utils/SpotifyAuth';
 import { getUserProfile } from '../utils/spotify-api';
+import Post from './post';
 
 function Profile(props) {
   const { id } = useParams();
@@ -27,7 +29,7 @@ function Profile(props) {
   const [filteredProfiles, setFilteredProfiles] = useState([]);
   const testPostProps = {
     id: '5hXEcqQhEjfZdbIZLO8mf2',
-    type: 'track',
+    type: 'Track',
     comment: 'This is a test comment',
   };
 
@@ -172,62 +174,54 @@ function Profile(props) {
       return (
         <Flex py={5} px={10} bg="teal.600" color="white" minH="100vh" overflow="hidden" position="absolute" width="100vw" justify="center">
           <VStack p="5%" w="100%" maxW="1000px">
-            <Box position="relative">
-              <HStack p={10} bg="white" borderRadius="xl" justify="space-between" align="center" width="100%" spacing={10} color="gray.900">
-                <Avatar w="150px" h="auto" name={profile.name} src={profile.photo} />
-                <VStack justify="flex-start" align="flex-start" mb={8}>
-                  <Heading as="h1" size="xl" color="gray.900">
-                    {profile.name}
-                  </Heading>
-                  <Text size="md" fontWeight="bold">Total Posts: {profile.posts.length}</Text>
-                </VStack>
-                <Spacer />
-                <VStack justify="flex-start" align="center" mb={8}>
-                  <Heading as="h3" size="md">{profile.followers.length}</Heading>
-                  <Text size="md">Followers</Text>
-                </VStack>
-                <VStack justify="flex-start" align="center" mb={8}>
-                  <Heading as="h3" size="md">{profile.following.length}</Heading>
-                  <Text size="md">Following</Text>
-                </VStack>
-              </HStack>
-              <Icon
-                as={IoPersonAdd}
-                w={7}
-                h={7}
-                position="absolute"
-                right={4}
-                top={4}
-                cursor="pointer"
-                color="teal.600"
-                _hover={{ color: 'gray.500', transform: 'scale(1.1)' }}
-                onClick={onOpen}
-              />
-            </Box>
-            <Box>
-              <Grid templateColumns="repeat(3, 1fr)" gap={6}>
-                {profile.posts && profile.posts.length > 0 ? (
-                  profile.posts.map((post) => (
-                    <Flex key={post.id} bg="blue.800" p={4} borderRadius="md" justify="space-between" align="center">
-                      <Box>
-                        <Heading as="h4" size="sm">
-                          {post.title}
-                        </Heading>
-                        <Text>
-                          {post.artistName}, {post.artistAlbum}, {post.releaseYear}
-                        </Text>
-                      </Box>
-                      <Box textAlign="right">
-                        <Text>{post.timeAgo}</Text>
-                        <Text as="u">view in feed</Text>
-                      </Box>
-                    </Flex>
-                  ))
-                ) : (
-                  <Post id={testPostProps.id} comment={testPostProps.comment} type={testPostProps.type} />
-                )}
-              </Grid>
-            </Box>
+            <HStack p={10} bg="white" borderRadius="xl" justify="space-between" align="center" width="100%" spacing={10} color="gray.900">
+              <Avatar w="150px" h="auto" name={profile.name} src={profile.photo} />
+              <VStack justify="flex-start" align="flex-start" mb={8}>
+                <Heading as="h1" size="xl" color="gray.900">
+                  {profile.name}
+                </Heading>
+                <Text size="md" fontWeight="bold">Total Posts: {profile.posts.length}</Text>
+              </VStack>
+              <Spacer />
+              <VStack justify="flex-start" align="center" mb={8}>
+                <Heading as="h3" size="md">{profile.followers.length}</Heading>
+                <Text size="md">Followers</Text>
+              </VStack>
+              <VStack justify="flex-start" align="center" mb={8}>
+                <Heading as="h3" size="md">{profile.following.length}</Heading>
+                <Text size="md">Following</Text>
+              </VStack>
+            </HStack>
+            <Tabs variant="unstyled" align="center" defaultIndex={0} mt={4}>
+              <TabList>
+                <Tab
+                  fontWeight="bold"
+                  _selected={{ color: 'teal.500', bg: 'white', borderRadius: 'full' }}
+                  _focus={{ boxShadow: 'none' }}
+                >
+                  Posts
+                </Tab>
+                <Tab
+                  fontWeight="bold"
+                  _selected={{ color: 'teal.500', bg: 'white', borderRadius: 'full' }}
+                  _focus={{ boxShadow: 'none' }}
+                >
+                  Recents
+                </Tab>
+              </TabList>
+              <TabPanels>
+                <TabPanel p={0}>
+                  <Box py={5}>
+                    <Grid templateColumns="repeat(3, 1fr)" gap={6}>
+                      {profile.posts && profile.posts.length > 0 ? (
+                        profile.posts.map((post) => (null))) : (
+                          <Post id={testPostProps.id} comment={testPostProps.comment} type={testPostProps.type} profile={profile} isOwnProfile={isOwnProfile} />
+                      )}
+                    </Grid>
+                  </Box>
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
           </VStack>
           <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />

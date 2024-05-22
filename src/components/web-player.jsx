@@ -1,38 +1,25 @@
 /* eslint-disable camelcase */
 import { Box, Button, Text } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import useStore from '../store';
-import { updateToken } from '../utils/SpotifyAuth';
 
 const SpotifyPlayer = () => {
   const playerSlice = useStore((store) => store.playerSlice);
   const initializePlayer = useStore((store) => store.playerSlice.initializePlayer);
-  const [tokenUpdated, setTokenUpdated] = useState(false);
-  const playTrack = useStore((store) => store.playerSlice.playTrack);
-
-  useEffect(() => {
-    const update = async () => {
-      try {
-        await updateToken();
-        setTokenUpdated(true);
-      } catch (error) {
-        console.error('Failed to update token:', error);
-      }
-    };
-    update();
-  }, []);
 
   useEffect(() => {
     const initialize = async () => {
-      if (tokenUpdated) {
-        await initializePlayer();
-      }
+      await initializePlayer();
     };
     initialize();
-  }, [tokenUpdated]);
+  }, []);
+
+  useEffect(() => {
+    console.log('Player slice:', playerSlice);
+  }, [playerSlice]);
 
   return (
-    tokenUpdated && (
+    playerSlice && (
     <Box
       as="footer"
       position="fixed"
@@ -47,8 +34,8 @@ const SpotifyPlayer = () => {
       zIndex="1000"
     >
       <Text textColor="black">Spotify Player</Text>
-      {playerSlice && (
-      <Button onClick={() => playTrack('7tWsRN4De6t361FzF74Mtc')} ml={4}>
+      {playerSlice && playerSlice.active && (
+      <Button onClick={null} ml={4}>
         Play/Pause
       </Button>
       )}

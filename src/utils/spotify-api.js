@@ -224,7 +224,7 @@ export async function getItemData(id, type) {
   };
 
   try {
-    const response = await axios.get(`https://api.spotify.com/v1/${idType[type]}/${id}`, {
+    const response = await axios.get(`https://api.spotify.com/v1/${idType[type.toLowerCase()]}/${id}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -243,23 +243,41 @@ export async function getItemData(id, type) {
  * @returns {Promise<void>} - A promise that resolves when the track is played.
  * @throws {Error} - If there is an error playing the track on Spotify.
  */
-export async function playTrack(trackId) {
-  const accessToken = await localStorage.getItem('access_token');
+export async function playTrack(deviceId, trackId) {
+  const accessToken = localStorage.getItem('access_token');
+
+  if (!accessToken) {
+    console.error('No access token found in localStorage');
+    return;
+  }
+
+  const url = 'https://api.spotify.com/v1/me/player/play';
+  const body = {
+    uris: [`spotify:track:${trackId}`],
+  };
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+  };
+
+  if (deviceId) {
+    config.params = {
+      device_id: deviceId,
+    };
+  }
 
   try {
-    await axios.put(
-      'https://api.spotify.com/v1/me/player/play',
-      {
-        uris: [`spotify:track:${trackId}`],
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      },
-    );
+    await axios.put(url, body, config);
+    console.log('Track is playing');
   } catch (error) {
-    console.error('Error Playing Track on Spotify', error);
+    if (error.response) {
+      console.error('Error Playing Track on Spotify:', error.response.data);
+    } else {
+      console.error('Error Playing Track on Spotify:', error.message);
+    }
     throw error;
   }
 }

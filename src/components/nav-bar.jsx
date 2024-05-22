@@ -8,6 +8,7 @@ const NavBar = () => {
   const navBg = useColorModeValue('gray.100', 'gray.800');
   const navigate = useNavigate();
   const profile = useStore((store) => store.profileSlice.currentProfile);
+  const token = localStorage.getItem('access_token');
 
   const links = [
     { to: '/home', label: 'Home' },
@@ -16,6 +17,7 @@ const NavBar = () => {
   ].filter(Boolean); // Filter out null values
 
   return (
+    token && (
     <Flex bg={navBg} p={4} justifyContent="space-between" alignItems="center">
       <Flex align="center">
         {links.map((link) => (
@@ -45,6 +47,7 @@ const NavBar = () => {
         Logout
       </Button>
     </Flex>
+    )
   );
 };
 
