@@ -1,5 +1,6 @@
-import { Avatar, Box, Card, Flex, GridItem, Image, Text } from '@chakra-ui/react';
+import { Avatar, Box, Card, GridItem, HStack, Image, Text } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
+import useStore from '../store';
 import { getItemData } from '../utils/spotify-api';
 
 /**
@@ -15,14 +16,11 @@ import { getItemData } from '../utils/spotify-api';
 const Post = (props) => {
   const [postData, setPostData] = useState(null);
   const [postFetched, setPostFetched] = useState(false);
+  const playTrackInApp = useStore((state) => state.playerSlice.playTrackInApp);
+  const slice = useStore((state) => state.playerSlice);
 
   const title = postData ? postData.name : '';
-  const artist = postData ? postData.artists[0].name : '';
   const imageUrl = postData ? postData.album.images[0].url : '';
-  const user = 'brendan';
-  const genre = 'pop';
-  const album = 'album';
-  const release = 'release';
 
   useEffect(() => {
     const fetchPostData = async () => {
@@ -43,42 +41,66 @@ const Post = (props) => {
     }
   }, [postFetched]);
 
+  const handlePlay = async () => {
+    try {
+      console.log('Function called:', playTrackInApp);
+      await playTrackInApp(postData.id);
+    } catch (error) {
+      console.error('Failed to play track:', error);
+    }
+  };
+
+  useEffect(() => {
+    console.log('Slice updated', slice);
+  }, [slice]);
+
   const trackPost = () => {
     return (
       <Box
         bg="gray.200"
-        p="4"
-        borderRadius="lg"
-        boxShadow="md"
-        maxW="sm"
-        mx="auto"
+        position="relative"
+        overflow="hidden"
+        _hover={{ '& .hover-content': { opacity: 1 } }}
+        onClick={handlePlay}
       >
-        <Flex align="center" mb="4">
-          <Avatar name={user} src={user.profilePicture} size="sm" />
-          <Text ml="2" fontWeight="bold">{user.username}</Text>
-        </Flex>
-        <Text fontSize="xl" fontWeight="bold" mb="2">{title}</Text>
-        <Text fontSize="sm" color="gray.600" mb="2">
-          <Text as="span" fontWeight="bold">Performed by:</Text> {artist}
-        </Text>
-        <Text fontSize="sm" color="gray.600" mb="2">
-          <Text as="span" fontWeight="bold">Genre:</Text> {genre}
-        </Text>
-        <Text fontSize="sm" color="gray.600" mb="2">
-          <Text as="span" fontWeight="bold">Album:</Text> {album}
-        </Text>
-        <Text fontSize="sm" color="gray.600" mb="4">
-          <Text as="span" fontWeight="bold">Release:</Text> {release}
-        </Text>
         <Image
           src={imageUrl}
           alt={title}
-          borderRadius="lg"
-          mb="4"
+          width="100%"
         />
-        <Text fontSize="sm" color="gray.700">
-          <Text as="span" fontWeight="bold">comments:</Text> <Text as="i">{props.comment}</Text>
-        </Text>
+        <Box
+          className="hover-content"
+          position="absolute"
+          top="0"
+          left="0"
+          width="100%"
+          height="100%"
+          opacity="0"
+          transition="opacity 0.1s ease-in-out"
+          bg="rgba(0, 0, 0, 0.5)"
+          color="white"
+          p="4"
+        >
+          {!props.isOwnProfile && (
+          <HStack align="center" mb="4">
+            <Avatar name={props.profile.name} src={props.profile.photo} size="sm" opacity="1" />
+            <Text ml="2" fontWeight="bold">{props.profile.name}</Text>
+          </HStack>
+          )}
+          <Text fontSize="xl" fontWeight="bold" mb="2">{props.type}: {title}</Text>
+          <Text fontSize="sm" color="gray.100" mb="2">
+            <Text as="span" fontWeight="bold">Artist:</Text> {postData.artists[0].name}
+          </Text>
+          <Text fontSize="sm" color="gray.100" mb="2">
+            <Text as="span" fontWeight="bold">Album:</Text> {postData.album.name}
+          </Text>
+          <Text fontSize="sm" color="gray.100" mb="4">
+            <Text as="span" fontWeight="bold">Year:</Text> {postData.album.release_date.split('-')[0]}
+          </Text>
+          <Text fontSize="sm" color="gray.100">
+            <Text as="span" fontWeight="bold">comments:</Text> <Text as="i">{props.comment}</Text>
+          </Text>
+        </Box>
       </Box>
     );
   };
@@ -106,11 +128,11 @@ const Post = (props) => {
   const renderPost = () => {
     if (!postFetched || !postData) {
       return null;
-    } else if (props.type === 'track') {
+    } else if (props.type === 'Track') {
       return trackPost();
-    } else if (props.type === 'album') {
+    } else if (props.type === 'Album') {
       return albumPost();
-    } else if (props.type === 'artist') {
+    } else if (props.type === 'Artist') {
       return artistPost();
     } else {
       return null;

@@ -1,11 +1,11 @@
+import { Avatar, Box, Button, Flex, Grid, HStack, Heading, Spacer, Tab, TabList, TabPanel, TabPanels, Tabs, Text, VStack } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { Box, Button, Text, Avatar, Flex, Heading, VStack, Spacer, HStack, Grid } from '@chakra-ui/react';
-import { motion } from 'framer-motion';
 import useStore from '../store';
-import Post from './post';
 import { updateToken } from '../utils/SpotifyAuth';
 import { getUserProfile } from '../utils/spotify-api';
+import Post from './post';
 
 function Profile(props) {
   const { id } = useParams();
@@ -20,7 +20,7 @@ function Profile(props) {
   const [userProfile, setUserProfile] = useState(null);
   const testPostProps = {
     id: '5hXEcqQhEjfZdbIZLO8mf2',
-    type: 'track',
+    type: 'Track',
     comment: 'This is a test comment',
   };
 
@@ -121,7 +121,7 @@ function Profile(props) {
       return <Text>Profile not found</Text>;
     } else if (isOwnProfile) {
       return (
-        <Flex py={5} px={10} bg="teal.600" color="white" minH="100vh" overflow="scroll" justify="center">
+        <Flex py={5} px={10} bg="teal.600" color="white" minH="100vh" overflow="hidden" position="absolute" width="100vw" justify="center">
           <VStack p="5%" w="100%" maxW="1000px">
             <HStack p={10} bg="white" borderRadius="xl" justify="space-between" align="center" width="100%" spacing={10} color="gray.900">
               <Avatar w="150px" h="auto" name={profile.name} src={profile.photo} />
@@ -141,19 +141,42 @@ function Profile(props) {
                 <Text size="md">Following</Text>
               </VStack>
             </HStack>
-            <Box>
-              <Grid templateColumns="repeat(3, 1fr)" gap={6}>
-                {profile.posts && profile.posts.length > 0 ? (
-                  profile.posts.map((post) => (
-                    null))) : <Post id={testPostProps.id} comment={testPostProps.comment} type={testPostProps.type} />}
-              </Grid>
-            </Box>
+            <Tabs variant="unstyled" align="center" defaultIndex={0} mt={4}>
+              <TabList>
+                <Tab
+                  fontWeight="bold"
+                  _selected={{ color: 'teal.500', bg: 'white', borderRadius: 'full' }}
+                  _focus={{ boxShadow: 'none' }}
+                >
+                  Posts
+                </Tab>
+                <Tab
+                  fontWeight="bold"
+                  _selected={{ color: 'teal.500', bg: 'white', borderRadius: 'full' }}
+                  _focus={{ boxShadow: 'none' }}
+                >
+                  Recents
+                </Tab>
+              </TabList>
+              <TabPanels>
+                <TabPanel p={0}>
+                  <Box py={5}>
+                    <Grid templateColumns="repeat(3, 1fr)" gap={6}>
+                      {profile.posts && profile.posts.length > 0 ? (
+                        profile.posts.map((post) => (null))) : (
+                          <Post id={testPostProps.id} comment={testPostProps.comment} type={testPostProps.type} profile={profile} isOwnProfile={isOwnProfile} />
+                      )}
+                    </Grid>
+                  </Box>
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
           </VStack>
         </Flex>
       );
     } else {
       return (
-        <Flex py={5} px={10} bg="teal.600" color="white" minH="100vh" overflow="auto" justify="center">
+        <Flex py={5} px={10} bg="teal.600" color="white" minH="100vh" overflow="hidden" position="absolute" width="100vw" justify="center">
           <VStack p="5%" w="100%" maxW="1000px">
             <HStack p={10} bg="white" borderRadius="xl" justify="space-between" align="center" width="100%" spacing={10} color="gray.900">
               <Avatar w="150px" h="auto" name={profile.name} src={profile.photo} />
