@@ -8,7 +8,7 @@ export default function createPlayerSlice(set, get) {
     player: null,
     deviceId: '',
     activated: false,
-    paused: false,
+    paused: true,
     currentTrack: {
       name: '',
       album: {
@@ -56,6 +56,10 @@ export default function createPlayerSlice(set, get) {
             console.log('Device ID has gone offline', device_id);
           });
 
+          spotifyPlayer.addListener('autoplay_failed', () => {
+            console.log('Autoplay is not allowed by the browser autoplay rules');
+          });
+
           // Error handling
           spotifyPlayer.addListener('initialization_error', ({ message }) => { console.error(message); });
           spotifyPlayer.addListener('authentication_error', ({ message }) => { console.error(message); });
@@ -64,10 +68,11 @@ export default function createPlayerSlice(set, get) {
 
           // Add player_state_changed listener
           spotifyPlayer.addListener('player_state_changed', (state) => {
+            console.log(state);
             if (state) {
               set(({
                 playerSlice: { ...state.playerSlice,
-                  paused: !state.paused,
+                  paused: state.paused,
                   currentTrack: state.track_window.current_track,
                   activated: true },
               }));
@@ -89,14 +94,30 @@ export default function createPlayerSlice(set, get) {
         return () => {};
       }
     },
-    playTrack: async (trackId) => {
-      // activate player if not yet activated
-      if (!get().playerSlice.activated) {
-        get().playerSlice.player.activateElement();
-      }
-      await switchPlaybackDevice(get().playerSlice.deviceId);
-      await playTrack(trackId);
-    },
 
+    playTrackInApp: async (trackId) => {
+      const { player } = get().playerSlice;
+
+      if (!player) {
+        console.error('Player is not initialized');
+        return;
+      }
+
+      try {
+        // Switch playback device
+        await switchPlaybackDevice(get().playerSlice.deviceId);
+
+        // Activate player if not yet activated
+        if (!get().playerSlice.activated) {
+          await player.activateElement();
+        }
+
+        player.togglePlay();
+        const id = await get().playerSlice.deviceId;
+        await playTrack(id, trackId);
+      } catch (error) {
+        console.error('Error in playTrackInApp:', error);
+      }
+    },
   };
 }

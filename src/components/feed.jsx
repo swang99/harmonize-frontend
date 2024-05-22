@@ -11,6 +11,7 @@ import { updateToken } from '../utils/SpotifyAuth';
 function Feed() {
   const [dataLoaded, setDataLoaded] = useState(false); // track if user data is loaded
   const [tokenUpdated, setTokenUpdated] = useState(false); // track if token is updated
+  const initializePlayer = useStore((store) => store.playerSlice.initializePlayer);
 
   // getting posts from the store
   const allPosts = useStore((store) => store.postSlice.all);
@@ -30,6 +31,7 @@ function Feed() {
     const update = async () => {
       try {
         await updateToken();
+        await initializePlayer();
         setTokenUpdated(true);
       } catch (error) {
         console.error('Failed to update token or fetch top tracks:', error);
@@ -95,7 +97,6 @@ function Feed() {
       exit={{ x: 1000, opacity: 0 }}
       transition={{ duration: 0.5, type: 'spring', stiffness: 50, damping: 12 }}
     >
-      Feed
       {renderPosts()}
     </motion.div>
   );

@@ -1,39 +1,26 @@
 /* eslint-disable camelcase */
-import { Box, Button, Text } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import { Button, HStack, Image, Spacer, Text, VStack } from '@chakra-ui/react';
+import React, { useEffect } from 'react';
 import useStore from '../store';
-import { updateToken } from '../utils/SpotifyAuth';
 
 const SpotifyPlayer = () => {
   const playerSlice = useStore((store) => store.playerSlice);
   const initializePlayer = useStore((store) => store.playerSlice.initializePlayer);
-  const [tokenUpdated, setTokenUpdated] = useState(false);
-  const playTrack = useStore((store) => store.playerSlice.playTrack);
-
-  useEffect(() => {
-    const update = async () => {
-      try {
-        await updateToken();
-        setTokenUpdated(true);
-      } catch (error) {
-        console.error('Failed to update token:', error);
-      }
-    };
-    update();
-  }, []);
 
   useEffect(() => {
     const initialize = async () => {
-      if (tokenUpdated) {
-        await initializePlayer();
-      }
+      await initializePlayer();
     };
     initialize();
-  }, [tokenUpdated]);
+  }, []);
+
+  useEffect(() => {
+    console.log('Player slice:', playerSlice);
+  }, [playerSlice]);
 
   return (
-    tokenUpdated && (
-    <Box
+    playerSlice && (
+    <HStack
       as="footer"
       position="fixed"
       bottom="0"
@@ -41,18 +28,22 @@ const SpotifyPlayer = () => {
       height="10vh"
       bg="gray.100"
       color="white"
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
+      justifyContent="left"
       zIndex="1000"
+      padding={5}
     >
-      <Text textColor="black">Spotify Player</Text>
-      {playerSlice && (
-      <Button onClick={() => playTrack('7tWsRN4De6t361FzF74Mtc')} ml={4}>
-        Play/Pause
-      </Button>
-      )}
-    </Box>
+      <Image src={playerSlice.currentTrack && playerSlice.currentTrack.album.images[0].url} alt="Album cover" boxSize="50px" />
+      <VStack align="left" ml={5}>
+        <Text textColor="black" fontWeight="bold">{playerSlice.currentTrack.name && playerSlice.currentTrack.name}</Text>
+        <Text textColor="gray.500">{playerSlice.currentTrack.artists && playerSlice.currentTrack.artists[0].name}</Text>
+      </VStack>
+      <Spacer />
+        {playerSlice && playerSlice.active && (
+        <Button onClick={null} ml={4}>
+          Play/Pause
+        </Button>
+        )}
+    </HStack>
     )
   );
 };

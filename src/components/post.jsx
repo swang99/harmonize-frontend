@@ -1,7 +1,7 @@
-import { Card, GridItem } from '@chakra-ui/react';
+import { Box, GridItem, HStack, Image, Text, VStack, Button } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
+import useStore from '../store';
 import { getItemData } from '../utils/spotify-api';
-import { updateToken } from '../utils/SpotifyAuth';
 
 /**
  * Represents a post component.
@@ -14,37 +14,18 @@ import { updateToken } from '../utils/SpotifyAuth';
  * @returns {JSX.Element} The rendered Post component.
  */
 const Post = (props) => {
+  const { id, type, comment } = props;
   const [postData, setPostData] = useState(null);
   const [postFetched, setPostFetched] = useState(false);
-  const [tokenUpdated, setTokenUpdated] = useState(false);
-
-  useEffect(() => {
-    console.log('Post props:', props);
-  }, []);
-
-  useEffect(() => {
-    const update = async () => {
-      try {
-        await updateToken();
-        setTokenUpdated(true);
-      } catch (error) {
-        console.error('Failed to update token:', error);
-      }
-    };
-    update();
-  }, []);
-
-  useEffect(() => {
-    if (tokenUpdated) {
-      console.log('Token Updated.');
-    }
-  }, [tokenUpdated]);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const playTrackInApp = useStore((state) => state.playerSlice.playTrackInApp);
+  const pauseTrackInApp = useStore((state) => state.playerSlice.pauseTrackInApp);
 
   useEffect(() => {
     const fetchPostData = async () => {
       try {
-        console.log('Fetching post data with id:', props.id, 'and type:', props.type); // Debugging log
-        const itemData = await getItemData(props.id, props.type);
+        console.log('Fetching post data with id:', id, 'and type:', type); // Debugging log
+        const itemData = await getItemData(id, type);
         setPostData(itemData);
         setPostFetched(true);
       } catch (error) {
@@ -52,58 +33,77 @@ const Post = (props) => {
       }
     };
     fetchPostData();
-  }, [props.id, props.type]);
+  }, [id, type]);
 
-  useEffect(() => {
-    if (postFetched) {
-      console.log('PostFetched:', postFetched, 'Post data:', postData);
+  const handlePlay = async () => {
+    try {
+      console.log('Function called:', playTrackInApp);
+      await playTrackInApp(postData.id);
+      setIsPlaying(true);
+    } catch (error) {
+      console.error('Failed to play track:', error);
     }
-  }, [postFetched]);
-
-  const trackPost = () => {
-    return (
-      <Card>
-        <img src={postData.album.images[0].url} alt={postData.name} />
-        <p>{postData.name}</p>
-        <p>{postData.artists[0].name}</p>
-      </Card>
-    );
   };
 
-  const albumPost = () => {
-    return (
-      <Card>
-        <img src={postData.images[0].url} alt={postData.name} />
-        <p>{postData.name}</p>
-        <p>{postData.artists[0].name}</p>
-      </Card>
-    );
-  };
-
-  const artistPost = () => {
-    return (
-      <Card>
-        <img src={postData.images[0].url} alt={postData.name} />
-        <p>{postData.name}</p>
-      </Card>
-    );
+  const handlePause = async () => {
+    try {
+      console.log('Function called:', pauseTrackInApp);
+      await pauseTrackInApp();
+      setIsPlaying(false);
+    } catch (error) {
+      console.error('Failed to pause track:', error);
+    }
   };
 
   const renderPost = () => {
     if (!postFetched || !postData) {
       return null;
-    } else if (props.type === 'track') {
-      return trackPost();
-    } else if (props.type === 'album') {
-      return albumPost();
-    } else if (props.type === 'artist') {
-      return artistPost();
-    } else {
-      return null;
     }
+    const { name, album, artists } = postData;
+
+    return (
+      <GridItem>
+        <Box
+          bg="gray.200"
+          position="relative"
+          overflow="hidden"
+          p={4}
+          borderRadius="md"
+          _hover={{ '& .hover-content': { opacity: 1 } }}
+        >
+          <VStack align="start" spacing={3}>
+            <HStack spacing={3}>
+              <Image
+                src={album.images[0].url}
+                alt={name}
+                boxSize="100px"
+                borderRadius="md"
+                objectFit="cover"
+              />
+              <VStack align="start" spacing={1}>
+                <Text fontSize="lg" fontWeight="bold">{name}</Text>
+                <Text fontSize="sm" color="gray.600">Artist: {artists[0].name}</Text>
+                <Text fontSize="sm" color="gray.600">Album: {album.name}</Text>
+                <Text fontSize="sm" color="gray.600">Year: {album.release_date.split('-')[0]}</Text>
+              </VStack>
+            </HStack>
+            <Text fontSize="sm" color="gray.800">Comment: {comment}</Text>
+            {isPlaying ? (
+              <Button colorScheme="teal" size="sm" onClick={handlePause}>
+                Pause
+              </Button>
+            ) : (
+              <Button colorScheme="teal" size="sm" onClick={handlePlay}>
+                Play
+              </Button>
+            )}
+          </VStack>
+        </Box>
+      </GridItem>
+    );
   };
 
-  return postFetched && postData ? <GridItem>{renderPost()}</GridItem> : null;
+  return renderPost();
 };
 
 export default Post;
