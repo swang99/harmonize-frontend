@@ -1,12 +1,10 @@
-import { Avatar, Box, Button, Flex, Grid, HStack, Heading, Spacer, Tab, TabList, TabPanel, TabPanels, Tabs, Text, VStack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import {
   Box, Button, Text, Avatar, Flex, Heading, VStack, Spacer, HStack, Grid, Icon, Modal,
-  ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Input, useDisclosure, List, ListItem,
+  ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Input, useDisclosure, List, ListItem, Tab, Tabs, TabList, TabPanels, TabPanel,
 } from '@chakra-ui/react';
-import { motion } from 'framer-motion';
 import { IoPersonAdd } from 'react-icons/io5';
 import useStore from '../store';
 import { updateToken } from '../utils/SpotifyAuth';
@@ -174,24 +172,38 @@ function Profile(props) {
       return (
         <Flex py={5} px={10} bg="teal.600" color="white" minH="100vh" overflow="hidden" position="absolute" width="100vw" justify="center">
           <VStack p="5%" w="100%" maxW="1000px">
-            <HStack p={10} bg="white" borderRadius="xl" justify="space-between" align="center" width="100%" spacing={10} color="gray.900">
-              <Avatar w="150px" h="auto" name={profile.name} src={profile.photo} />
-              <VStack justify="flex-start" align="flex-start" mb={8}>
-                <Heading as="h1" size="xl" color="gray.900">
-                  {profile.name}
-                </Heading>
-                <Text size="md" fontWeight="bold">Total Posts: {profile.posts.length}</Text>
-              </VStack>
-              <Spacer />
-              <VStack justify="flex-start" align="center" mb={8}>
-                <Heading as="h3" size="md">{profile.followers.length}</Heading>
-                <Text size="md">Followers</Text>
-              </VStack>
-              <VStack justify="flex-start" align="center" mb={8}>
-                <Heading as="h3" size="md">{profile.following.length}</Heading>
-                <Text size="md">Following</Text>
-              </VStack>
-            </HStack>
+            <Box position="relative">
+              <HStack p={10} bg="white" borderRadius="xl" justify="space-between" align="center" width="100%" spacing={10} color="gray.900">
+                <Avatar w="150px" h="auto" name={profile.name} src={profile.photo} />
+                <VStack justify="flex-start" align="flex-start" mb={8}>
+                  <Heading as="h1" size="xl" color="gray.900">
+                    {profile.name}
+                  </Heading>
+                  <Text size="md" fontWeight="bold">Total Posts: {profile.posts.length}</Text>
+                </VStack>
+                <Spacer />
+                <VStack justify="flex-start" align="center" mb={8}>
+                  <Heading as="h3" size="md">{profile.followers.length}</Heading>
+                  <Text size="md">Followers</Text>
+                </VStack>
+                <VStack justify="flex-start" align="center" mb={8}>
+                  <Heading as="h3" size="md">{profile.following.length}</Heading>
+                  <Text size="md">Following</Text>
+                </VStack>
+              </HStack>
+              <Icon
+                as={IoPersonAdd}
+                w={7}
+                h={7}
+                position="absolute"
+                right={4}
+                top={4}
+                cursor="pointer"
+                color="teal.600"
+                _hover={{ color: 'gray.500', transform: 'scale(1.1)' }}
+                onClick={onOpen}
+              />
+            </Box>
             <Tabs variant="unstyled" align="center" defaultIndex={0} mt={4}>
               <TabList>
                 <Tab
