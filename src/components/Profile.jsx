@@ -14,7 +14,7 @@ import Post from './post';
 
 function Profile(props) {
   const { id } = useParams();
-  const { fetchAllProfiles, fetchProfile, fetchOtherProfile, followProfile, unfollowProfile } = useStore((store) => store.profileSlice);
+  const { filterProfiles, fetchProfile, fetchOtherProfile, followProfile, unfollowProfile } = useStore((store) => store.profileSlice);
   const navigate = useNavigate();
   const [profileFetched, setProfileFetched] = useState(false);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
@@ -22,7 +22,6 @@ function Profile(props) {
   const [tokenUpdated, setTokenUpdated] = useState(false); // track if token is loaded
   const [profile, setProfile] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
-  const [allProfiles, setAllProfiles] = useState([]);
   const [filteredProfiles, setFilteredProfiles] = useState([]);
   const testPostProps = {
     id: '5hXEcqQhEjfZdbIZLO8mf2',
@@ -78,35 +77,16 @@ function Profile(props) {
     }
   }, [userProfile]);
 
-  /* Fetch all profiles and open Add Friends modal */
-  async function handleOpenModal() {
-    try {
-      const profiles = await fetchAllProfiles();
-      setAllProfiles(profiles);
-    } catch (error) {
-      console.error('Failed to fetch all profiles:', error);
-    }
-    onOpen();
-  }
-
   /* Filter profiles based on search input */
-  const handleFriendSearch = (name) => {
-    if (!name) {
+  async function handleFriendSearch(filter) {
+    if (!filter) {
       setFilteredProfiles([]);
       setFriendName('');
       return;
     }
-    const uniqueProfiles = new Set();
-    const filtered = allProfiles.filter((p) => {
-      if (p.name.toLowerCase().includes(name.toLowerCase()) && !uniqueProfiles.has(p.userID)) {
-        uniqueProfiles.add(p.userID);
-        return true;
-      }
-      return false;
-    });
-    setFilteredProfiles(filtered);
-    setFriendName(name);
-  };
+    setFriendName(filter);
+    setFilteredProfiles(await filterProfiles(filter));
+  }
 
   const handleFollow = async () => {
     await followProfile(userProfile, profile);
@@ -177,7 +157,7 @@ function Profile(props) {
                 cursor="pointer"
                 color="teal.600"
                 _hover={{ color: 'gray.500', transform: 'scale(1.1)' }}
-                onClick={handleOpenModal}
+                onClick={onOpen}
               />
             </Box>
             <Tabs variant="unstyled" align="center" defaultIndex={0} mt={4}>
