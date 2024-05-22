@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import {
   Box, Button, Text, Avatar, Flex, Heading, VStack, Spacer, HStack, Grid, Icon, Modal,
   ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Input, useDisclosure, List, ListItem, Tab, Tabs, TabList, TabPanels, TabPanel,
@@ -16,7 +16,9 @@ function Profile(props) {
   const fetchAllProfiles = useStore((store) => store.profileSlice.fetchAllProfiles);
   const fetchProfile = useStore((store) => store.profileSlice.fetchProfile);
   const fetchOtherProfile = useStore((store) => store.profileSlice.fetchOtherProfile);
-  const updateProfile = useStore((store) => store.profileSlice.updateProfile);
+  const followProfile = useStore((store) => store.profileSlice.followProfile);
+  const unfollowProfile = useStore((store) => store.profileSlice.unfollowProfile);
+  const navigate = useNavigate();
   const [profileFetched, setProfileFetched] = useState(false);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
@@ -109,40 +111,17 @@ function Profile(props) {
   }, [friendName, allProfiles]);
 
   const handleFollow = async () => {
-    // Update current profile following list
-    const updatedUserProfile = {
-      ...userProfile,
-      following: [...userProfile.following, id],
-    };
-    await updateProfile(userProfile.userID, updatedUserProfile);
-    const updatedProfile = {
-      ...profile,
-      followers: [...profile.followers, userProfile.userID],
-    };
-    await updateProfile(id, updatedProfile);
+    await followProfile(userProfile, profile);
     setIsFollowing(true);
   };
   const handleUnfollow = async () => {
-    // Update current profile following list
-    const updatedUserProfile = {
-      ...userProfile,
-      following: userProfile.following.filter((followeeID) => followeeID !== id),
-    };
-    await updateProfile(userProfile.userID, updatedUserProfile);
-    const updatedProfile = {
-      ...profile,
-      followers: profile.followers.filter((followerID) => followerID !== userProfile.userID),
-    };
-    await updateProfile(id, updatedProfile);
+    await unfollowProfile(userProfile, profile);
     setIsFollowing(false);
   };
 
-  const handleAddFriend = (friendId) => {
-    // Implement the logic to add a friend here
-    console.log(`Adding friend: ${friendId}`);
-    updateProfile(userProfile.userID, { ...userProfile, following: [...userProfile.following, friendId] });
-    const friendProfile = allProfiles.find((p) => p.userID === friendId);
-    updateProfile(friendId, { ...friendProfile, followers: [...friendProfile.followers, userProfile.userID] });
+  const handleNavigateUser = (friendId) => {
+    // Navigate to friend's profile
+    navigate(`/users/${friendId}`);
     setFriendName('');
     onClose();
   };
@@ -251,7 +230,7 @@ function Profile(props) {
                     {filteredProfiles.map((p) => (
                       <ListItem
                         key={p.userID}
-                        onClick={() => handleAddFriend(p.userID)}
+                        onClick={() => handleNavigateUser(p.userID)}
                         cursor="pointer"
                         _hover={{ bg: 'gray.200' }}
                       >

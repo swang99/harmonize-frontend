@@ -117,6 +117,52 @@ const createProfileSlice = (set, get) => ({
       get().errorSlice.newError(error.message);
     }
   },
+
+  followProfile: async (followerProfile, followingProfile) => {
+    try {
+      if (!followerProfile.following.includes(followingProfile.userID)) {
+        const updatedFollowerProfile = {
+          ...followerProfile,
+          following: [...followerProfile.following, followingProfile.userID],
+        };
+        await get().profileSlice.updateProfile(followerProfile.userID, updatedFollowerProfile);
+      }
+
+      if (!followingProfile.followers.includes(followerProfile.userID)) {
+        const updatedFollowingProfile = {
+          ...followingProfile,
+          followers: [...followingProfile.followers, followerProfile.userID],
+        };
+        await get().profileSlice.updateProfile(followingProfile.userID, updatedFollowingProfile);
+      }
+    } catch (error) {
+      console.error('Failed to follow profile:', error.message);
+      get().errorSlice.newError(error.message);
+    }
+  },
+
+  unfollowProfile: async (followerProfile, followingProfile) => {
+    try {
+      if (followerProfile.following.includes(followingProfile.userID)) {
+        const updatedFollowerProfile = {
+          ...followerProfile,
+          following: followerProfile.following.filter((id) => id !== followingProfile.userID),
+        };
+        await get().profileSlice.updateProfile(followerProfile.userID, updatedFollowerProfile);
+      }
+
+      if (followingProfile.followers.includes(followerProfile.userID)) {
+        const updatedFollowingProfile = {
+          ...followingProfile,
+          followers: followingProfile.followers.filter((id) => id !== followerProfile.userID),
+        };
+        await get().profileSlice.updateProfile(followingProfile.userID, updatedFollowingProfile);
+      }
+    } catch (error) {
+      console.error('Failed to unfollow profile:', error.message);
+      get().errorSlice.newError(error.message);
+    }
+  },
 });
 
 export default createProfileSlice;
