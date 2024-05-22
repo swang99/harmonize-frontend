@@ -6,6 +6,18 @@ const ROOT_URL = 'https://project-api-spotify-sharing.onrender.com/api/';
 const createProfileSlice = (set, get) => ({
   currentProfile: null, // Initialize to null to indicate no profile is loaded yet
 
+  fetchAllProfiles: async () => {
+    try {
+      console.log('Fetching all profiles');
+      const response = await axios.get(`${ROOT_URL}users`);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch profiles:', error.message);
+      get().errorSlice.newError(error.message);
+      return [];
+    }
+  },
+
   fetchProfile: async (userID) => {
     try {
       const response = await axios.get(`${ROOT_URL}users/${userID}`);
