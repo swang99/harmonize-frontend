@@ -1,6 +1,7 @@
 import { Card, GridItem } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { getItemData } from '../utils/spotify-api';
+import { updateToken } from '../utils/SpotifyAuth';
 
 /**
  * Represents a post component.
@@ -15,10 +16,34 @@ import { getItemData } from '../utils/spotify-api';
 const Post = (props) => {
   const [postData, setPostData] = useState(null);
   const [postFetched, setPostFetched] = useState(false);
+  const [tokenUpdated, setTokenUpdated] = useState(false);
+
+  useEffect(() => {
+    console.log('Post props:', props);
+  }, []);
+
+  useEffect(() => {
+    const update = async () => {
+      try {
+        await updateToken();
+        setTokenUpdated(true);
+      } catch (error) {
+        console.error('Failed to update token:', error);
+      }
+    };
+    update();
+  }, []);
+
+  useEffect(() => {
+    if (tokenUpdated) {
+      console.log('Token Updated.');
+    }
+  }, [tokenUpdated]);
 
   useEffect(() => {
     const fetchPostData = async () => {
       try {
+        console.log('Fetching post data with id:', props.id, 'and type:', props.type); // Debugging log
         const itemData = await getItemData(props.id, props.type);
         setPostData(itemData);
         setPostFetched(true);
@@ -27,7 +52,7 @@ const Post = (props) => {
       }
     };
     fetchPostData();
-  }, []);
+  }, [props.id, props.type]);
 
   useEffect(() => {
     if (postFetched) {
@@ -48,7 +73,7 @@ const Post = (props) => {
   const albumPost = () => {
     return (
       <Card>
-        <img src={postData.album.images[0].url} alt={postData.name} />
+        <img src={postData.images[0].url} alt={postData.name} />
         <p>{postData.name}</p>
         <p>{postData.artists[0].name}</p>
       </Card>
@@ -58,9 +83,8 @@ const Post = (props) => {
   const artistPost = () => {
     return (
       <Card>
-        <img src={postData.album.images[0].url} alt={postData.name} />
+        <img src={postData.images[0].url} alt={postData.name} />
         <p>{postData.name}</p>
-        <p>{postData.artists[0].name}</p>
       </Card>
     );
   };
@@ -79,13 +103,7 @@ const Post = (props) => {
     }
   };
 
-  return (
-    postFetched && postData ? (
-      <GridItem>
-        {renderPost()}
-      </GridItem>
-    ) : (null)
-  );
+  return postFetched && postData ? <GridItem>{renderPost()}</GridItem> : null;
 };
 
 export default Post;

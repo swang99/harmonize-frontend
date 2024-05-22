@@ -217,14 +217,23 @@ export async function getRecentlyPlayedTracks() {
  */
 export async function getItemData(id, type) {
   const accessToken = await localStorage.getItem('access_token');
-  const idType = {
-    track: 'tracks',
-    artist: 'artists',
-    album: 'albums',
-  };
+  // const idType = {
+  //   // track: 'tracks',
+  //   // artist: 'artists',
+  //   // album: 'albums',
+  //   track: 'tracks',
+  //   artist: 'artists',
+  //   album: 'albums',
+  //   playlist: 'playlists',
+  //   show: 'shows',
+  //   episode: 'episodes',
+  // };
+
+  // const itemType = idType[type] || type; // Use the type as-is if it's not in the idType object
 
   try {
-    const response = await axios.get(`https://api.spotify.com/v1/${idType[type]}/${id}`, {
+    // const response = await axios.get(`https://api.spotify.com/v1/${itemType}/${id}`, {
+    const response = await axios.get(`https://api.spotify.com/v1/tracks/${id}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -234,6 +243,18 @@ export async function getItemData(id, type) {
     console.error('Error Fetching Item Data from Spotify', error);
     throw error;
   }
+
+  // try {
+  //   const response = await axios.get(`https://api.spotify.com/v1/${idType[type]}/${id}`, {
+  //     headers: {
+  //       Authorization: `Bearer ${accessToken}`,
+  //     },
+  //   });
+  //   return response.data;
+  // } catch (error) {
+  //   console.error('Error Fetching Item Data from Spotify', error);
+  //   throw error;
+  // }
 }
 
 /**

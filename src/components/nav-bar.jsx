@@ -13,6 +13,7 @@ const NavBar = () => {
     { to: '/home', label: 'Home' },
     profile ? { to: `/users/${profile.userID}`, label: 'Profile' } : { label: 'Profile' },
     { to: '/search', label: 'Search' },
+    { to: '/new-post', label: 'New Post' },
   ].filter(Boolean); // Filter out null values
 
   return (
