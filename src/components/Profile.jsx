@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import {
   Box, Button, Text, Avatar, Flex, Heading, VStack, Spacer, HStack, Grid, Icon, Modal,
   ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Input, useDisclosure, List, ListItem, Tab, Tabs, TabList, TabPanels, TabPanel,
@@ -13,17 +13,14 @@ import Post from './post';
 
 function Profile(props) {
   const { id } = useParams();
-  const fetchAllProfiles = useStore((store) => store.profileSlice.fetchAllProfiles);
-  const fetchProfile = useStore((store) => store.profileSlice.fetchProfile);
-  const fetchOtherProfile = useStore((store) => store.profileSlice.fetchOtherProfile);
-  const updateProfile = useStore((store) => store.profileSlice.updateProfile);
+  const { filterProfiles, fetchProfile, fetchOtherProfile, followProfile, unfollowProfile } = useStore((store) => store.profileSlice);
+  const navigate = useNavigate();
   const [profileFetched, setProfileFetched] = useState(false);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
   const [tokenUpdated, setTokenUpdated] = useState(false);
   const [profile, setProfile] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
-  const [allProfiles, setAllProfiles] = useState([]);
   const [filteredProfiles, setFilteredProfiles] = useState([]);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -67,19 +64,6 @@ function Profile(props) {
   }, [id, tokenUpdated]);
 
   useEffect(() => {
-    const fetchAllProfilesData = async () => {
-      try {
-        const profiles = await fetchAllProfiles();
-        setAllProfiles(profiles);
-      } catch (error) {
-        console.error('Failed to fetch all profiles:', error);
-      }
-    };
-
-    fetchAllProfilesData();
-  }, [fetchAllProfiles]);
-
-  useEffect(() => {
     if (userProfile) {
       if (userProfile.following.includes(id)) {
         setIsFollowing(true);
@@ -87,55 +71,29 @@ function Profile(props) {
     }
   }, [userProfile]);
 
-  useEffect(() => {
-    if (friendName) {
-      const uniqueProfiles = new Set();
-      const filtered = allProfiles.filter((p) => {
-        if (p.name.toLowerCase().includes(friendName.toLowerCase()) && !uniqueProfiles.has(p.userID)) {
-          uniqueProfiles.add(p.userID);
-          return true;
-        }
-        return false;
-      });
-      setFilteredProfiles(filtered);
-    } else {
+  /* Filter profiles based on search input */
+  async function handleFriendSearch(filter) {
+    if (!filter) {
       setFilteredProfiles([]);
+      setFriendName('');
+      return;
     }
-  }, [friendName, allProfiles]);
+    setFriendName(filter);
+    setFilteredProfiles(await filterProfiles(filter));
+  }
 
   const handleFollow = async () => {
-    const updatedUserProfile = {
-      ...userProfile,
-      following: [...userProfile.following, id],
-    };
-    await updateProfile(userProfile.userID, updatedUserProfile);
-    const updatedProfile = {
-      ...profile,
-      followers: [...profile.followers, userProfile.userID],
-    };
-    await updateProfile(id, updatedProfile);
+    await followProfile(userProfile, profile);
     setIsFollowing(true);
   };
 
   const handleUnfollow = async () => {
-    const updatedUserProfile = {
-      ...userProfile,
-      following: userProfile.following.filter((followeeID) => followeeID !== id),
-    };
-    await updateProfile(userProfile.userID, updatedUserProfile);
-    const updatedProfile = {
-      ...profile,
-      followers: profile.followers.filter((followerID) => followerID !== userProfile.userID),
-    };
-    await updateProfile(id, updatedProfile);
+    await unfollowProfile(userProfile, profile);
     setIsFollowing(false);
   };
 
-  const handleAddFriend = (friendId) => {
-    console.log(`Adding friend: ${friendId}`);
-    updateProfile(userProfile.userID, { ...userProfile, following: [...userProfile.following, friendId] });
-    const friendProfile = allProfiles.find((p) => p.userID === friendId);
-    updateProfile(friendId, { ...friendProfile, followers: [...friendProfile.followers, userProfile.userID] });
+  const handleNavigateUser = (friendId) => {
+    navigate(`/users/${friendId}`);
     setFriendName('');
     onClose();
   };
@@ -240,14 +198,14 @@ function Profile(props) {
                 <Input
                   placeholder="Enter friend's name"
                   value={friendName}
-                  onChange={(e) => setFriendName(e.target.value)}
+                  onChange={(e) => handleFriendSearch(e.target.value)}
                 />
                 {filteredProfiles.length > 0 && (
                   <List mt={4} spacing={2}>
                     {filteredProfiles.map((p) => (
                       <ListItem
                         key={p.userID}
-                        onClick={() => handleAddFriend(p.userID)}
+                        onClick={() => handleNavigateUser(p.userID)}
                         cursor="pointer"
                         _hover={{ bg: 'gray.200' }}
                       >
