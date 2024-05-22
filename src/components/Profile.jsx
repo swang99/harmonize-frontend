@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-bind */
 import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
@@ -13,11 +14,7 @@ import Post from './post';
 
 function Profile(props) {
   const { id } = useParams();
-  const fetchAllProfiles = useStore((store) => store.profileSlice.fetchAllProfiles);
-  const fetchProfile = useStore((store) => store.profileSlice.fetchProfile);
-  const fetchOtherProfile = useStore((store) => store.profileSlice.fetchOtherProfile);
-  const followProfile = useStore((store) => store.profileSlice.followProfile);
-  const unfollowProfile = useStore((store) => store.profileSlice.unfollowProfile);
+  const { fetchAllProfiles, fetchProfile, fetchOtherProfile, followProfile, unfollowProfile } = useStore((store) => store.profileSlice);
   const navigate = useNavigate();
   const [profileFetched, setProfileFetched] = useState(false);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
@@ -74,19 +71,6 @@ function Profile(props) {
   }, [id, tokenUpdated]);
 
   useEffect(() => {
-    const fetchAllProfilesData = async () => {
-      try {
-        const profiles = await fetchAllProfiles();
-        setAllProfiles(profiles);
-      } catch (error) {
-        console.error('Failed to fetch all profiles:', error);
-      }
-    };
-
-    fetchAllProfilesData();
-  }, [fetchAllProfiles]);
-
-  useEffect(() => {
     if (userProfile) {
       if (userProfile.following.includes(id)) {
         setIsFollowing(true);
@@ -94,21 +78,35 @@ function Profile(props) {
     }
   }, [userProfile]);
 
-  useEffect(() => {
-    if (friendName) {
-      const uniqueProfiles = new Set();
-      const filtered = allProfiles.filter((p) => {
-        if (p.name.toLowerCase().includes(friendName.toLowerCase()) && !uniqueProfiles.has(p.userID)) {
-          uniqueProfiles.add(p.userID);
-          return true;
-        }
-        return false;
-      });
-      setFilteredProfiles(filtered);
-    } else {
-      setFilteredProfiles([]);
+  /* Fetch all profiles and open Add Friends modal */
+  async function handleOpenModal() {
+    try {
+      const profiles = await fetchAllProfiles();
+      setAllProfiles(profiles);
+    } catch (error) {
+      console.error('Failed to fetch all profiles:', error);
     }
-  }, [friendName, allProfiles]);
+    onOpen();
+  }
+
+  /* Filter profiles based on search input */
+  const handleFriendSearch = (name) => {
+    if (!name) {
+      setFilteredProfiles([]);
+      setFriendName('');
+      return;
+    }
+    const uniqueProfiles = new Set();
+    const filtered = allProfiles.filter((p) => {
+      if (p.name.toLowerCase().includes(name.toLowerCase()) && !uniqueProfiles.has(p.userID)) {
+        uniqueProfiles.add(p.userID);
+        return true;
+      }
+      return false;
+    });
+    setFilteredProfiles(filtered);
+    setFriendName(name);
+  };
 
   const handleFollow = async () => {
     await followProfile(userProfile, profile);
@@ -120,7 +118,6 @@ function Profile(props) {
   };
 
   const handleNavigateUser = (friendId) => {
-    // Navigate to friend's profile
     navigate(`/users/${friendId}`);
     setFriendName('');
     onClose();
@@ -180,7 +177,7 @@ function Profile(props) {
                 cursor="pointer"
                 color="teal.600"
                 _hover={{ color: 'gray.500', transform: 'scale(1.1)' }}
-                onClick={onOpen}
+                onClick={handleOpenModal}
               />
             </Box>
             <Tabs variant="unstyled" align="center" defaultIndex={0} mt={4}>
@@ -223,7 +220,7 @@ function Profile(props) {
                 <Input
                   placeholder="Enter friend's name"
                   value={friendName}
-                  onChange={(e) => setFriendName(e.target.value)}
+                  onChange={(e) => handleFriendSearch(e.target.value)}
                 />
                 {filteredProfiles.length > 0 && (
                   <List mt={4} spacing={2}>

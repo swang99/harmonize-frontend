@@ -163,6 +163,17 @@ const createProfileSlice = (set, get) => ({
       get().errorSlice.newError(error.message);
     }
   },
+
+  filterProfiles: async (filter) => {
+    try {
+      const response = await axios.get(`${ROOT_URL}users?filter=${filter}`);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to filter profiles:', error.message);
+      get().errorSlice.newError(error.message);
+      return [];
+    }
+  },
 });
 
 export default createProfileSlice;
