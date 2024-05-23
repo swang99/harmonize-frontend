@@ -10,6 +10,7 @@ import useStore from '../store';
 import { updateToken } from '../utils/SpotifyAuth';
 import { getUserProfile } from '../utils/spotify-api';
 import Post from './post';
+import PostCard from './post-card';
 
 function Profile(props) {
   const { id } = useParams();
@@ -176,10 +177,10 @@ function Profile(props) {
               <TabPanels>
                 <TabPanel p={0}>
                   <Box py={5}>
-                    <Grid templateColumns="repeat(3, 1fr)" gap={6}>
+                    <Grid templateColumns="repeat(3, minmax(200px, 1fr))" gap={6}>
                       {profile.posts && profile.posts.length > 0 ? (
                         profile.posts.map((post) => (
-                          <Post key={post} post={post} profile={profile} isOwnProfile={isOwnProfile} />
+                          <PostCard key={post.id} post={post} />
                         ))
                       ) : (
                         <Text>No posts yet.</Text>

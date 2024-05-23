@@ -3,6 +3,7 @@ import { Button, Flex, HStack, Image, Spacer, Text, VStack } from '@chakra-ui/re
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect } from 'react';
+import { useLocation } from 'react-router';
 import useStore from '../store';
 import { initializePlayer } from '../utils/spotify-player';
 
@@ -10,24 +11,31 @@ const SpotifyPlayer = () => {
   const playerSlice = useStore((store) => store.playerSlice);
   const { currentTrack } = playerSlice;
   const player = window.player || null;
+  const location = useLocation();
 
   useEffect(() => {
     const initialize = async () => {
-      await initializePlayer();
+      if (location.pathname !== '/') {
+        await initializePlayer();
+      }
     };
     initialize();
+
+    // Cleanup function to disconnect the player when the component unmounts
+    return () => {
+      if (player) {
+        player.disconnect();
+        console.log('Spotify Web Playback SDK disconnected');
+      }
+    };
   }, []);
 
   const handlePlayPause = async () => {
     player.togglePlay();
   };
 
-  useEffect(() => {
-    console.log('Player slice updated', playerSlice.activated);
-  }, [playerSlice]);
-
   return (
-    playerSlice && (
+    player && (
     <HStack
       as="footer"
       position="fixed"
