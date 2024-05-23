@@ -234,6 +234,18 @@ export async function getItemData(id, type) {
     console.error('Error Fetching Item Data from Spotify', error);
     throw error;
   }
+
+  // try {
+  //   const response = await axios.get(`https://api.spotify.com/v1/${idType[type]}/${id}`, {
+  //     headers: {
+  //       Authorization: `Bearer ${accessToken}`,
+  //     },
+  //   });
+  //   return response.data;
+  // } catch (error) {
+  //   console.error('Error Fetching Item Data from Spotify', error);
+  //   throw error;
+  // }
 }
 
 /**

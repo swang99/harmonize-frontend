@@ -11,6 +11,8 @@ export default function createPostSlice(set, get) {
         ...existingProfile,
         posts: [post, ...existingProfile.posts],
       };
+      console.log('These are posts: ', updatedProfile.posts);
+
       set((state) => ({
         profileSlice: { ...state.profileSlice, currentProfile: updatedProfile },
       }), false, 'users/createPost');
@@ -48,18 +50,6 @@ export default function createPostSlice(set, get) {
     getPost: async (userID, postID) => {
       const profile = await get().profileSlice.fetchProfile(userID);
       return profile.posts.find((p) => p.id === postID);
-    },
-
-    loadFeed: async (userID) => {
-      const following = get().profileSlice.currentProfile;
-      if (following) {
-        const followeeProfiles = await Promise.all(following.map((followeeID) => get().profileSlice.fetchOtherProfile(followeeID)));
-        const posts = followeeProfiles.flatMap((followeeProfile) => followeeProfile.posts);
-        posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        set((state) => ({ postSlice: { ...state.postSlice, all: posts } }), false, 'posts/loadFeed');
-        return posts;
-      }
-      return [];
     },
   };
 }

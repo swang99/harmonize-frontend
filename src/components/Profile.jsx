@@ -13,25 +13,15 @@ import Post from './post';
 
 function Profile(props) {
   const { id } = useParams();
-  const fetchAllProfiles = useStore((store) => store.profileSlice.fetchAllProfiles);
-  const fetchProfile = useStore((store) => store.profileSlice.fetchProfile);
-  const fetchOtherProfile = useStore((store) => store.profileSlice.fetchOtherProfile);
-  const followProfile = useStore((store) => store.profileSlice.followProfile);
-  const unfollowProfile = useStore((store) => store.profileSlice.unfollowProfile);
+  const { filterProfiles, fetchProfile, fetchOtherProfile, followProfile, unfollowProfile } = useStore((store) => store.profileSlice);
   const navigate = useNavigate();
   const [profileFetched, setProfileFetched] = useState(false);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
-  const [tokenUpdated, setTokenUpdated] = useState(false); // track if token is loaded
+  const [tokenUpdated, setTokenUpdated] = useState(false);
   const [profile, setProfile] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
-  const [allProfiles, setAllProfiles] = useState([]);
   const [filteredProfiles, setFilteredProfiles] = useState([]);
-  const testPostProps = {
-    id: '5hXEcqQhEjfZdbIZLO8mf2',
-    type: 'Track',
-    comment: 'This is a test comment',
-  };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [friendName, setFriendName] = useState('');
@@ -53,11 +43,11 @@ function Profile(props) {
       const userSpotifyProfile = await getUserProfile();
       setUserProfile(await fetchProfile(userSpotifyProfile.id));
       try {
-        if (id === userSpotifyProfile.id) { // If the profile is the current user's profile, fetch the profile from the store
+        if (id === userSpotifyProfile.id) {
           const loadedProfile = await fetchProfile(id);
           setIsOwnProfile(true);
           setProfile(loadedProfile);
-        } else { // Otherwise, fetch the profile from the server
+        } else {
           setIsOwnProfile(false);
           const otherProfile = await fetchOtherProfile(id);
           setProfile(otherProfile);
@@ -74,19 +64,6 @@ function Profile(props) {
   }, [id, tokenUpdated]);
 
   useEffect(() => {
-    const fetchAllProfilesData = async () => {
-      try {
-        const profiles = await fetchAllProfiles();
-        setAllProfiles(profiles);
-      } catch (error) {
-        console.error('Failed to fetch all profiles:', error);
-      }
-    };
-
-    fetchAllProfilesData();
-  }, [fetchAllProfiles]);
-
-  useEffect(() => {
     if (userProfile) {
       if (userProfile.following.includes(id)) {
         setIsFollowing(true);
@@ -94,33 +71,28 @@ function Profile(props) {
     }
   }, [userProfile]);
 
-  useEffect(() => {
-    if (friendName) {
-      const uniqueProfiles = new Set();
-      const filtered = allProfiles.filter((p) => {
-        if (p.name.toLowerCase().includes(friendName.toLowerCase()) && !uniqueProfiles.has(p.userID)) {
-          uniqueProfiles.add(p.userID);
-          return true;
-        }
-        return false;
-      });
-      setFilteredProfiles(filtered);
-    } else {
+  /* Filter profiles based on search input */
+  async function handleFriendSearch(filter) {
+    if (!filter) {
       setFilteredProfiles([]);
+      setFriendName('');
+      return;
     }
-  }, [friendName, allProfiles]);
+    setFriendName(filter);
+    setFilteredProfiles(await filterProfiles(filter));
+  }
 
   const handleFollow = async () => {
     await followProfile(userProfile, profile);
     setIsFollowing(true);
   };
+
   const handleUnfollow = async () => {
     await unfollowProfile(userProfile, profile);
     setIsFollowing(false);
   };
 
   const handleNavigateUser = (friendId) => {
-    // Navigate to friend's profile
     navigate(`/users/${friendId}`);
     setFriendName('');
     onClose();
@@ -204,7 +176,13 @@ function Profile(props) {
                 <TabPanel p={0}>
                   <Box py={5}>
                     <Grid templateColumns="repeat(3, 1fr)" gap={6}>
-                      <Post id={testPostProps.id} comment={testPostProps.comment} type={testPostProps.type} profile={profile} isOwnProfile={isOwnProfile} />
+                      {profile.posts && profile.posts.length > 0 ? (
+                        profile.posts.map((post) => (
+                          <Post key={post.id} id={post.id} comment={post.comment} type={post.type} profile={profile} isOwnProfile={isOwnProfile} />
+                        ))
+                      ) : (
+                        <Text>No posts yet.</Text>
+                      )}
                     </Grid>
                   </Box>
                 </TabPanel>
@@ -220,7 +198,7 @@ function Profile(props) {
                 <Input
                   placeholder="Enter friend's name"
                   value={friendName}
-                  onChange={(e) => setFriendName(e.target.value)}
+                  onChange={(e) => handleFriendSearch(e.target.value)}
                 />
                 {filteredProfiles.length > 0 && (
                   <List mt={4} spacing={2}>
@@ -278,23 +256,10 @@ function Profile(props) {
               <Grid templateColumns="repeat(3, 1fr)" gap={6}>
                 {profile.posts && profile.posts.length > 0 ? (
                   profile.posts.map((post) => (
-                    <Flex key={post.id} bg="blue.800" p={4} borderRadius="md" justify="space-between" align="center">
-                      <Box>
-                        <Heading as="h4" size="sm">
-                          {post.title}
-                        </Heading>
-                        <Text>
-                          {post.artistName}, {post.artistAlbum}, {post.releaseYear}
-                        </Text>
-                      </Box>
-                      <Box textAlign="right">
-                        <Text>{post.timeAgo}</Text>
-                        <Text as="u">view in feed</Text>
-                      </Box>
-                    </Flex>
+                    <Post key={post.id} id={post.id} type={post.type} comment={post.comment} />
                   ))
                 ) : (
-                  <Post id={testPostProps.id} comment={testPostProps.comment} type={testPostProps.type} />
+                  <Text>No posts yet.</Text>
                 )}
               </Grid>
             </Box>
