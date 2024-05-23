@@ -87,7 +87,7 @@ function Feed(props) {
     return (
       <VStack spacing={4} align="stretch" maxH={height} overflowY="auto" my="auto">
         <Spacer h={10} />
-        <Heading mx="auto" textAlign="left">Feed</Heading>
+        <Heading pl="10%" textAlign="left">Your Feed</Heading>
         {feed.map((post) => (
           <Box key={post.id} w="80%" bg="gray.100" p={4} mx="auto" borderRadius="md" shadow="md">
             <PostCard post={post} />
