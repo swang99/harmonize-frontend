@@ -3,6 +3,7 @@ import { Box, Button, Collapse, Flex, FormControl, Grid, GridItem, HStack, Image
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
+// import { LiaEthereum } from 'react-icons/lia';
 import { getEmbedFromSearch, getRecentlyPlayedTracks } from '../utils/spotify-api';
 import { playTrackInApp } from '../utils/spotify-player';
 
@@ -14,8 +15,18 @@ function SearchBar() {
   useEffect(() => {
     async function fetchRecentlyPlayed() {
       const recents = await getRecentlyPlayedTracks();
-      console.log('Recents', recents.items);
-      setRecentlyPlayed(recents.items);
+      let recentTracks = recents.items;
+
+      const seenIds = new Set();
+
+      recentTracks = recentTracks.filter((item) => {
+        if (seenIds.has(item.track.id)) return false;
+        seenIds.add(item.track.id);
+        return true;
+      });
+
+      console.log('Recents', recentTracks);
+      setRecentlyPlayed(recentTracks);
     }
     fetchRecentlyPlayed();
   }, []);
