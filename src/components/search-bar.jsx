@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-no-bind */
 import React, { useState } from 'react';
-import { Input, Collapse, List, ListItem, Button, Flex } from '@chakra-ui/react';
+import { Input, Collapse, List, ListItem, Button, Flex, Box } from '@chakra-ui/react';
 import { getEmbedFromSearch } from '../utils/spotify-api';
 
 function SearchBar() {
@@ -39,7 +39,7 @@ function SearchBar() {
   };
 
   return (
-    <div>
+    <Box bg="teal.600" w="100vw" h="100vh">
       <form onSubmit={(e) => handleSearch(e)}>
         <Flex gap="2">
           <Input
@@ -55,7 +55,7 @@ function SearchBar() {
         </Flex>
       </form>
       {renderResults()}
-    </div>
+    </Box>
   );
 }
 

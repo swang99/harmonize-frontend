@@ -22,6 +22,10 @@ const SpotifyPlayer = () => {
     player.togglePlay();
   };
 
+  useEffect(() => {
+    console.log('Player slice updated', playerSlice.activated);
+  }, [playerSlice]);
+
   return (
     playerSlice && (
     <HStack
@@ -37,17 +41,19 @@ const SpotifyPlayer = () => {
       padding={5}
     >
       {/* Image and Text Container */}
-      <Flex position="absolute" left="0" height="100%" alignItems="center" pl={5}>
-        <Image src={currentTrack && currentTrack.album.images[0].url} alt="Album cover" boxSize="50px" />
-        <VStack align="left" ml={3} spacing={0}>
-          <Text textColor="black" fontWeight="bold">{currentTrack && playerSlice.currentTrack.name}</Text>
-          <Text textColor="gray.500">{currentTrack && playerSlice.currentTrack.artists[0].name}</Text>
-        </VStack>
-      </Flex>
+      {playerSlice && playerSlice.activated ? (
+        <Flex position="absolute" left="0" height="100%" alignItems="center" pl={5}>
+          <Image src={currentTrack && currentTrack.album.images[0].url} alt="Album cover" boxSize="50px" />
+          <VStack align="left" ml={3} spacing={0}>
+            <Text textColor="black" fontWeight="bold">{currentTrack && playerSlice.currentTrack.name}</Text>
+            <Text textColor="gray.500">{currentTrack && playerSlice.currentTrack.artists[0].name}</Text>
+          </VStack>
+        </Flex>
+      ) : null}
 
       {/* Centered Play/Pause Button */}
       <Spacer />
-      {playerSlice && playerSlice.activated && (
+      {playerSlice && playerSlice.activated ? (
         <Button
           onClick={handlePlayPause}
           borderRadius="full"
@@ -57,6 +63,10 @@ const SpotifyPlayer = () => {
           h="50px"
         >
           <FontAwesomeIcon icon={playerSlice.paused ? faPlay : faPause} />
+        </Button>
+      ) : (
+        <Button>
+          Choose a song to play!
         </Button>
       )}
       <Spacer />
