@@ -12,7 +12,6 @@ function Feed() {
   const [dataLoaded, setDataLoaded] = useState(false); // track if user data is loaded
   const [tokenUpdated, setTokenUpdated] = useState(false); // track if token is updated
   const [feed, setFeed] = useState([]); // store the user's feed
-  const initializePlayer = useStore((store) => store.playerSlice.initializePlayer);
 
   // getting posts from the store
   const loadFeed = useStore((store) => store.profileSlice.loadFeed);
@@ -31,7 +30,6 @@ function Feed() {
     const update = async () => {
       try {
         await updateToken();
-        await initializePlayer();
         setTokenUpdated(true);
       } catch (error) {
         console.error('Failed to update token or fetch top tracks:', error);

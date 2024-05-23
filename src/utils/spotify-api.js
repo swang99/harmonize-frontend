@@ -216,15 +216,17 @@ export async function getRecentlyPlayedTracks() {
  * @throws {Error} - If there is an error fetching the item data from Spotify.
  */
 export async function getItemData(id, type) {
-  const accessToken = await localStorage.getItem('access_token');
-  const idType = {
-    track: 'tracks',
-    artist: 'artists',
-    album: 'albums',
+  const accessToken = localStorage.getItem('access_token');
+
+  const idTypeMap = {
+    Track: 'tracks',
+    Artist: 'artists',
+    Album: 'albums',
+    Playlist: 'playlists',
   };
 
   try {
-    const response = await axios.get(`https://api.spotify.com/v1/${idType[type.toLowerCase()]}/${id}`, {
+    const response = await axios.get(`https://api.spotify.com/v1/${idTypeMap[type]}/${id}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -234,18 +236,6 @@ export async function getItemData(id, type) {
     console.error('Error Fetching Item Data from Spotify', error);
     throw error;
   }
-
-  // try {
-  //   const response = await axios.get(`https://api.spotify.com/v1/${idType[type]}/${id}`, {
-  //     headers: {
-  //       Authorization: `Bearer ${accessToken}`,
-  //     },
-  //   });
-  //   return response.data;
-  // } catch (error) {
-  //   console.error('Error Fetching Item Data from Spotify', error);
-  //   throw error;
-  // }
 }
 
 /**

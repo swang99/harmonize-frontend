@@ -1,6 +1,5 @@
-import { Box, GridItem, HStack, Image, Text, VStack, Button } from '@chakra-ui/react';
+import { Box, Button, GridItem, HStack, Image, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import useStore from '../store';
 import { getItemData } from '../utils/spotify-api';
 import { playTrackInApp } from '../utils/spotify-player';
 
@@ -15,54 +14,41 @@ import { playTrackInApp } from '../utils/spotify-player';
  * @returns {JSX.Element} The rendered Post component.
  */
 const Post = (props) => {
-  const { id, type, comment } = props;
-  const [postData, setPostData] = useState(null);
-  const [postFetched, setPostFetched] = useState(false);
-  const slice = useStore((state) => state.playerSlice);
+  // Destructure props, store postData
+  const { post } = props;
+  const [postItemData, setPostItemData] = useState(null);
+  console.log(props);
 
-  const title = postData ? postData.name : '';
-  const imageUrl = postData ? postData.album.images[0].url : '';
+  const { comment, id, type } = post;
 
   useEffect(() => {
     const fetchPostData = async () => {
       try {
         console.log('Fetching post data with id:', id, 'and type:', type); // Debugging log
-        const itemData = await getItemData(id, type);
-        setPostData(itemData);
-        setPostFetched(true);
+        const data = await getItemData(id, type);
+        setPostItemData(data);
       } catch (error) {
         console.error('Failed to fetch post data:', error);
       }
     };
     fetchPostData();
-  }, [id, type]);
+  }, []);
 
   const handlePlay = async () => {
     try {
       console.log('Function called:', playTrackInApp);
-      await playTrackInApp(postData.id);
-      setIsPlaying(true);
+      await playTrackInApp(id);
     } catch (error) {
       console.error('Failed to play track:', error);
     }
   };
 
-  const handlePause = async () => {
-    try {
-      console.log('Function called:', pauseTrackInApp);
-      await pauseTrackInApp();
-      setIsPlaying(false);
-    } catch (error) {
-      console.error('Failed to pause track:', error);
-    }
-  };
-
-  const renderPost = () => {
-    if (!postFetched || !postData) {
-      return null;
-    }
-    const { name, album, artists } = postData;
-
+  const renderTrackPost = (postData) => {
+    const { name } = postData;
+    const imgUrl = postData.album.images[0].url;
+    const artists = postData.artists[0].name;
+    const date = postData.album.release_date.split('-')[0];
+    const album = postData.album.name;
     return (
       <GridItem>
         <Box
@@ -76,7 +62,7 @@ const Post = (props) => {
           <VStack align="start" spacing={3}>
             <HStack spacing={3}>
               <Image
-                src={album.images[0].url}
+                src={imgUrl}
                 alt={name}
                 boxSize="100px"
                 borderRadius="md"
@@ -84,25 +70,54 @@ const Post = (props) => {
               />
               <VStack align="start" spacing={1}>
                 <Text fontSize="lg" fontWeight="bold">{name}</Text>
-                <Text fontSize="sm" color="gray.600">Artist: {artists[0].name}</Text>
-                <Text fontSize="sm" color="gray.600">Album: {album.name}</Text>
-                <Text fontSize="sm" color="gray.600">Year: {album.release_date.split('-')[0]}</Text>
+                <Text fontSize="sm" color="gray.600">Artist: {artists}</Text>
+                <Text fontSize="sm" color="gray.600">Album: {album}</Text>
+                <Text fontSize="sm" color="gray.600">Year: {date}</Text>
               </VStack>
             </HStack>
             <Text fontSize="sm" color="gray.800">Comment: {comment}</Text>
-            {isPlaying ? (
-              <Button colorScheme="teal" size="sm" onClick={handlePause}>
-                Pause
-              </Button>
-            ) : (
-              <Button colorScheme="teal" size="sm" onClick={handlePlay}>
-                Play
-              </Button>
-            )}
+            <Button colorScheme="teal" size="sm" onClick={handlePlay}>
+              Play
+            </Button>
           </VStack>
         </Box>
       </GridItem>
     );
+  };
+  // function to render an album post
+  const renderAlbumPost = (postData) => {
+    return (
+      null
+    );
+  };
+  // function to render an album post
+  const renderArtistPost = (postData) => {
+    return (
+      null
+    );
+  };
+
+  // function to render an album post
+  const renderPlaylistPost = (postData) => {
+    return (
+      null
+    );
+  };
+
+  // renders the post correctly according to what type of content it contains
+  const renderPost = () => {
+    if (!postItemData) {
+      return null;
+    } else if (type === 'Track') {
+      return renderTrackPost(postItemData);
+    } else if (type === 'Album') {
+      return renderAlbumPost(postItemData);
+    } else if (type === 'Playlist') {
+      return renderArtistPost(postItemData);
+    } else if (type === 'Artist') {
+      return renderPlaylistPost(postItemData);
+    }
+    return null;
   };
 
   return renderPost();

@@ -65,6 +65,7 @@ function Profile(props) {
 
   useEffect(() => {
     if (userProfile) {
+      console.log('Profile', userProfile); // Debugging log
       if (userProfile.following.includes(id)) {
         setIsFollowing(true);
       }
@@ -125,7 +126,7 @@ function Profile(props) {
           <VStack p="5%" w="100%" maxW="1000px">
             <Box position="relative">
               <HStack p={10} bg="white" borderRadius="xl" justify="space-between" align="center" width="100%" spacing={10} color="gray.900">
-                <Avatar w="150px" h="auto" name={profile.name} src={profile.photo} />
+                <Avatar w="150px" h="150px" name={profile.name} src={profile.photo} />
                 <VStack justify="flex-start" align="flex-start" mb={8}>
                   <Heading as="h1" size="xl" color="gray.900">
                     {profile.name}
@@ -178,7 +179,7 @@ function Profile(props) {
                     <Grid templateColumns="repeat(3, 1fr)" gap={6}>
                       {profile.posts && profile.posts.length > 0 ? (
                         profile.posts.map((post) => (
-                          <Post key={post.id} id={post.id} comment={post.comment} type={post.type} profile={profile} isOwnProfile={isOwnProfile} />
+                          <Post key={post} post={post} profile={profile} isOwnProfile={isOwnProfile} />
                         ))
                       ) : (
                         <Text>No posts yet.</Text>
