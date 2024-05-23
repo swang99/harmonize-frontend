@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import { getEmbedFromSearch, getRecentlyPlayedTracks } from '../utils/spotify-api';
+import { playTrackInApp } from '../utils/spotify-player';
 
 function SearchBar() {
   const [results, setResults] = useState([]);
@@ -35,6 +36,15 @@ function SearchBar() {
       setResults(embedHTMLs);
     }
   }
+
+  const handlePlay = async (id) => {
+    try {
+      console.log('Function called:', playTrackInApp);
+      await playTrackInApp(id);
+    } catch (error) {
+      console.error('Failed to play track:', error);
+    }
+  };
 
   const renderResults = () => {
     if (!results || results.length === 0) {
@@ -85,6 +95,7 @@ function SearchBar() {
               display="flex"
               alignItems="center"
               justifyContent="center"
+              onClick={() => handlePlay(item.track.id)}
             >
               <FontAwesomeIcon icon={faPlay} />
             </Button>
