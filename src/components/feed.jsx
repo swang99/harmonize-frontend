@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 // import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
 // import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+// import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
 import { getCurrentUserPlaylists, getRecentlyPlayedTracks, getUserProfile, getUserTopArtists, getUserTopTracks } from '../utils/spotify-api';
 import { updateToken } from '../utils/SpotifyAuth';
@@ -11,11 +11,11 @@ import { updateToken } from '../utils/SpotifyAuth';
 function Feed() {
   const [dataLoaded, setDataLoaded] = useState(false); // track if user data is loaded
   const [tokenUpdated, setTokenUpdated] = useState(false); // track if token is updated
+  const [feed, setFeed] = useState([]); // store the user's feed
   const initializePlayer = useStore((store) => store.playerSlice.initializePlayer);
 
   // getting posts from the store
-  const allPosts = useStore((store) => store.postSlice.all);
-  const loadFeed = useStore((store) => store.postSlice.loadFeed);
+  const loadFeed = useStore((store) => store.profileSlice.loadFeed);
   const handleLogin = useStore((store) => store.profileSlice.handleLogin);
 
   // store the user's profile, top tracks, top artists, playlists, and recently played tracks
@@ -73,17 +73,17 @@ function Feed() {
       if (dataLoaded) {
         const { profile, topTracks, topArtists, userPlaylists } = userData;
         await handleLogin(profile, topTracks, topArtists, userPlaylists);
-        await loadFeed(profile.userID);
+        setFeed(await loadFeed(profile.id));
       }
     };
     loadFeedData();
   }, [dataLoaded, userData]);
 
   const renderPosts = () => {
-    if (!allPosts || allPosts.length === 0) {
+    if (!feed || feed.length === 0) {
       return <p>No posts to show</p>;
     }
-    return allPosts.map((post) => (
+    return feed.map((post) => (
       <div key={post.id}>
         <h1>{post.title}</h1>
         <p>{post.content}</p>
