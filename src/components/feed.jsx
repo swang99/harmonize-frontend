@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
-// import React, { useEffect, useState } from 'react';
-// import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Box, Heading, Spacer, VStack } from '@chakra-ui/react';
 // import { toast } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
 import { getCurrentUserPlaylists, getRecentlyPlayedTracks, getUserProfile, getUserTopArtists, getUserTopTracks } from '../utils/spotify-api';
 import { updateToken } from '../utils/SpotifyAuth';
+import PostCard from './post-card';
 
-function Feed() {
+function Feed(props) {
   const [dataLoaded, setDataLoaded] = useState(false); // track if user data is loaded
   const [tokenUpdated, setTokenUpdated] = useState(false); // track if token is updated
   const [feed, setFeed] = useState([]); // store the user's feed
+  const { height } = props;
 
   // getting posts from the store
   const loadFeed = useStore((store) => store.profileSlice.loadFeed);
@@ -25,6 +26,8 @@ function Feed() {
     userPlaylists: null,
     recentlyPlayedTracks: null,
   });
+
+  // const height = window.innerHeight - 165;
 
   useEffect(() => {
     const update = async () => {
@@ -81,12 +84,17 @@ function Feed() {
     if (!feed || feed.length === 0) {
       return <p>No posts to show</p>;
     }
-    return feed.map((post) => (
-      <div key={post.id}>
-        <h1>{post.title}</h1>
-        <p>{post.content}</p>
-      </div>
-    ));
+    return (
+      <VStack spacing={4} align="stretch" maxH={height} overflowY="auto" my="auto">
+        <Spacer h={10} />
+        <Heading pl="10%" textAlign="left">Your Feed</Heading>
+        {feed.map((post) => (
+          <Box key={post.id} w="80%" bg="gray.100" p={4} mx="auto" borderRadius="md" shadow="md">
+            <PostCard post={post} />
+          </Box>
+        ))}
+      </VStack>
+    );
   };
   return (
     <motion.div
@@ -95,7 +103,9 @@ function Feed() {
       exit={{ x: 1000, opacity: 0 }}
       transition={{ duration: 0.5, type: 'spring', stiffness: 50, damping: 12 }}
     >
-      {renderPosts()}
+      <Box position="relative" mx="auto" w="100vw" overflowY="auto">
+        {renderPosts()}
+      </Box>
     </motion.div>
   );
 }

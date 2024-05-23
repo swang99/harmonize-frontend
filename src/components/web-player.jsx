@@ -41,7 +41,7 @@ const SpotifyPlayer = () => {
       position="fixed"
       bottom="0"
       width="100%"
-      height="10vh"
+      height={90}
       bg="gray.100"
       color="white"
       justifyContent="center"
