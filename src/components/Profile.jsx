@@ -204,10 +204,7 @@ function Profile(props) {
                 <TabPanel p={0}>
                   <Box py={5}>
                     <Grid templateColumns="repeat(3, 1fr)" gap={6}>
-                      {profile.posts && profile.posts.length > 0 ? (
-                        profile.posts.map((post) => (null))) : (
-                          <Post id={testPostProps.id} comment={testPostProps.comment} type={testPostProps.type} profile={profile} isOwnProfile={isOwnProfile} />
-                      )}
+                      <Post id={testPostProps.id} comment={testPostProps.comment} type={testPostProps.type} profile={profile} isOwnProfile={isOwnProfile} />
                     </Grid>
                   </Box>
                 </TabPanel>

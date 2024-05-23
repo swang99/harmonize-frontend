@@ -2,6 +2,7 @@ import { Avatar, Box, Card, GridItem, HStack, Image, Text } from '@chakra-ui/rea
 import React, { useEffect, useState } from 'react';
 import useStore from '../store';
 import { getItemData } from '../utils/spotify-api';
+import { playTrackInApp } from '../utils/spotify-player';
 
 /**
  * Represents a post component.
@@ -16,7 +17,6 @@ import { getItemData } from '../utils/spotify-api';
 const Post = (props) => {
   const [postData, setPostData] = useState(null);
   const [postFetched, setPostFetched] = useState(false);
-  const playTrackInApp = useStore((state) => state.playerSlice.playTrackInApp);
   const slice = useStore((state) => state.playerSlice);
 
   const title = postData ? postData.name : '';
