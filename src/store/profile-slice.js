@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const ROOT_URL = 'https://project-api-spotify-sharing.onrender.com/api/';
+// const ROOT_URL = 'http://localhost:9090/api/';
 
 const createProfileSlice = (set, get) => ({
   currentProfile: null,
@@ -172,6 +173,17 @@ const createProfileSlice = (set, get) => ({
       return response.data;
     } catch (error) {
       console.error('Failed to filter profiles:', error.message);
+      get().errorSlice.newError(error.message);
+      return [];
+    }
+  },
+
+  loadFeed: async (userID) => {
+    try {
+      const response = await axios.get(`${ROOT_URL}users/${userID}/feed`);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to load feed:', error.message);
       get().errorSlice.newError(error.message);
       return [];
     }
