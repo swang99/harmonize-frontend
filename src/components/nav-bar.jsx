@@ -19,7 +19,7 @@ const NavBar = () => {
 
   return (
     token && (
-    <Flex bg={navBg} p={4} justifyContent="space-between" alignItems="center">
+    <Flex bg={navBg} p={4} justifyContent="space-between" alignItems="center" height={75}>
       <Flex align="center">
         {links.map((link) => (
           <Button
