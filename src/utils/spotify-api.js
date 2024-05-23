@@ -196,7 +196,7 @@ export async function getRecentlyPlayedTracks() {
         Authorization: `Bearer ${accessToken}`,
       },
       params: {
-        limit: 20,
+        limit: 50,
       },
     });
 

@@ -10,6 +10,7 @@ import useStore from '../store';
 import { updateToken } from '../utils/SpotifyAuth';
 import { getUserProfile } from '../utils/spotify-api';
 import Post from './post';
+import PostCard from './post-card';
 
 function Profile(props) {
   const { id } = useParams();
@@ -122,9 +123,9 @@ function Profile(props) {
       return <Text>Profile not found</Text>;
     } else if (isOwnProfile) {
       return (
-        <Flex py={5} px={10} bg="teal.600" color="white" minH="100vh" overflow="hidden" position="absolute" width="100vw" justify="center">
+        <Flex py={5} px={10} bg="teal.600" color="white" minH="100vh" overflow="auto" position="relative" width="100vw" justify="center">
           <VStack p="5%" w="100%" maxW="1000px">
-            <Box position="relative">
+            <Box position="relative" mb={4}>
               <HStack p={10} bg="white" borderRadius="xl" justify="space-between" align="center" width="100%" spacing={10} color="gray.900">
                 <Avatar w="150px" h="150px" name={profile.name} src={profile.photo} />
                 <VStack justify="flex-start" align="flex-start" mb={8}>
@@ -176,10 +177,10 @@ function Profile(props) {
               <TabPanels>
                 <TabPanel p={0}>
                   <Box py={5}>
-                    <Grid templateColumns="repeat(3, 1fr)" gap={6}>
+                    <Grid templateColumns="repeat(3, minmax(200px, 1fr))" gap={6}>
                       {profile.posts && profile.posts.length > 0 ? (
                         profile.posts.map((post) => (
-                          <Post key={post} post={post} profile={profile} isOwnProfile={isOwnProfile} />
+                          <PostCard key={post.id} post={post} />
                         ))
                       ) : (
                         <Text>No posts yet.</Text>
@@ -202,21 +203,21 @@ function Profile(props) {
                   onChange={(e) => handleFriendSearch(e.target.value)}
                 />
                 {filteredProfiles.length > 0 && (
-                  <List mt={4} spacing={2}>
-                    {filteredProfiles.map((p) => (
-                      <ListItem
-                        key={p.userID}
-                        onClick={() => handleNavigateUser(p.userID)}
-                        cursor="pointer"
-                        _hover={{ bg: 'gray.200' }}
-                      >
-                        <HStack>
-                          <Avatar size="sm" name={p.name} src={p.photo} />
-                          <Text>{p.name}</Text>
-                        </HStack>
-                      </ListItem>
-                    ))}
-                  </List>
+                <List mt={4} spacing={2}>
+                  {filteredProfiles.map((p) => (
+                    <ListItem
+                      key={p.userID}
+                      onClick={() => handleNavigateUser(p.userID)}
+                      cursor="pointer"
+                      _hover={{ bg: 'gray.200' }}
+                    >
+                      <HStack>
+                        <Avatar size="sm" name={p.name} src={p.photo} />
+                        <Text>{p.name}</Text>
+                      </HStack>
+                    </ListItem>
+                  ))}
+                </List>
                 )}
               </ModalBody>
               <ModalFooter>
