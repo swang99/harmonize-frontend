@@ -61,22 +61,18 @@ const SpotifyPlayer = () => {
 
       {/* Centered Play/Pause Button */}
       <Spacer />
-      {playerSlice && playerSlice.activated ? (
-        <Button
-          onClick={handlePlayPause}
-          borderRadius="full"
-          bg="gray.200"
-          mx="auto"
-          w="50px"
-          h="50px"
-        >
-          <FontAwesomeIcon icon={playerSlice.paused ? faPlay : faPause} />
-        </Button>
-      ) : (
-        <Button>
-          Choose a song to play!
-        </Button>
-      )}
+      playerSlice && playerSlice.activated && (
+      <Button
+        onClick={handlePlayPause}
+        borderRadius="full"
+        bg="gray.200"
+        mx="auto"
+        w="50px"
+        h="50px"
+      >
+        <FontAwesomeIcon icon={playerSlice.paused ? faPlay : faPause} />
+      </Button>
+      )
       <Spacer />
     </HStack>
     )
