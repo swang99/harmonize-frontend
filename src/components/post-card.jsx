@@ -1,9 +1,11 @@
 import { Box, HStack, Icon, useDisclosure } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { CgPlayListAdd } from 'react-icons/cg';
+import { FaComment } from 'react-icons/fa';
 import { getItemData } from '../utils/spotify-api';
 import TrackItem from './track-item';
 import AddTrackToPlaylistModal from './add-track-to-playlist';
+import AddCommentModal from './AddComment';
 import useStore from '../store';
 
 /**
@@ -13,7 +15,8 @@ import useStore from '../store';
  * @param {Object} props - The props object containing the post data.
  * @param {string} props.id - The ID of the post.
  * @param {string} props.type - The type of the post.
- * @param {string} props.comment - The comment associated with the post.
+ * @param {string} props.description - The description associated with the post.
+ * @param {[String]} props.comments -The comments associated with the post.
  * @returns {JSX.Element} The rendered Post component.
  */
 const PostCard = (props) => {
@@ -22,8 +25,8 @@ const PostCard = (props) => {
   const [postItemData, setPostItemData] = useState(null);
   const { id, type } = post;
   console.log(id, type);
-  // console.log('HAHA: ', props.post.comment);
   const addTrackToPlaylistDisc = useDisclosure();
+  const addCommentDisc = useDisclosure();
   const { playlists } = useStore((store) => store.profileSlice);
 
   useEffect(() => {
@@ -62,8 +65,22 @@ const PostCard = (props) => {
           >
             Add to Playlist
           </Icon>
+          <Icon
+            as={FaComment}
+            w={7}
+            h={7}
+            cursor="pointer"
+            color="teal.900"
+            _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
+            onClick={addCommentDisc.onOpen}
+          >
+            Add to Playlist
+          </Icon>
         </Box>
         <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={postItemData.id} playlists={playlists} />
+        <AddCommentModal isOpen={addCommentDisc.isOpen}
+          onClose={addCommentDisc.onClose}
+        />
       </HStack>
     );
   };
