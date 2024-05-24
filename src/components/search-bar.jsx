@@ -66,7 +66,7 @@ function SearchBar() {
     }
 
     return (
-      <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6} mb={20}>
+      <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6}>
         {results.map((item) => (
           <GridItem key={item.id} w="100%" bg="gray.800" borderRadius="md" overflow="hidden" position="relative">
             <Image src={item.album.images[0].url} alt={item.name} />
@@ -104,7 +104,7 @@ function SearchBar() {
     }
 
     return (
-      <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6} mb={20}>
+      <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6}>
         {recentlyPlayed.map((item, index) => (
           <GridItem key={item.played_at} w="100%" bg="gray.800" borderRadius="md" overflow="hidden" position="relative">
             <Image src={item.track.album.images[0].url} alt={item.track.name} />
@@ -136,7 +136,7 @@ function SearchBar() {
 
   return (
     <HStack bg="teal.600" w="100vw" h="100vh" display="flex" justify="center" align="flex-start" overflowY="auto">
-      <Box width="80%" p={10} borderRadius="md">
+      <Box width="80%" p={10} borderRadius="md" mb="20vh">
         <form onSubmit={handleSearch}>
           <FormControl>
             <Flex m={10} gap="2" alignItems="center">
