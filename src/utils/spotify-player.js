@@ -56,12 +56,7 @@ const initializePlayer = async () => {
     spotifyPlayer.addListener('player_state_changed', (playerState) => {
       console.log('State', playerState);
       if (playerState) {
-        useStore.setState((state) => ({
-          playerSlice: { ...state.playerSlice,
-            paused: playerState.paused,
-            currentTrack: playerState.track_window.current_track,
-            activated: true },
-        }));
+        useStore.getState().playerSlice.updatePlayerState(playerState);
       }
     });
 
