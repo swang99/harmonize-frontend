@@ -3,6 +3,7 @@ import { Box, Button, Flex, FormControl, Grid, GridItem, HStack, Image, Input, T
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { getRecentlyPlayedTracks, searchSpotify } from '../utils/spotify-api';
 import { playTrackInApp } from '../utils/spotify-player';
 
@@ -135,45 +136,52 @@ function SearchBar() {
   };
 
   return (
-    <HStack bg="teal.600" w="100vw" h="100vh" display="flex" justify="center" align="flex-start" overflowY="auto">
-      <Box width="80%" p={10} borderRadius="md" mb="20vh">
-        <form onSubmit={handleSearch}>
-          <FormControl>
-            <Flex m={10} gap="2" alignItems="center">
-              <Input
-                value={query}
-                bg="white"
-                onChange={handleInputChange}
-                placeholder="Search..."
-                size="lg"
-                height="50px"
-                color="black"
-                autoComplete="off"
-                border="none"
-                _focus={{
-                  borderColor: 'transparent',
-                  boxShadow: 'none',
-                }}
-                sx={{
-                  '&::placeholder': {
-                    color: 'gray',
-                  },
-                  '&:hover, &:focus': {
+    <motion.div
+      initial={{ x: -1000, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      exit={{ x: 1000, opacity: 0 }}
+      transition={{ duration: 0.5, type: 'spring', stiffness: 50, damping: 12 }}
+    >
+      <HStack bg="teal.600" w="100vw" h="100vh" display="flex" justify="center" align="flex-start" overflowY="auto">
+        <Box width="80%" p={10} borderRadius="md" mb="15vh">
+          <form onSubmit={handleSearch}>
+            <FormControl>
+              <Flex m={10} gap="2" alignItems="center">
+                <Input
+                  value={query}
+                  bg="white"
+                  onChange={handleInputChange}
+                  placeholder="Search..."
+                  size="lg"
+                  height="50px"
+                  color="black"
+                  autoComplete="off"
+                  border="none"
+                  _focus={{
                     borderColor: 'transparent',
-                    outline: 'none',
                     boxShadow: 'none',
-                  },
-                }}
-              />
-              <Button colorScheme="green" type="submit" size="lg" height="50px">
-                Search
-              </Button>
-            </Flex>
-          </FormControl>
-        </form>
-        {query.length > 0 ? renderResults() : renderRecents()}
-      </Box>
-    </HStack>
+                  }}
+                  sx={{
+                    '&::placeholder': {
+                      color: 'gray',
+                    },
+                    '&:hover, &:focus': {
+                      borderColor: 'transparent',
+                      outline: 'none',
+                      boxShadow: 'none',
+                    },
+                  }}
+                />
+                <Button colorScheme="green" type="submit" size="lg" height="50px">
+                  Search
+                </Button>
+              </Flex>
+            </FormControl>
+          </form>
+          {query.length > 0 ? renderResults() : renderRecents()}
+        </Box>
+      </HStack>
+    </motion.div>
   );
 }
 
