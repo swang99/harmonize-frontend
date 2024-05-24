@@ -35,7 +35,7 @@ export async function searchSpotify(query) {
       params: {
         q: query,
         type: 'track',
-        limit: 5,
+        limit: 20,
       },
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -200,7 +200,7 @@ export async function getRecentlyPlayedTracks() {
       },
     });
 
-    return response.data;
+    return response.data.items;
   } catch (error) {
     console.error('Error fetching recently played tracks from Spotify:', error);
     throw error;

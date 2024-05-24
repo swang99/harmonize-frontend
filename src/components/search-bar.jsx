@@ -1,9 +1,9 @@
 /* eslint-disable react/jsx-no-bind */
-import { Box, Button, Collapse, Flex, FormControl, Grid, GridItem, HStack, Image, Input, List, ListItem, Text } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Box, Button, Flex, FormControl, Grid, GridItem, HStack, Image, Input, Text } from '@chakra-ui/react';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
-import { getEmbedFromSearch, getRecentlyPlayedTracks } from '../utils/spotify-api';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useEffect, useState } from 'react';
+import { getRecentlyPlayedTracks, searchSpotify } from '../utils/spotify-api';
 import { playTrackInApp } from '../utils/spotify-player';
 
 function SearchBar() {
@@ -13,19 +13,17 @@ function SearchBar() {
 
   useEffect(() => {
     async function fetchRecentlyPlayed() {
-      const recents = await getRecentlyPlayedTracks();
-      let recentTracks = recents.items;
-
+      let recents = await getRecentlyPlayedTracks();
       const seenIds = new Set();
 
-      recentTracks = recentTracks.filter((item) => {
+      recents = recents.filter((item) => {
         if (seenIds.has(item.track.id)) return false;
         seenIds.add(item.track.id);
         return true;
       });
 
-      console.log('Recents', recentTracks);
-      setRecentlyPlayed(recentTracks);
+      console.log('Recents', recents);
+      setRecentlyPlayed(recents);
     }
     fetchRecentlyPlayed();
   }, []);
@@ -42,10 +40,14 @@ function SearchBar() {
   async function handleSearch(e) {
     e.preventDefault();
     if (query.length !== 0) {
-      const embedHTMLs = await getEmbedFromSearch(query);
-      setResults(embedHTMLs);
+      const searchResults = await searchSpotify(query);
+      setResults(searchResults);
     }
   }
+
+  useEffect(() => {
+    console.log('Results:', results);
+  }, [results]);
 
   const handlePlay = async (id) => {
     try {
@@ -64,16 +66,33 @@ function SearchBar() {
     }
 
     return (
-      <Collapse in={results.length > 0} animateOpacity>
-        <List>
-          {results.map((result, index) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <ListItem key={index} p={2} _hover={{ bg: 'gray.100' }}>
-              <iframe src={result} title="Spotify Embed" width="300" height="80" allow="encrypted-media" />
-            </ListItem>
-          ))}
-        </List>
-      </Collapse>
+      <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6} mb={20}>
+        {results.map((item) => (
+          <GridItem key={item.id} w="100%" bg="gray.800" borderRadius="md" overflow="hidden" position="relative">
+            <Image src={item.album.images[0].url} alt={item.name} />
+            <Box p={3}>
+              <Text fontSize="md" fontWeight="bold" color="white" isTruncated>{item.name}</Text>
+              <Text fontSize="sm" color="gray.400" isTruncated>{item.artists[0].name}</Text>
+            </Box>
+            <Button
+              position="absolute"
+              top="50%"
+              left="50%"
+              transform="translate(-50%, -50%)"
+              colorScheme="green"
+              borderRadius="full"
+              width="50px"
+              height="50px"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              onClick={() => handlePlay(item.id)}
+            >
+              <FontAwesomeIcon icon={faPlay} />
+            </Button>
+          </GridItem>
+        ))}
+      </Grid>
     );
   };
 
@@ -85,7 +104,7 @@ function SearchBar() {
     }
 
     return (
-      <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6}>
+      <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6} mb={20}>
         {recentlyPlayed.map((item, index) => (
           <GridItem key={item.played_at} w="100%" bg="gray.800" borderRadius="md" overflow="hidden" position="relative">
             <Image src={item.track.album.images[0].url} alt={item.track.name} />
@@ -152,7 +171,7 @@ function SearchBar() {
             </Flex>
           </FormControl>
         </form>
-        {results.length > 0 ? renderResults() : renderRecents()}
+        {query.length > 0 ? renderResults() : renderRecents()}
       </Box>
     </HStack>
   );
