@@ -1,31 +1,21 @@
 import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
-import {
-  Box, Button, Text, Avatar, Flex, Heading, VStack, Spacer, HStack, Grid, Icon, Modal,
-  ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Input, useDisclosure, List, ListItem, Tab, Tabs, TabList, TabPanels, TabPanel,
-} from '@chakra-ui/react';
-import { IoPersonAdd } from 'react-icons/io5';
+import { useParams } from 'react-router';
+import { Text } from '@chakra-ui/react';
 import useStore from '../store';
 import { updateToken } from '../utils/SpotifyAuth';
 import { getUserProfile } from '../utils/spotify-api';
-import Post from './post';
-import PostCard from './post-card';
+import ProfileHeader from './ProfileHeader';
+import OthProfileHeader from './OthProfileHeader';
 
 function Profile(props) {
   const { id } = useParams();
-  const { filterProfiles, fetchProfile, fetchOtherProfile, followProfile, unfollowProfile } = useStore((store) => store.profileSlice);
-  const navigate = useNavigate();
+  const { fetchProfile, fetchOtherProfile } = useStore((store) => store.profileSlice);
   const [profileFetched, setProfileFetched] = useState(false);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
-  const [isFollowing, setIsFollowing] = useState(false);
   const [tokenUpdated, setTokenUpdated] = useState(false);
   const [profile, setProfile] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
-  const [filteredProfiles, setFilteredProfiles] = useState([]);
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [friendName, setFriendName] = useState('');
 
   useEffect(() => {
     const update = async () => {
@@ -64,211 +54,11 @@ function Profile(props) {
     }
   }, [id, tokenUpdated]);
 
-  useEffect(() => {
-    if (userProfile) {
-      console.log('Profile', userProfile); // Debugging log
-      if (userProfile.following.includes(id)) {
-        setIsFollowing(true);
-      }
-    }
-  }, [userProfile]);
-
-  /* Filter profiles based on search input */
-  async function handleFriendSearch(filter) {
-    if (!filter) {
-      setFilteredProfiles([]);
-      setFriendName('');
-      return;
-    }
-    setFriendName(filter);
-    setFilteredProfiles(await filterProfiles(filter));
-  }
-
-  const handleFollow = async () => {
-    await followProfile(userProfile, profile);
-    setIsFollowing(true);
-  };
-
-  const handleUnfollow = async () => {
-    await unfollowProfile(userProfile, profile);
-    setIsFollowing(false);
-  };
-
-  const handleNavigateUser = (friendId) => {
-    navigate(`/users/${friendId}`);
-    setFriendName('');
-    onClose();
-  };
-
-  const renderFollowButton = () => {
-    if (isFollowing) {
-      return (
-        <Button size="lg" onClick={handleUnfollow}>
-          Unfollow
-        </Button>
-      );
-    } else {
-      return (
-        <Button size="lg" onClick={handleFollow}>
-          Follow
-        </Button>
-      );
-    }
-  };
-
   const renderProfile = () => {
-    if (!profileFetched || !userProfile) {
-      return <Text>Loading...</Text>;
-    } else if (!profile) {
-      return <Text>Profile not found</Text>;
-    } else if (isOwnProfile) {
-      return (
-        <Flex py={5} px={10} bg="teal.600" color="white" minH="100vh" overflow="auto" position="relative" width="100vw" justify="center">
-          <VStack p="5%" w="100%" maxW="1000px">
-            <Box position="relative" mb={4}>
-              <HStack p={10} bg="white" borderRadius="xl" justify="space-between" align="center" width="100%" spacing={10} color="gray.900">
-                <Avatar w="150px" h="150px" name={profile.name} src={profile.photo} />
-                <VStack justify="flex-start" align="flex-start" mb={8}>
-                  <Heading as="h1" size="xl" color="gray.900">
-                    {profile.name}
-                  </Heading>
-                  <Text size="md" fontWeight="bold">Total Posts: {profile.posts.length}</Text>
-                </VStack>
-                <Spacer />
-                <VStack justify="flex-start" align="center" mb={8}>
-                  <Heading as="h3" size="md">{profile.followers.length}</Heading>
-                  <Text size="md">Followers</Text>
-                </VStack>
-                <VStack justify="flex-start" align="center" mb={8}>
-                  <Heading as="h3" size="md">{profile.following.length}</Heading>
-                  <Text size="md">Following</Text>
-                </VStack>
-              </HStack>
-              <Icon
-                as={IoPersonAdd}
-                w={7}
-                h={7}
-                position="absolute"
-                right={4}
-                top={4}
-                cursor="pointer"
-                color="teal.600"
-                _hover={{ color: 'gray.500', transform: 'scale(1.1)' }}
-                onClick={onOpen}
-              />
-            </Box>
-            <Tabs variant="unstyled" align="center" defaultIndex={0} mt={4}>
-              <TabList>
-                <Tab
-                  fontWeight="bold"
-                  _selected={{ color: 'teal.500', bg: 'white', borderRadius: 'full' }}
-                  _focus={{ boxShadow: 'none' }}
-                >
-                  Posts
-                </Tab>
-                <Tab
-                  fontWeight="bold"
-                  _selected={{ color: 'teal.500', bg: 'white', borderRadius: 'full' }}
-                  _focus={{ boxShadow: 'none' }}
-                >
-                  Recents
-                </Tab>
-              </TabList>
-              <TabPanels>
-                <TabPanel p={0}>
-                  <Box py={5}>
-                    <Grid templateColumns="repeat(3, minmax(200px, 1fr))" gap={6}>
-                      {profile.posts && profile.posts.length > 0 ? (
-                        profile.posts.map((post) => (
-                          <PostCard key={post.id} post={post} />
-                        ))
-                      ) : (
-                        <Text>No posts yet.</Text>
-                      )}
-                    </Grid>
-                  </Box>
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
-          </VStack>
-          <Modal isOpen={isOpen} onClose={onClose}>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Add Friend</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                <Input
-                  placeholder="Enter friend's name"
-                  value={friendName}
-                  onChange={(e) => handleFriendSearch(e.target.value)}
-                />
-                {filteredProfiles.length > 0 && (
-                <List mt={4} spacing={2}>
-                  {filteredProfiles.map((p) => (
-                    <ListItem
-                      key={p.userID}
-                      onClick={() => handleNavigateUser(p.userID)}
-                      cursor="pointer"
-                      _hover={{ bg: 'gray.200' }}
-                    >
-                      <HStack>
-                        <Avatar size="sm" name={p.name} src={p.photo} />
-                        <Text>{p.name}</Text>
-                      </HStack>
-                    </ListItem>
-                  ))}
-                </List>
-                )}
-              </ModalBody>
-              <ModalFooter>
-                <Button onClick={onClose}>Close</Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
-        </Flex>
-      );
-    } else {
-      return (
-        <Flex py={5} px={10} bg="teal.600" color="white" minH="100vh" overflow="hidden" position="absolute" width="100vw" justify="center">
-          <VStack p="5%" w="100%" maxW="1000px">
-            <HStack p={10} bg="white" borderRadius="xl" justify="space-between" align="center" width="100%" spacing={10} color="gray.900">
-              <Avatar w="150px" h="auto" name={profile.name} src={profile.photo} />
-              <VStack justify="flex-start" align="flex-start" mb={8}>
-                <Heading as="h1" size="xl" color="gray.900">
-                  {profile.name}
-                </Heading>
-                <Text size="md" fontWeight="bold">Total Posts: {profile.posts.length}</Text>
-              </VStack>
-              <Spacer />
-              <VStack justify="flex-start" align="center" mb={8}>
-                <HStack gap={10}>
-                  <VStack justify="flex-start" align="center" mb={8}>
-                    <Heading as="h3" size="md">{profile.followers.length}</Heading>
-                    <Text size="md">Followers</Text>
-                  </VStack>
-                  <VStack justify="flex-start" align="center" mb={8}>
-                    <Heading as="h3" size="md">{profile.following.length}</Heading>
-                    <Text size="md">Following</Text>
-                  </VStack>
-                </HStack>
-                {renderFollowButton()}
-              </VStack>
-            </HStack>
-            <Box>
-              <Grid templateColumns="repeat(3, 1fr)" gap={6}>
-                {profile.posts && profile.posts.length > 0 ? (
-                  profile.posts.map((post) => (
-                    <Post key={post.id} id={post.id} type={post.type} comment={post.comment} />
-                  ))
-                ) : (
-                  <Text>No posts yet.</Text>
-                )}
-              </Grid>
-            </Box>
-          </VStack>
-        </Flex>
-      );
-    }
+    if (!profileFetched || !userProfile) return <Text>Loading...</Text>;
+    else if (!profile) return <Text>Profile not found</Text>;
+    else if (isOwnProfile) return <ProfileHeader profile={profile} />;
+    else return <OthProfileHeader profile={profile} userProfile={userProfile} id={id} />;
   };
 
   return (

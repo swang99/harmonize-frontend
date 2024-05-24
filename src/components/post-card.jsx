@@ -19,10 +19,9 @@ const PostCard = (props) => {
   // Destructure props, store postData
   const { post } = props;
   const [postItemData, setPostItemData] = useState(null);
-  console.log(props);
-
   const { id, type } = post;
   console.log(id, type);
+  // console.log('HAHA: ', props.post.comment);
 
   useEffect(() => {
     const fetchPostData = async () => {
@@ -36,6 +35,10 @@ const PostCard = (props) => {
     };
     fetchPostData();
   }, []);
+
+  useEffect(() => {
+    console.log('Post item data: ', postItemData);
+  }, [postItemData]);
 
   const handlePlay = async () => {
     try {
@@ -76,20 +79,21 @@ const PostCard = (props) => {
       </GridItem>
     );
   };
+
   // function to render an album post
   const renderAlbumPost = (postData) => {
     return (
       null
     );
   };
-  // function to render an album post
+  // function to render an artist post
   const renderArtistPost = (postData) => {
     return (
       null
     );
   };
 
-  // function to render an album post
+  // function to render a playlist post
   const renderPlaylistPost = (postData) => {
     return (
       null
@@ -100,13 +104,13 @@ const PostCard = (props) => {
   const renderPost = () => {
     if (!postItemData) {
       return null;
-    } else if (type === 'Track') {
+    } else if (type === 'track') {
       return renderTrackPost(postItemData);
-    } else if (type === 'Album') {
+    } else if (type === 'album') {
       return renderAlbumPost(postItemData);
-    } else if (type === 'Playlist') {
+    } else if (type === 'playlist') {
       return renderArtistPost(postItemData);
-    } else if (type === 'Artist') {
+    } else if (type === 'artist') {
       return renderPlaylistPost(postItemData);
     }
     return null;
