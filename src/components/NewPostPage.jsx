@@ -8,7 +8,7 @@ const NewPostPage = () => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [comment, setComment] = useState('');
+  const [description, setDescription] = useState('');
   const createPost = useStore((state) => state.postSlice.createPost);
   const profile = useStore((state) => state.profileSlice.currentProfile);
   const fetchProfile = useStore((state) => state.profileSlice.fetchProfile);
@@ -49,7 +49,7 @@ const NewPostPage = () => {
   };
 
   const handleSubmit = async () => {
-    if (selectedItem && comment) {
+    if (selectedItem && description) {
       if (!profile) {
         console.error('Profile is not loaded');
         return;
@@ -58,7 +58,7 @@ const NewPostPage = () => {
       const post = {
         id: selectedItem.id,
         type: selectedItem.type.toLowerCase(),
-        comment,
+        description,
       };
       console.log('Post Object:', post); // debugging
 
@@ -109,8 +109,8 @@ const NewPostPage = () => {
         <Box>
           <Textarea
             placeholder="Add a comment"
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
           />
           <Button onClick={handleSubmit}>Create Post</Button>
         </Box>
