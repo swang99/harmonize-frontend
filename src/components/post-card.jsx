@@ -1,10 +1,8 @@
-import { Box, Button, GridItem, HStack, Icon, Image, Text, useDisclosure, VStack } from '@chakra-ui/react';
-import { faPlay } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Box, HStack, Icon, useDisclosure } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { CgPlayListAdd } from 'react-icons/cg';
 import { getItemData } from '../utils/spotify-api';
-import { playTrackInApp } from '../utils/spotify-player';
+import TrackItem from './track-item';
 import AddTrackToPlaylistModal from './add-track-to-playlist';
 import useStore from '../store';
 
@@ -45,61 +43,28 @@ const PostCard = (props) => {
     console.log('Post item data: ', postItemData);
   }, [postItemData]);
 
-  const handlePlay = async () => {
-    try {
-      console.log('Function called:', playTrackInApp);
-      await playTrackInApp(id);
-    } catch (error) {
-      console.error('Failed to play track:', error);
-    }
-  };
-
   const renderTrackPost = () => {
     const { name } = postItemData;
     const imageURL = postItemData.album.images[0].url;
     const artists = postItemData.artists[0].name;
     return (
-      <GridItem key={id} w="100%" bg="gray.800" borderRadius="md" overflow="hidden" position="relative">
-        <HStack>
-          <VStack>
-            <Image src={imageURL} alt={name} />
-            <Box p={3} alignSelf="start">
-              <Text fontSize="md" fontWeight="bold" color="white" isTruncated>{name}</Text>
-              <Text fontSize="sm" color="gray.400" isTruncated>{artists}</Text>
-            </Box>
-          </VStack>
-          <Box p={3}>
-            <Icon
-              as={CgPlayListAdd}
-              w={7}
-              h={7}
-              cursor="pointer"
-              color="teal.100"
-              _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
-              onClick={addTrackToPlaylistDisc.onOpen}
-            >
-              Add to Playlist
-            </Icon>
-          </Box>
-          <Button
-            position="absolute"
-            top="50%"
-            left="50%"
-            transform="translate(-50%, -50%)"
-            colorScheme="green"
-            borderRadius="full"
-            width="50px"
-            height="50px"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            onClick={handlePlay}
+      <HStack>
+        <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} />
+        <Box p={3}>
+          <Icon
+            as={CgPlayListAdd}
+            w={7}
+            h={7}
+            cursor="pointer"
+            color="teal.900"
+            _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
+            onClick={addTrackToPlaylistDisc.onOpen}
           >
-            <FontAwesomeIcon icon={faPlay} />
-          </Button>
-        </HStack>
+            Add to Playlist
+          </Icon>
+        </Box>
         <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={postItemData.id} playlists={playlists} />
-      </GridItem>
+      </HStack>
     );
   };
 
