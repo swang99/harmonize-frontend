@@ -103,7 +103,7 @@ function Feed(props) {
       exit={{ x: 1000, opacity: 0 }}
       transition={{ duration: 0.5, type: 'spring', stiffness: 50, damping: 12 }}
     >
-      <Box position="relative" mx="auto" w="100vw" overflowY="auto">
+      <Box position="absolute" mx="auto" w="100vw" overflowY="auto">
         {renderPosts()}
       </Box>
     </motion.div>
