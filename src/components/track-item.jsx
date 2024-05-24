@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-bind */
-import { Box, Button, GridItem, Image, Text } from '@chakra-ui/react';
+import { Box, Button, Image, Text } from '@chakra-ui/react';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
@@ -28,7 +28,7 @@ function TrackItem(props) {
   };
 
   return (
-    <GridItem key={id} w="100%" bg="gray.800" borderRadius="md" overflow="hidden" position="relative">
+    <Box key={id} w="100%" bg="gray.800" borderRadius="md" overflow="hidden" position="relative">
       <Image src={imageURL} alt={name} />
       <Box p={3}>
         <Text fontSize="md" fontWeight="bold" color="white" isTruncated>{name}</Text>
@@ -50,7 +50,7 @@ function TrackItem(props) {
       >
         <FontAwesomeIcon icon={faPlay} />
       </Button>
-    </GridItem>
+    </Box>
   );
 }
 

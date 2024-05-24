@@ -53,11 +53,12 @@ const PostCard = (props) => {
     const artists = postItemData.artists[0].name;
 
     if (use === 'feed') {
+      console.log('Post: ', post);
       const username = post.name;
       const userPhoto = post.photo;
       return (
         <HStack>
-          <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} w="50%" />
+          <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} />
           <Box p={3}>
             <VStack>
               <HStack>
