@@ -3,7 +3,6 @@ import { Box, Button, Collapse, Flex, FormControl, Grid, GridItem, HStack, Image
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
-// import { LiaEthereum } from 'react-icons/lia';
 import { getEmbedFromSearch, getRecentlyPlayedTracks } from '../utils/spotify-api';
 import { playTrackInApp } from '../utils/spotify-player';
 
@@ -117,7 +116,7 @@ function SearchBar() {
   };
 
   return (
-    <HStack bg="teal.600" w="100vw" h="100vh" display="flex" justify="center" align="flex-start">
+    <HStack bg="teal.600" w="100vw" h="100vh" display="flex" justify="center" align="flex-start" overflowY="auto">
       <Box width="80%" p={10} borderRadius="md">
         <form onSubmit={handleSearch}>
           <FormControl>
@@ -153,7 +152,7 @@ function SearchBar() {
             </Flex>
           </FormControl>
         </form>
-        {(results.length > 0) ? (renderResults()) : (renderRecents())}
+        {results.length > 0 ? renderResults() : renderRecents()}
       </Box>
     </HStack>
   );

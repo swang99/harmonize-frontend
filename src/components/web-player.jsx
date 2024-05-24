@@ -35,7 +35,7 @@ const SpotifyPlayer = () => {
   };
 
   return (
-    player && (
+    (player && playerSlice.currentTrack) && (
     <HStack
       as="footer"
       position="fixed"
