@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Box, Button, Text, Avatar, Flex, Heading, VStack, Spacer, HStack, Grid,
+  Box, Button, Text, Avatar, Flex, Heading, VStack, Spacer, HStack, Grid, useDisclosure,
 } from '@chakra-ui/react';
 import Post from './post';
 import useStore from '../store/profile-slice';
+import ViewFollowers from './ViewFollowers';
+import ViewFollowing from './ViewFollowing';
 
 export default function OthProfileHeader(props) {
   const { followProfile, unfollowProfile } = useStore((store) => store.profileSlice);
   const [isFollowing, setIsFollowing] = useState(false);
+  const followersDisc = useDisclosure();
+  const followingDisc = useDisclosure();
 
   useEffect(() => {
     if (props.userProfile) {
@@ -65,11 +69,15 @@ export default function OthProfileHeader(props) {
             <HStack gap={10}>
               <VStack justify="flex-start" align="center" mb={8}>
                 <Heading as="h3" size="md">{props.profile.followers.length}</Heading>
-                <Text size="md">Followers</Text>
+                <Text size="md" onClick={followersDisc.onOpen} cursor="pointer">
+                  Followers
+                </Text>
               </VStack>
               <VStack justify="flex-start" align="center" mb={8}>
                 <Heading as="h3" size="md">{props.profile.following.length}</Heading>
-                <Text size="md">Following</Text>
+                <Text size="md" onClick={followingDisc.onOpen} cursor="pointer">
+                  Following
+                </Text>
               </VStack>
             </HStack>
             {renderFollowButton()}
@@ -87,6 +95,15 @@ export default function OthProfileHeader(props) {
           </Grid>
         </Box>
       </VStack>
+      <ViewFollowing
+        isOpen={followingDisc.isOpen}
+        onClose={followingDisc.onClose}
+        following={props.profile.following}
+      />
+      <ViewFollowers isOpen={followersDisc.isOpen}
+        onClose={followersDisc.onClose}
+        followers={props.profile.followers}
+      />
     </Flex>
   );
 }
