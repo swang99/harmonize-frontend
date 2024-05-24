@@ -4,6 +4,12 @@ import { playTrack, switchPlaybackDevice } from './spotify-api';
 import useStore from '../store';
 
 const initializePlayer = async () => {
+  // Disconnect player if already initialized
+  if (window.player) {
+    window.player.disconnect();
+  }
+
+  // initialize the new player
   const script = document.createElement('script');
   script.src = `https://sdk.scdn.co/spotify-player.js?v=${Date.now()}`; // Prevent caching
   script.async = true;
