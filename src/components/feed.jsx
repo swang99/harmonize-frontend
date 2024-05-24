@@ -90,7 +90,7 @@ function Feed(props) {
         <Heading pl="10%" textAlign="left">Your Feed</Heading>
         {feed.map((post) => (
           <Box key={post.id} w="80%" bg="gray.100" p={4} mx="auto" borderRadius="md" shadow="md">
-            <PostCard post={post} />
+            <PostCard post={post} use="feed" />
           </Box>
         ))}
       </VStack>

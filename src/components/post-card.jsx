@@ -1,4 +1,4 @@
-import { Box, HStack, Icon, useDisclosure } from '@chakra-ui/react';
+import { Box, HStack, Icon, useDisclosure, Heading, Avatar, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { CgPlayListAdd } from 'react-icons/cg';
 import { FaComment } from 'react-icons/fa';
@@ -17,11 +17,12 @@ import useStore from '../store';
  * @param {string} props.type - The type of the post.
  * @param {string} props.description - The description associated with the post.
  * @param {[String]} props.comments -The comments associated with the post.
+ * @param {string} props.use - The use of the PostCard component (feed, profile, etc.).
  * @returns {JSX.Element} The rendered Post component.
  */
 const PostCard = (props) => {
   // Destructure props, store postData
-  const { post } = props;
+  const { post, use } = props;
   const [postItemData, setPostItemData] = useState(null);
   const { id, type } = post;
   console.log(id, type);
@@ -50,6 +51,34 @@ const PostCard = (props) => {
     const { name } = postItemData;
     const imageURL = postItemData.album.images[0].url;
     const artists = postItemData.artists[0].name;
+
+    if (use === 'feed') {
+      const username = post.name;
+      const userPhoto = post.photo;
+      return (
+        <HStack>
+          <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} w="50%" />
+          <Box p={3}>
+            <VStack>
+              <HStack>
+                <Avatar size="sm" src={userPhoto} />
+                <Heading>{username}</Heading>
+              </HStack>
+            </VStack>
+            <Icon
+              as={CgPlayListAdd}
+              w={7}
+              h={7}
+              cursor="pointer"
+              color="teal.900"
+              _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
+              onClick={addTrackToPlaylistDisc.onOpen}
+            />
+          </Box>
+          <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={postItemData.id} playlists={playlists} />
+        </HStack>
+      );
+    }
     return (
       <HStack>
         <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} />
