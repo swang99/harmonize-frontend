@@ -86,6 +86,10 @@ const playTrackInApp = async (trackId) => {
 
   try {
     // Switch playback device
+    if (!useStore.getState().playerSlice.deviceId) {
+      console.error('Device ID is not set');
+      return;
+    }
     await switchPlaybackDevice(useStore.getState().playerSlice.deviceId);
 
     // Activate player if not yet activated

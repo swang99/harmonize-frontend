@@ -1,11 +1,9 @@
 /* eslint-disable react/jsx-no-bind */
-import { Box, Button, Flex, FormControl, Grid, GridItem, HStack, Image, Input, Text } from '@chakra-ui/react';
-import { faPlay } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useEffect, useState } from 'react';
+import { Box, Button, Flex, FormControl, Grid, HStack, Input } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
 import { getRecentlyPlayedTracks, searchSpotify } from '../utils/spotify-api';
-import { playTrackInApp } from '../utils/spotify-player';
+import TrackItem from './track-item';
 
 function SearchBar() {
   const [results, setResults] = useState([]);
@@ -46,19 +44,6 @@ function SearchBar() {
     }
   }
 
-  useEffect(() => {
-    console.log('Results:', results);
-  }, [results]);
-
-  const handlePlay = async (id) => {
-    try {
-      console.log('Function called:', playTrackInApp);
-      await playTrackInApp(id);
-    } catch (error) {
-      console.error('Failed to play track:', error);
-    }
-  };
-
   const renderResults = () => {
     if (!results || results.length === 0) {
       return (
@@ -69,29 +54,7 @@ function SearchBar() {
     return (
       <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6}>
         {results.map((item) => (
-          <GridItem key={item.id} w="100%" bg="gray.800" borderRadius="md" overflow="hidden" position="relative">
-            <Image src={item.album.images[0].url} alt={item.name} />
-            <Box p={3}>
-              <Text fontSize="md" fontWeight="bold" color="white" isTruncated>{item.name}</Text>
-              <Text fontSize="sm" color="gray.400" isTruncated>{item.artists[0].name}</Text>
-            </Box>
-            <Button
-              position="absolute"
-              top="50%"
-              left="50%"
-              transform="translate(-50%, -50%)"
-              colorScheme="green"
-              borderRadius="full"
-              width="50px"
-              height="50px"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              onClick={() => handlePlay(item.id)}
-            >
-              <FontAwesomeIcon icon={faPlay} />
-            </Button>
-          </GridItem>
+          <TrackItem key={item.id} id={item.id} name={item.name} artist={item.artists[0].name} imageURL={item.album.images[0].url} />
         ))}
       </Grid>
     );
@@ -107,29 +70,7 @@ function SearchBar() {
     return (
       <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6}>
         {recentlyPlayed.map((item, index) => (
-          <GridItem key={item.played_at} w="100%" bg="gray.800" borderRadius="md" overflow="hidden" position="relative">
-            <Image src={item.track.album.images[0].url} alt={item.track.name} />
-            <Box p={3}>
-              <Text fontSize="md" fontWeight="bold" color="white" isTruncated>{item.track.name}</Text>
-              <Text fontSize="sm" color="gray.400" isTruncated>{item.track.artists[0].name}</Text>
-            </Box>
-            <Button
-              position="absolute"
-              top="50%"
-              left="50%"
-              transform="translate(-50%, -50%)"
-              colorScheme="green"
-              borderRadius="full"
-              width="50px"
-              height="50px"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              onClick={() => handlePlay(item.track.id)}
-            >
-              <FontAwesomeIcon icon={faPlay} />
-            </Button>
-          </GridItem>
+          <TrackItem key={item.track.id} id={item.track.id} name={item.track.name} artist={item.track.artists[0].name} imageURL={item.track.album.images[0].url} />
         ))}
       </Grid>
     );
