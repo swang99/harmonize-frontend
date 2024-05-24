@@ -15,17 +15,14 @@ import { playTrackInApp } from '../utils/spotify-player';
  */
 const Post = (props) => {
   // Destructure props, store postData
-  const { post } = props;
   const [postItemData, setPostItemData] = useState(null);
   console.log(props);
-
-  const { comment, id, type } = post;
 
   useEffect(() => {
     const fetchPostData = async () => {
       try {
-        console.log('Fetching post data with id:', id, 'and type:', type); // Debugging log
-        const data = await getItemData(id, type);
+        console.log('Fetching post data with id:', props.id, 'and type:', props.type); // Debugging log
+        const data = await getItemData(props.id, props.type);
         setPostItemData(data);
       } catch (error) {
         console.error('Failed to fetch post data:', error);
@@ -37,7 +34,7 @@ const Post = (props) => {
   const handlePlay = async () => {
     try {
       console.log('Function called:', playTrackInApp);
-      await playTrackInApp(id);
+      await playTrackInApp(props.id);
     } catch (error) {
       console.error('Failed to play track:', error);
     }
@@ -75,7 +72,7 @@ const Post = (props) => {
                 <Text fontSize="sm" color="gray.600">Year: {date}</Text>
               </VStack>
             </HStack>
-            <Text fontSize="sm" color="gray.800">Comment: {comment}</Text>
+            <Text fontSize="sm" color="gray.800">Comment: {props.comment}</Text>
             <Button colorScheme="teal" size="sm" onClick={handlePlay}>
               Play
             </Button>
@@ -108,13 +105,13 @@ const Post = (props) => {
   const renderPost = () => {
     if (!postItemData) {
       return null;
-    } else if (type === 'Track') {
+    } else if (props.type === 'track') {
       return renderTrackPost(postItemData);
-    } else if (type === 'Album') {
+    } else if (props.type === 'album') {
       return renderAlbumPost(postItemData);
-    } else if (type === 'Playlist') {
+    } else if (props.type === 'playlist') {
       return renderArtistPost(postItemData);
-    } else if (type === 'Artist') {
+    } else if (props.type === 'artist') {
       return renderPlaylistPost(postItemData);
     }
     return null;

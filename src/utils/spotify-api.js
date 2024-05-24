@@ -219,10 +219,10 @@ export async function getItemData(id, type) {
   const accessToken = localStorage.getItem('access_token');
 
   const idTypeMap = {
-    Track: 'tracks',
-    Artist: 'artists',
-    Album: 'albums',
-    Playlist: 'playlists',
+    track: 'tracks',
+    artist: 'artists',
+    album: 'albums',
+    playlist: 'playlists',
   };
 
   try {
