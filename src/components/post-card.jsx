@@ -2,6 +2,8 @@ import { Box, HStack, Icon, useDisclosure, Heading, Avatar, VStack } from '@chak
 import React, { useEffect, useState } from 'react';
 import { CgPlayListAdd } from 'react-icons/cg';
 import { FaComment } from 'react-icons/fa';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { getItemData } from '../utils/spotify-api';
 import TrackItem from './track-item';
 import AddTrackToPlaylistModal from './add-track-to-playlist';
@@ -21,7 +23,6 @@ import useStore from '../store';
  * @returns {JSX.Element} The rendered Post component.
  */
 const PostCard = (props) => {
-  // Destructure props, store postData
   const { post, use } = props;
   const [postItemData, setPostItemData] = useState(null);
   const { id, type } = post;
@@ -30,14 +31,14 @@ const PostCard = (props) => {
   const addCommentDisc = useDisclosure();
   const { playlists } = useStore((store) => store.profileSlice);
 
+  console.log('Post: ', post);
   useEffect(() => {
     const fetchPostData = async () => {
       try {
-        console.log('Fetching post data with id:', id, 'and type:', type); // Debugging log
-        const data = await getItemData(id, type);
+        const data = await getItemData(id, 'track');
         setPostItemData(data);
       } catch (error) {
-        console.error('Failed to fetch post data:', error);
+        toast.error('Failed to fetch post data:', error);
       }
     };
     fetchPostData();
@@ -57,12 +58,12 @@ const PostCard = (props) => {
       const username = post.name;
       const userPhoto = post.photo;
       return (
-        <HStack>
-          <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} />
-          <Box p={3}>
+        <HStack w="100%" h={300}>
+          <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} w="50%" />
+          <Box p={3} w="50%">
             <VStack>
               <HStack>
-                <Avatar size="sm" src={userPhoto} />
+                <Avatar size="lg" src={userPhoto} />
                 <Heading>{username}</Heading>
               </HStack>
             </VStack>

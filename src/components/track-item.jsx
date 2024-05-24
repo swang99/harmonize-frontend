@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-bind */
-import { Box, Button, Image, Text } from '@chakra-ui/react';
+import { Box, Button, HStack, Image, Text } from '@chakra-ui/react';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
@@ -28,28 +28,31 @@ function TrackItem(props) {
   };
 
   return (
-    <Box key={id} w="100%" bg="gray.800" borderRadius="md" overflow="hidden" position="relative">
-      <Image src={imageURL} alt={name} />
-      <Box p={3}>
-        <Text fontSize="md" fontWeight="bold" color="white" isTruncated>{name}</Text>
-        <Text fontSize="sm" color="gray.400" isTruncated>{artist}</Text>
-      </Box>
-      <Button
-        position="absolute"
-        top="50%"
-        left="50%"
-        transform="translate(-50%, -50%)"
-        colorScheme="green"
-        borderRadius="full"
-        width="50px"
-        height="50px"
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        onClick={() => handlePlay()}
-      >
-        <FontAwesomeIcon icon={faPlay} />
-      </Button>
+    <Box key={id} bg="gray.800" borderRadius="md">
+      <HStack>
+        <Image src={imageURL} alt={name} h={300} flex="0 0 auto" position="relative">
+          <Button
+            position="absolute"
+            top="50%"
+            left="50%"
+            transform="translate(-50%, -50%)"
+            colorScheme="green"
+            borderRadius="full"
+            width="50px"
+            height="50px"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            onClick={() => handlePlay()}
+          >
+            <FontAwesomeIcon icon={faPlay} />
+          </Button>
+        </Image>
+        <Box p={3} flex="1">
+          <Text fontSize="lg" fontWeight="bold" color="white" isTruncated>{name}</Text>
+          <Text fontSize="md" color="gray.400" isTruncated>{artist}</Text>
+        </Box>
+      </HStack>
     </Box>
   );
 }
