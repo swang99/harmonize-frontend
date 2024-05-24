@@ -352,6 +352,7 @@ export async function addTrackToPlaylist(playlistId, trackId) {
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
         },
       },
     );
