@@ -1,6 +1,10 @@
+import { Box, HStack, Icon, useDisclosure } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
+import { CgPlayListAdd } from 'react-icons/cg';
 import { getItemData } from '../utils/spotify-api';
 import TrackItem from './track-item';
+import AddTrackToPlaylistModal from './add-track-to-playlist';
+import useStore from '../store';
 
 /**
  * Represents a post cardcomponent.
@@ -19,6 +23,8 @@ const PostCard = (props) => {
   const { id, type } = post;
   console.log(id, type);
   // console.log('HAHA: ', props.post.comment);
+  const addTrackToPlaylistDisc = useDisclosure();
+  const { playlists } = useStore((store) => store.profileSlice);
 
   useEffect(() => {
     const fetchPostData = async () => {
@@ -42,7 +48,23 @@ const PostCard = (props) => {
     const imageURL = postItemData.album.images[0].url;
     const artists = postItemData.artists[0].name;
     return (
-      <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} />
+      <HStack>
+        <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} />
+        <Box p={3}>
+          <Icon
+            as={CgPlayListAdd}
+            w={7}
+            h={7}
+            cursor="pointer"
+            color="teal.900"
+            _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
+            onClick={addTrackToPlaylistDisc.onOpen}
+          >
+            Add to Playlist
+          </Icon>
+        </Box>
+        <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={postItemData.id} playlists={playlists} />
+      </HStack>
     );
   };
 
