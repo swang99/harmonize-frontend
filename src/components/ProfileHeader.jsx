@@ -14,9 +14,9 @@ export default function ProfileHeader(props) {
   const followingDisc = useDisclosure();
 
   return (
-    <Flex py={5} px={10} bg="teal.600" color="white" minH="100vh" overflow="auto" position="relative" width="100vw" justify="center">
-      <VStack p="5%" w="100%" maxW="1000px">
-        <Box position="relative" mb={4}>
+    <Flex py={5} px={10} bg="teal.600" color="white" height="100vh" overflowY="auto" position="relative" width="100vw" justify="center">
+      <VStack p="5%" w="100%" maxW="1000px" spacing={4}>
+        <Box position="relative" w="100%">
           <HStack p={10} bg="white" borderRadius="xl" justify="space-between" align="center" width="100%" spacing={10} color="gray.900">
             <Avatar w="150px" h="150px" name={props.profile.name} src={props.profile.photo} />
             <VStack justify="flex-start" align="flex-start" mb={8}>
@@ -51,7 +51,7 @@ export default function ProfileHeader(props) {
             onClick={addFDisc.onOpen}
           />
         </Box>
-        <Tabs variant="unstyled" align="center" defaultIndex={0} mt={4}>
+        <Tabs variant="unstyled" align="center" defaultIndex={0} mt={4} w="100%">
           <TabList>
             <Tab
               fontWeight="bold"
@@ -70,8 +70,8 @@ export default function ProfileHeader(props) {
           </TabList>
           <TabPanels>
             <TabPanel p={0}>
-              <Box py={5}>
-                <Grid templateColumns="repeat(3, minmax(200px, 1fr))" gap={6}>
+              <Box py={5} w="100%" mb={10}>
+                <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6} w="100%" pb="20vh">
                   {props.profile.posts && props.profile.posts.length > 0 ? (
                     props.profile.posts.map((post) => (
                       <PostCard key={post.id} post={post} />

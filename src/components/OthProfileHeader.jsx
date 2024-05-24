@@ -1,11 +1,20 @@
-import React, { useState, useEffect } from 'react';
 import {
-  Box, Button, Text, Avatar, Flex, Heading, VStack, Spacer, HStack, Grid, useDisclosure,
+  Avatar,
+  Box, Button,
+  Flex,
+  Grid,
+  HStack,
+  Heading,
+  Spacer,
+  Text,
+  VStack,
+  useDisclosure,
 } from '@chakra-ui/react';
-import Post from './post';
+import React, { useEffect, useState } from 'react';
 import useStore from '../store/profile-slice';
 import ViewFollowers from './ViewFollowers';
 import ViewFollowing from './ViewFollowing';
+import PostCard from './post-card';
 
 export default function OthProfileHeader(props) {
   const { followProfile, unfollowProfile } = useStore((store) => store.profileSlice);
@@ -87,7 +96,7 @@ export default function OthProfileHeader(props) {
           <Grid templateColumns="repeat(3, 1fr)" gap={6}>
             {props.profile.posts && props.profile.posts.length > 0 ? (
               props.profile.posts.map((post) => (
-                <Post key={post.id} id={post.id} type={post.type} comment={post.comment} />
+                <PostCard key={post.id} post={post} />
               ))
             ) : (
               <Text>No posts yet.</Text>

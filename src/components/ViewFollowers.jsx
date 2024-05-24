@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router';
 import {
-  Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton,
-  ModalBody, ModalFooter, Button, Text,
+  Button,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Text,
 } from '@chakra-ui/react';
+import React from 'react';
+import { useNavigate } from 'react-router';
 
 function ViewFollowers(props) {
   const navigate = useNavigate();
-  const [filteredProfiles, setFilteredProfiles] = useState([]);
+  // const [filteredProfiles, setFilteredProfiles] = useState([]);
 
   const handleNavigateUser = (friendId) => {
     navigate(`/users/${friendId}`);

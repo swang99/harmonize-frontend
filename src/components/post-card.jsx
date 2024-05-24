@@ -1,9 +1,6 @@
-import { Box, Button, GridItem, Image, Text } from '@chakra-ui/react';
-import { faPlay } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
 import { getItemData } from '../utils/spotify-api';
-import { playTrackInApp } from '../utils/spotify-player';
+import TrackItem from './track-item';
 
 /**
  * Represents a post cardcomponent.
@@ -40,43 +37,12 @@ const PostCard = (props) => {
     console.log('Post item data: ', postItemData);
   }, [postItemData]);
 
-  const handlePlay = async () => {
-    try {
-      console.log('Function called:', playTrackInApp);
-      await playTrackInApp(id);
-    } catch (error) {
-      console.error('Failed to play track:', error);
-    }
-  };
-
   const renderTrackPost = () => {
     const { name } = postItemData;
     const imageURL = postItemData.album.images[0].url;
     const artists = postItemData.artists[0].name;
     return (
-      <GridItem key={id} w="100%" bg="gray.800" borderRadius="md" overflow="hidden" position="relative">
-        <Image src={imageURL} alt={name} />
-        <Box p={3}>
-          <Text fontSize="md" fontWeight="bold" color="white" isTruncated>{name}</Text>
-          <Text fontSize="sm" color="gray.400" isTruncated>{artists}</Text>
-        </Box>
-        <Button
-          position="absolute"
-          top="50%"
-          left="50%"
-          transform="translate(-50%, -50%)"
-          colorScheme="green"
-          borderRadius="full"
-          width="50px"
-          height="50px"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          onClick={handlePlay}
-        >
-          <FontAwesomeIcon icon={faPlay} />
-        </Button>
-      </GridItem>
+      <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} />
     );
   };
 
