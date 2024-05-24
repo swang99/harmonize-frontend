@@ -334,3 +334,31 @@ export async function getCurrentDevice() {
     throw error;
   }
 }
+
+/**
+ * Adds a track to a specified user playlist
+ * @param {string} playlistId - The ID of the playlist to add the track to
+ * @param {string} trackId - The ID of the track to add to the playlist
+ * @returns {Promise<void>} - A promise that resolves when the track is added to the playlist
+ * @throws {Error} - If there is an error adding the track to the playlist
+ */
+
+export async function addTrackToPlaylist(playlistId, trackId) {
+  const accessToken = localStorage.getItem('access_token');
+  try {
+    const response = await axios.post(
+      `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
+      { uris: [`spotify:track:${trackId}`] },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    console.log('Added track to playlist:', response.data);
+  } catch (error) {
+    console.error('Error adding track to playlist:', error);
+    throw error;
+  }
+}
