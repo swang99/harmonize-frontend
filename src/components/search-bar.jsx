@@ -143,7 +143,7 @@ function SearchBar() {
       transition={{ duration: 0.5, type: 'spring', stiffness: 50, damping: 12 }}
     >
       <HStack bg="teal.600" w="100vw" h="100vh" display="flex" justify="center" align="flex-start" overflowY="auto">
-        <Box width="80%" p={10} borderRadius="md" mb="15vh">
+        <Box width="80%" p={10} borderRadius="md" mb="20vh">
           <form onSubmit={handleSearch}>
             <FormControl>
               <Flex m={10} gap="2" alignItems="center">
