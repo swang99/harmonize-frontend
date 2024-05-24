@@ -5,10 +5,13 @@ import {
 import { IoPersonAdd } from 'react-icons/io5';
 import PostCard from './post-card';
 import AddFriendModal from './AddFriendModal';
+import ViewFollowing from './ViewFollowing';
+import ViewFollowers from './ViewFollowers';
 
 export default function ProfileHeader(props) {
-  const { onOpen, isOpen, onClose } = useDisclosure();
-  console.log('Stephen\'s posts: ', props.profile.posts);
+  const addFDisc = useDisclosure();
+  const followersDisc = useDisclosure();
+  const followingDisc = useDisclosure();
 
   return (
     <Flex py={5} px={10} bg="teal.600" color="white" minH="100vh" overflow="auto" position="relative" width="100vw" justify="center">
@@ -25,11 +28,15 @@ export default function ProfileHeader(props) {
             <Spacer />
             <VStack justify="flex-start" align="center" mb={8}>
               <Heading as="h3" size="md">{props.profile.followers.length}</Heading>
-              <Text size="md">Followers</Text>
+              <Text size="md" onClick={followersDisc.onOpen} cursor="pointer">
+                Followers
+              </Text>
             </VStack>
             <VStack justify="flex-start" align="center" mb={8}>
               <Heading as="h3" size="md">{props.profile.following.length}</Heading>
-              <Text size="md">Following</Text>
+              <Text size="md" onClick={followingDisc.onOpen} cursor="pointer">
+                Following
+              </Text>
             </VStack>
           </HStack>
           <Icon as={IoPersonAdd}
@@ -41,7 +48,7 @@ export default function ProfileHeader(props) {
             cursor="pointer"
             color="teal.600"
             _hover={{ color: 'gray.500', transform: 'scale(1.1)' }}
-            onClick={onOpen}
+            onClick={addFDisc.onOpen}
           />
         </Box>
         <Tabs variant="unstyled" align="center" defaultIndex={0} mt={4}>
@@ -78,7 +85,16 @@ export default function ProfileHeader(props) {
           </TabPanels>
         </Tabs>
       </VStack>
-      <AddFriendModal isOpen={isOpen} onClose={onClose} />
+      <AddFriendModal isOpen={addFDisc.isOpen} onClose={addFDisc.onClose} />
+      <ViewFollowing
+        isOpen={followingDisc.isOpen}
+        onClose={followingDisc.onClose}
+        following={props.profile.following}
+      />
+      <ViewFollowers isOpen={followersDisc.isOpen}
+        onClose={followersDisc.onClose}
+        followers={props.profile.followers}
+      />
     </Flex>
   );
 }
