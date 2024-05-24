@@ -57,7 +57,7 @@ const NewPostPage = () => {
 
       const post = {
         id: selectedItem.id,
-        type: selectedItem.type,
+        type: selectedItem.type.toLowerCase(),
         comment,
       };
       console.log('Post Object:', post); // debugging
