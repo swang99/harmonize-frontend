@@ -27,8 +27,7 @@ function Feed(props) {
     recentlyPlayedTracks: null,
   });
 
-  // const height = window.innerHeight - 165;
-
+  console.log('Feed: ', feed);
   useEffect(() => {
     const update = async () => {
       try {
@@ -89,8 +88,8 @@ function Feed(props) {
         <Spacer h={10} />
         <Heading pl="10%" textAlign="left">Your Feed</Heading>
         {feed.map((post) => (
-          <Box key={post.id} w="80%" bg="gray.100" p={4} mx="auto" borderRadius="md" shadow="md">
-            <PostCard post={post} />
+          <Box key={post._doc._id} w="80%" minW={550} bg="gray.100" p={4} mx="auto" borderRadius="md" shadow="md">
+            <PostCard post={post._doc} use="feed" name={post.name} photo={post.photo} />
           </Box>
         ))}
       </VStack>

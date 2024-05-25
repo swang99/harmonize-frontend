@@ -362,3 +362,23 @@ export async function addTrackToPlaylist(playlistId, trackId) {
     throw error;
   }
 }
+
+export async function addTrackToLikedSongs(trackId) {
+  const accessToken = localStorage.getItem('access_token');
+  try {
+    const response = await axios.put(
+      'https://api.spotify.com/v1/me/tracks',
+      { ids: [trackId] },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    console.log('Added track to liked songs:', response.data);
+  } catch (error) {
+    console.error('Error adding track to liked songs:', error);
+    throw error;
+  }
+}
