@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-bind */
 import { Box, Button, Flex, FormControl, Grid, HStack, Input } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { getRecentlyPlayedTracks, searchSpotify } from '../utils/spotify-api';
 import TrackItem from './track-item';
 
@@ -9,6 +9,7 @@ function SearchBar() {
   const [results, setResults] = useState([]);
   const [query, setQuery] = useState('');
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
+  const [debounceTimeout, setDebounceTimeout] = useState(null);
 
   useEffect(() => {
     async function fetchRecentlyPlayed() {
@@ -31,19 +32,27 @@ function SearchBar() {
     console.log('Recents:', recentlyPlayed);
   }, [recentlyPlayed]);
 
-  async function handleSearch(e) {
-    e.preventDefault();
+  const handleSearch = useCallback(async () => {
     if (query.length !== 0) {
       const searchResults = await searchSpotify(query);
       setResults(searchResults);
     }
-  }
+  }, [query]);
 
-  async function handleInputChange(e) {
+  const handleInputChange = (e) => {
     const searchQuery = e.target.value;
     setQuery(searchQuery);
-    handleSearch(query);
-  }
+
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
+    }
+
+    const newTimeout = setTimeout(() => {
+      handleSearch();
+    }, 300); // Adjust the debounce delay as needed (300ms here)
+
+    setDebounceTimeout(newTimeout);
+  };
 
   const renderResults = () => {
     if (!results || results.length === 0) {
@@ -86,7 +95,7 @@ function SearchBar() {
     >
       <HStack bg="teal.600" w="100vw" h="100vh" display="flex" justify="center" align="flex-start" overflowY="auto">
         <Box width="80%" p={10} borderRadius="md" mb="20vh">
-          <form onSubmit={handleSearch}>
+          <form onSubmit={(e) => e.preventDefault()}>
             <FormControl>
               <Flex m={10} gap="2" alignItems="center">
                 <Input
@@ -114,7 +123,7 @@ function SearchBar() {
                     },
                   }}
                 />
-                <Button colorScheme="green" type="submit" size="lg" height="50px">
+                <Button colorScheme="green" type="submit" size="lg" height="50px" onClick={handleSearch}>
                   Search
                 </Button>
               </Flex>
