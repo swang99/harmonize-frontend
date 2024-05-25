@@ -22,7 +22,6 @@ function TrackItem(props) {
 
   const handlePlay = async () => {
     try {
-      console.log('Function called:', playTrackInApp);
       await playTrackInApp(id);
     } catch (error) {
       console.error('Failed to play track:', error);
@@ -32,7 +31,6 @@ function TrackItem(props) {
   const handleLike = async () => {
     try {
       await addTrackToLikedSongs(id);
-      toast.success('Track added to Library');
     } catch (error) {
       toast.error('Failed to add track to Library');
     }

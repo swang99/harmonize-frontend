@@ -4,10 +4,9 @@ import { useParams } from 'react-router';
 import { Text } from '@chakra-ui/react';
 import useStore from '../store';
 import { updateToken } from '../utils/SpotifyAuth';
-import ProfileHeader from './ProfileHeader';
-import OthProfileHeader from './OthProfileHeader';
+import ProfileHeader from './user-profile';
 
-function Profile(props) {
+function Profile() {
   const { id } = useParams();
   const { initialFetch, currentProfile, fetchOtherProfile } = useStore((store) => store.profileSlice);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
@@ -43,37 +42,18 @@ function Profile(props) {
     if (tokenUpdated && initialFetch) {
       fetchProfileData();
     }
-  }, [id, tokenUpdated, initialFetch]);
-
-  // useEffect(() => {
-  //   const fetchProfileData = async () => {
-  //     const userSpotifyProfile = await getUserProfile();
-  //     setUserProfile(await fetchProfile(userSpotifyProfile.id));
-  //     try {
-  //       if (id === userSpotifyProfile.id) {
-  //         const loadedProfile = await fetchProfile(id);
-  //         setIsOwnProfile(true);
-  //         setProfile(loadedProfile);
-  //       } else {
-  //         setIsOwnProfile(false);
-  //         const otherProfile = await fetchOtherProfile(id);
-  //         setProfile(otherProfile);
-  //       }
-  //       await updateToken();
-  //       setProfileFetched(true);
-  //     } catch (error) {
-  //       console.error('Failed to fetch profile:', error);
-  //     }
-  //   };
-  //   if (tokenUpdated) {
-  //     fetchProfileData();
-  //   }
-  // }, [id, tokenUpdated]);
+  }, [id, tokenUpdated, initialFetch, currentProfile, fetchOtherProfile]);
 
   const renderProfile = () => {
     if (!profile) return <Text>Profile not found</Text>;
-    else if (isOwnProfile) return <ProfileHeader profile={profile} />;
-    else return <OthProfileHeader profile={profile} userProfile={currentProfile} id={id} />;
+    return (
+      <ProfileHeader
+        isOwnProfile={isOwnProfile}
+        profile={profile}
+        userProfile={currentProfile}
+        id={currentProfile.id}
+      />
+    );
   };
 
   return (

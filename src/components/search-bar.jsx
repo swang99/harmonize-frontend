@@ -31,17 +31,18 @@ function SearchBar() {
     console.log('Recents:', recentlyPlayed);
   }, [recentlyPlayed]);
 
-  async function handleInputChange(e) {
-    const searchQuery = e.target.value;
-    setQuery(searchQuery);
-  }
-
   async function handleSearch(e) {
     e.preventDefault();
     if (query.length !== 0) {
       const searchResults = await searchSpotify(query);
       setResults(searchResults);
     }
+  }
+
+  async function handleInputChange(e) {
+    const searchQuery = e.target.value;
+    setQuery(searchQuery);
+    handleSearch(query);
   }
 
   const renderResults = () => {

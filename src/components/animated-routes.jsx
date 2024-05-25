@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import Feed from './feed';
 import Login from './login';
-import Profile from './Profile';
+import Profile from './profile-screen';
 import SearchBar from './search-bar';
 import NewPostPage from './NewPostPage';
 import useStore from '../store';
