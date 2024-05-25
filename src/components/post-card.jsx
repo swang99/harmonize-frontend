@@ -5,7 +5,7 @@ import { MdOutlineComment } from 'react-icons/md';
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { getItemData } from '../utils/spotify-api';
+import { getItemData, getUserProfile } from '../utils/spotify-api';
 import TrackItem from './track-item';
 import AddTrackToPlaylistModal from './add-track-to-playlist';
 import AddCommentModal from './AddComment';
@@ -34,6 +34,7 @@ const PostCard = (props) => {
   const addCommentDisc = useDisclosure();
   const { playlists } = useStore((store) => store.profileSlice);
   const userProfile = useStore((store) => store.profileSlice.currentProfile);
+  const updatePost = useStore((store) => store.postSlice.updatePost);
   const [liked, setLiked] = useState(props.post.likes.includes(userProfile.userID));
 
   useEffect(() => {
@@ -48,12 +49,29 @@ const PostCard = (props) => {
     fetchPostData();
   }, []);
 
-  const handleLike = () => {
+  const handleLike = async () => {
+    const currUser = await getUserProfile();
+
+    let newLikes = [];
     if (liked) {
       setLiked(false);
+      newLikes = props.post.likes.filter((user) => user !== currUser.id);
     } else {
       setLiked(true);
+      newLikes = [...props.post.likes, currUser.id];
     }
+
+    // construct updated post body
+    const newPost = {
+      id: props.post.id,
+      type: props.post.type,
+      description: props.post.description,
+      comments: props.post.comments,
+      likes: newLikes,
+      createdAt: props.post.createdAt,
+    };
+
+    await updatePost(props.profile, newPost);
   };
 
   const renderLikes = () => {
@@ -172,8 +190,9 @@ const PostCard = (props) => {
             _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
             onClick={addCommentDisc.onOpen}
           />
+          {props.post.likes.length > 0 ? props.post.likes.length : null}
           <Icon
-            as={FaRegHeart}
+            as={liked ? FaHeart : FaRegHeart}
             w={7}
             h={7}
             cursor="pointer"
