@@ -5,7 +5,7 @@ import { MdOutlineComment } from 'react-icons/md';
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { getItemData, getUserProfile } from '../utils/spotify-api';
+import { getItemData } from '../utils/spotify-api';
 import TrackItem from './track-item';
 import AddTrackToPlaylistModal from './add-track-to-playlist';
 import AddCommentModal from './AddComment';
@@ -23,6 +23,7 @@ import useStore from '../store';
  * @param {[String]} props.post.likes - The likes associated with the post.
  * @param {string} props.use - The use of the PostCard component (feed, profile, etc.).
  * @param {string} props.name - The name of the user who created the post (only for feed).
+ * @param {string} props.authorID - The ID of the user who created the post.
  * @param {string} props.photo - The photo of the user who created the post (only for feed).
  * @returns {JSX.Element} The rendered Post component.
  */
@@ -32,7 +33,7 @@ const PostCard = (props) => {
   const { id, type } = post;
   const addTrackToPlaylistDisc = useDisclosure();
   const addCommentDisc = useDisclosure();
-  const { playlists } = useStore((store) => store.profileSlice);
+  const { playlists, fetchOtherProfile } = useStore((store) => store.profileSlice);
   const userProfile = useStore((store) => store.profileSlice.currentProfile);
   const updatePost = useStore((store) => store.postSlice.updatePost);
   const [liked, setLiked] = useState(props.post.likes.includes(userProfile.userID));
@@ -50,18 +51,14 @@ const PostCard = (props) => {
   }, []);
 
   const handleLike = async () => {
-    const currUser = await getUserProfile();
-
     let newLikes = [];
     if (liked) {
       setLiked(false);
-      newLikes = props.post.likes.filter((user) => user !== currUser.id);
+      newLikes = props.post.likes.filter((user) => user !== userProfile.userID);
     } else {
       setLiked(true);
-      newLikes = [...props.post.likes, currUser.id];
+      newLikes = [...props.post.likes, userProfile.userID];
     }
-
-    // construct updated post body
     const newPost = {
       id: props.post.id,
       type: props.post.type,
@@ -70,10 +67,12 @@ const PostCard = (props) => {
       likes: newLikes,
       createdAt: props.post.createdAt,
     };
-
-    console.log('Before update: ', props.profile);
-
-    await updatePost(props.profile, newPost);
+    try {
+      const authorProfile = await fetchOtherProfile(props.authorID);
+      await updatePost(authorProfile, newPost);
+    } catch (error) {
+      toast.error('Failed to like post:', error);
+    }
   };
 
   const renderLikes = () => {
