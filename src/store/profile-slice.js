@@ -9,6 +9,7 @@ async function updateHelper(userID, updatedProfile) {
 }
 
 const createProfileSlice = (set, get) => ({
+  initialFetch: false,
   currentProfile: null,
 
   fetchAllProfiles: async () => {
@@ -86,8 +87,11 @@ const createProfileSlice = (set, get) => ({
 
   handleLogin: async (profile, tracks, artists, playlists) => {
     try {
-      await get().profileSlice.fetchProfile(profile.id);
-      const existingProfile = get().profileSlice.currentProfile;
+      const fetchProfileResponse = await axios.get(`${ROOT_URL}users/${profile.id}`);
+      set((state) => ({
+        profileSlice: { ...state.profileSlice, currentProfile: fetchProfileResponse.data },
+      }), false, 'users/fetchProfileOnLogin');
+      const existingProfile = await get().profileSlice.currentProfile;
 
       if (!existingProfile || existingProfile.userID !== profile.id) {
         const newProfile = {
@@ -103,7 +107,10 @@ const createProfileSlice = (set, get) => ({
           playlists: playlists.items.map((item) => item.id),
           posts: [],
         };
-        await get().profileSlice.createProfile(newProfile);
+        const response = await axios.post(`${ROOT_URL}/users`, newProfile);
+        set((state) => ({
+          profileSlice: { ...state.profileSlice, currentProfile: response.data },
+        }), false, 'users/createProfileOnLogin');
       } else {
         const updatedProfile = {
           ...existingProfile,
@@ -114,15 +121,13 @@ const createProfileSlice = (set, get) => ({
           topArtists: artists.items.map((item) => item.id),
           playlists: playlists.items.map((item) => item.id),
         };
-
-        // updatedProfile.posts = [];
-        await get().profileSlice.updateProfile(profile.id, updatedProfile);
+        await updateHelper(profile.id, updatedProfile);
+        set((state) => ({
+          profileSlice: { ...state.profileSlice, currentProfile: updatedProfile },
+        }), false, 'users/updateProfileOnLogin');
       }
-
-      await get().profileSlice.fetchProfile(profile.id);
     } catch (error) {
       console.error('Failed to handle login:', error.message);
-      get().errorSlice.newError(error.message);
     }
   },
 
@@ -195,13 +200,38 @@ const createProfileSlice = (set, get) => ({
     }
   },
 
+  filterFollowing: async (userID) => {
+    try {
+      const response = await axios.get(`${ROOT_URL}users`);
+      const users = response.data;
+      const following = users.filter((user) => user.followers.includes(userID));
+      return following;
+    } catch (error) {
+      console.error('Failed to filter profiles:', error.message);
+      get().errorSlice.newError(error.message);
+      return [];
+    }
+  },
+
+  filterFollowers: async (userID) => {
+    try {
+      const response = await axios.get(`${ROOT_URL}users`);
+      const users = response.data;
+      const followers = users.filter((user) => user.following.includes(userID));
+      return followers;
+    } catch (error) {
+      console.error('Failed to filter profiles:', error.message);
+      get().errorSlice.newError(error.message);
+      return [];
+    }
+  },
+
   loadFeed: async (userID) => {
     try {
       const response = await axios.get(`${ROOT_URL}users/${userID}/feed`);
       return response.data;
     } catch (error) {
       console.error('Failed to load feed:', error.message);
-      get().errorSlice.newError(error.message);
       return [];
     }
   },

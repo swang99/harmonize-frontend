@@ -107,11 +107,11 @@ export default function OthProfileHeader(props) {
       <ViewFollowing
         isOpen={followingDisc.isOpen}
         onClose={followingDisc.onClose}
-        following={props.profile.following}
+        profile={props.profile}
       />
       <ViewFollowers isOpen={followersDisc.isOpen}
         onClose={followersDisc.onClose}
-        followers={props.profile.followers}
+        profile={props.profile}
       />
     </Flex>
   );
