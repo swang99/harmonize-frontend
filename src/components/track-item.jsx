@@ -16,7 +16,7 @@ import AddTrackToPlaylistModal from './add-track-to-playlist';
 function TrackItem(props) {
   const { id, name, artist, imageURL } = props;
   const [isHovered, setIsHovered] = useState(false);
-  const { playlists } = useStore((store) => store.profileSlice);
+  const playlists = useStore((store) => store.profileSlice.playlists);
 
   const addTrackToPlaylistDisc = useDisclosure();
 
@@ -130,23 +130,26 @@ function TrackItem(props) {
 
   if (props.use === 'feed') {
     return (
-      <Box key={id} borderRadius="md" minW={250}>
+      <Box key={id} borderRadius="md" minW={250} position="relative">
         <VStack display="flex" justifyContent="space-between">
           <Box alignSelf="flex-start" bg="gray.800" w="100%" rounded="md" p="3">
             <Text fontSize="2xl" fontWeight="bold" color="white" isTruncated>{name}</Text>
             <Text fontSize="xl" as="i" color="gray.400" isTruncated>{artist}</Text>
-            <Icon
-              as={CgPlayListAdd}
-              w={7}
-              h={7}
-              cursor="pointer"
-              color="teal.900"
-              _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
-              onClick={addTrackToPlaylistDisc.onOpen}
-            />
           </Box>
           {renderImage()}
         </VStack>
+        <Icon
+          as={CgPlayListAdd}
+          w={7}
+          h={7}
+          cursor="pointer"
+          color="teal.900"
+          _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
+          position="absolute"
+          bottom="10px"
+          right="10px"
+          onClick={addTrackToPlaylistDisc.onOpen}
+        />
         <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={id} playlists={playlists} />
       </Box>
     );
@@ -156,7 +159,7 @@ function TrackItem(props) {
     <Box key={id} w="100%" bg="gray.800" borderRadius="md" overflow="hidden" position="relative">
       <Image src={imageURL} alt={name} />
       <HStack p={3}>
-        <VStack align="flex-start" mx={2}>
+        <VStack align="flex-start" mx={2} maxW="calc(100% - 70px)" spacing={1}>
           <Text fontSize="md" fontWeight="bold" color="white" isTruncated>{name}</Text>
           <Text fontSize="sm" color="gray.400" isTruncated>{artist}</Text>
         </VStack>

@@ -32,5 +32,14 @@ export default function createPlayerSlice(set, get) {
         },
       }));
     },
+
+    updatePosition: (newPosition) => {
+      set((state) => ({
+        playerSlice: {
+          ...state.playerSlice,
+          position: newPosition,
+        },
+      }));
+    },
   };
 }
