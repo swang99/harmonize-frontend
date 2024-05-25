@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-bind */
-import { Box, Button, VStack, Image, Text, Icon } from '@chakra-ui/react';
+import { Box, Button, VStack, Image, Text, useDisclosure, Icon, HStack, Spacer } from '@chakra-ui/react';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import { FaSpotify, FaPlay } from 'react-icons/fa';
 import { FaHeartCirclePlus } from 'react-icons/fa6';
@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
+import { CgPlayListAdd } from 'react-icons/cg';
 import { playTrackInApp } from '../utils/spotify-player';
 import { addTrackToLikedSongs } from '../utils/spotify-api';
 
@@ -23,6 +24,8 @@ import { addTrackToLikedSongs } from '../utils/spotify-api';
 function TrackItem(props) {
   const { id, name, artist, imageURL } = props;
   const [isHovered, setIsHovered] = useState(false);
+
+  const addTrackToPlaylistDisc = useDisclosure();
 
   const handlePlay = async () => {
     try {
@@ -139,6 +142,15 @@ function TrackItem(props) {
           <Box alignSelf="flex-start" bg="gray.800" w="100%" rounded="md" p="3">
             <Text fontSize="2xl" fontWeight="bold" color="white" isTruncated>{name}</Text>
             <Text fontSize="xl" as="i" color="gray.400" isTruncated>{artist}</Text>
+            <Icon
+              as={CgPlayListAdd}
+              w={7}
+              h={7}
+              cursor="pointer"
+              color="teal.900"
+              _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
+              onClick={addTrackToPlaylistDisc.onOpen}
+            />
           </Box>
           {renderImage()}
         </VStack>
@@ -149,10 +161,22 @@ function TrackItem(props) {
   return (
     <Box key={id} w="100%" bg="gray.800" borderRadius="md" overflow="hidden" position="relative">
       <Image src={imageURL} alt={name} />
-      <Box p={3}>
-        <Text fontSize="md" fontWeight="bold" color="white" isTruncated>{name}</Text>
-        <Text fontSize="sm" color="gray.400" isTruncated>{artist}</Text>
-      </Box>
+      <HStack p={3}>
+        <VStack align="flex-start" mx={2}>
+          <Text fontSize="md" fontWeight="bold" color="white" isTruncated>{name}</Text>
+          <Text fontSize="sm" color="gray.400" isTruncated>{artist}</Text>
+        </VStack>
+        <Spacer />
+        <Icon
+          as={CgPlayListAdd}
+          w={7}
+          h={7}
+          cursor="pointer"
+          color="teal.900"
+          _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
+          onClick={addTrackToPlaylistDisc.onOpen}
+        />
+      </HStack>
       <Button
         position="absolute"
         top="50%"

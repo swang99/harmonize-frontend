@@ -29,6 +29,7 @@ function ViewFollowers(props) {
         <ModalCloseButton />
         <ModalBody>
           {props.followers.map((user) => {
+            console.log(user);
             return (
               <Text key={user} onClick={() => handleNavigateUser(user)} cursor="pointer">
                 {user}

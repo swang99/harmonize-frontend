@@ -1,8 +1,17 @@
-import React, { useEffect, useState } from 'react';
 import {
-  Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, HStack,
-  ModalBody, ModalFooter, List, ListItem, Button, Text, Image,
+  Button,
+  HStack,
+  List, ListItem,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Text,
 } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { addTrackToPlaylist, getCurrentUserPlaylists } from '../utils/spotify-api';
@@ -16,6 +25,9 @@ import { addTrackToPlaylist, getCurrentUserPlaylists } from '../utils/spotify-ap
 export default function AddTrackToPlaylistModal(props) {
   const { trackID, playlists, isOpen, onClose } = props;
   const [playlistsToRender, setPlaylistsToRender] = useState([]);
+  useEffect(() => {
+    console.log(playlistsToRender);
+  }, [playlistsToRender]);
 
   useEffect(() => {
     async function fetchPlaylists() {
@@ -57,7 +69,6 @@ export default function AddTrackToPlaylistModal(props) {
                 onClick={() => handleAddTrackToPlaylist(playlist.id)}
               >
                 <HStack>
-                  <Image src={playlist.images[0].url} h={10} />
                   <Text>{playlist.name}</Text>
                 </HStack>
               </ListItem>
