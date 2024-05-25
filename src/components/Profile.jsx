@@ -45,31 +45,6 @@ function Profile(props) {
     }
   }, [id, tokenUpdated, initialFetch]);
 
-  // useEffect(() => {
-  //   const fetchProfileData = async () => {
-  //     const userSpotifyProfile = await getUserProfile();
-  //     setUserProfile(await fetchProfile(userSpotifyProfile.id));
-  //     try {
-  //       if (id === userSpotifyProfile.id) {
-  //         const loadedProfile = await fetchProfile(id);
-  //         setIsOwnProfile(true);
-  //         setProfile(loadedProfile);
-  //       } else {
-  //         setIsOwnProfile(false);
-  //         const otherProfile = await fetchOtherProfile(id);
-  //         setProfile(otherProfile);
-  //       }
-  //       await updateToken();
-  //       setProfileFetched(true);
-  //     } catch (error) {
-  //       console.error('Failed to fetch profile:', error);
-  //     }
-  //   };
-  //   if (tokenUpdated) {
-  //     fetchProfileData();
-  //   }
-  // }, [id, tokenUpdated]);
-
   const renderProfile = () => {
     if (!profile) return <Text>Profile not found</Text>;
     else if (isOwnProfile) return <ProfileHeader profile={profile} />;
