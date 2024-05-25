@@ -1,16 +1,16 @@
 /* eslint-disable react/jsx-no-bind */
-import { Box, Button, VStack, Image, Text, useDisclosure, Icon, HStack, Spacer } from '@chakra-ui/react';
+import { Box, Button, HStack, Icon, Image, Text, VStack, useDisclosure } from '@chakra-ui/react';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
-import { FaSpotify, FaPlay } from 'react-icons/fa';
-import { FaHeartCirclePlus } from 'react-icons/fa6';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
-import 'react-toastify/dist/ReactToastify.css';
-import { toast } from 'react-toastify';
 import { CgPlayListAdd } from 'react-icons/cg';
+import { FaPlay, FaSpotify } from 'react-icons/fa';
+import { FaHeartCirclePlus } from 'react-icons/fa6';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
-import { playTrackInApp } from '../utils/spotify-player';
 import { addTrackToLikedSongs } from '../utils/spotify-api';
+import { playTrackInApp } from '../utils/spotify-player';
 import AddTrackToPlaylistModal from './add-track-to-playlist';
 
 function TrackItem(props) {
@@ -158,12 +158,11 @@ function TrackItem(props) {
   return (
     <Box key={id} w="100%" bg="gray.800" borderRadius="md" overflow="hidden" position="relative">
       <Image src={imageURL} alt={name} />
-      <HStack p={3}>
-        <VStack align="flex-start" mx={2} maxW="calc(100% - 70px)" spacing={1}>
-          <Text fontSize="md" fontWeight="bold" color="white" isTruncated>{name}</Text>
-          <Text fontSize="sm" color="gray.400" isTruncated>{artist}</Text>
+      <HStack p={3} position="relative">
+        <VStack align="flex-start" mx={2} flex="1" spacing={1} pr="40px" maxW="100%">
+          <Text fontSize="md" fontWeight="bold" color="white" isTruncated maxW="100%">{name}</Text>
+          <Text fontSize="sm" color="gray.400" isTruncated maxW="100%">{artist} </Text>
         </VStack>
-        <Spacer />
         <Icon
           as={CgPlayListAdd}
           w={7}
@@ -172,6 +171,10 @@ function TrackItem(props) {
           color="gray.200"
           _hover={{ color: 'white', transform: 'scale(1.1)' }}
           onClick={addTrackToPlaylistDisc.onOpen}
+          position="absolute"
+          right="10px"
+          top="50%"
+          transform="translateY(-50%)"
         />
       </HStack>
       <Button
