@@ -3,36 +3,36 @@ import {
   Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton,
   ModalBody, ModalFooter, Button, VStack, Textarea, useToast,
 } from '@chakra-ui/react';
-import useStore from '../store/post-slice';
+import useStore from '../store';
 
 function AddCommentModal(props) {
+  const fetchOtherProfile = useStore((store) => store.profileSlice.fetchOtherProfile);
   const [comment, setComment] = useState('');
   const toast = useToast();
-  const { updatePost } = useStore();
+  const { updatePost } = useStore((store) => store.postSlice);
 
   const handleCommentChange = (event) => {
     setComment(event.target.value);
   };
-
   const handleSubmit = async () => {
     // add new comment to post
     const newCmnt = {
-      author: props.profile.userID,
+      author: props.commentAuthorID,
       comment,
     };
-    const newComments = [...props.postData.comments, newCmnt];
+    const newComments = [...props.post.comments, newCmnt];
 
     // construct updated post body
     const newPost = {
-      id: props.postData.id,
-      type: props.postData.type,
-      description: props.postData.description,
+      id: props.post.id,
+      type: props.post.type,
+      description: props.post.description,
       comments: newComments,
-      likes: props.postData.likes,
-      createdAt: props.postData.createdAt,
+      likes: props.post.likes,
+      createdAt: props.post.createdAt,
     };
-
-    await updatePost(props.profile, newPost);
+    const authorProfile = await fetchOtherProfile(props.postAuthorID);
+    await updatePost(authorProfile, newPost);
     toast({
       title: 'Commented!',
       status: 'success',

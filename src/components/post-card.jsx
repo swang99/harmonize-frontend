@@ -168,7 +168,7 @@ const PostCard = (props) => {
             </VStack>
           </Box>
           <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={postItemData.id} playlists={playlists} />
-          <AddCommentModal isOpen={addCommentDisc.isOpen} onClose={addCommentDisc.onClose} />
+          <AddCommentModal isOpen={addCommentDisc.isOpen} onClose={addCommentDisc.onClose} post={props.post} postAuthorID={props.authorID} commentAuthorID={userProfile.userID} />
         </HStack>
       );
     }
