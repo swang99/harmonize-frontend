@@ -1,4 +1,8 @@
-export default function createPostSlice(set, get) {
+import axios from 'axios';
+
+const ROOT_URL = 'https://project-api-spotify-sharing.onrender.com/api/';
+
+const createPostSlice = (set, get) => {
   return {
     all: [],
     createPost: async (userID, post) => {
@@ -19,8 +23,8 @@ export default function createPostSlice(set, get) {
       await get().profileSlice.updateProfile(userID, updatedProfile);
     },
 
-    updatePost: async (userID, post) => {
-      const existingProfile = get().profileSlice.currentProfile;
+    updatePost: async (profile, post) => {
+      /* const existingProfile = get().profileSlice.currentProfile;
       if (existingProfile.userID !== userID) {
         console.error('Cannot update post for different user');
         return;
@@ -30,7 +34,19 @@ export default function createPostSlice(set, get) {
       set((state) => ({
         profileSlice: { ...state.profileSlice, currentProfile: updatedProfile },
       }), false, 'users/updatePost');
-      await get().profileSlice.updateProfile(userID, updatedProfile);
+      await get().profileSlice.updateProfile(userID, updatedProfile); */
+
+      try {
+        const updatedPosts = profile.posts.map((p) => (p.id === post.id ? post : p));
+        const updatedProfile = { ...profile, posts: updatedPosts };
+        await axios.put(`${ROOT_URL}users/${profile.userID}`, updatedProfile);
+        set((state) => ({
+          profileSlice: { ...state.profileSlice, currentProfile: updatedProfile },
+        }), false, 'users/updatePost');
+      } catch (error) {
+        console.error('Failed to update post:', error.message);
+        get().errorSlice.newError(error.message);
+      }
     },
 
     deletePost: async (userID, postID) => {
@@ -52,4 +68,6 @@ export default function createPostSlice(set, get) {
       return profile.posts.find((p) => p.id === postID);
     },
   };
-}
+};
+
+export default createPostSlice;

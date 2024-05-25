@@ -80,6 +80,8 @@ const PostCard = (props) => {
         <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={postItemData.id} playlists={playlists} />
         <AddCommentModal isOpen={addCommentDisc.isOpen}
           onClose={addCommentDisc.onClose}
+          postData={post}
+          profile={props.profile}
         />
       </HStack>
     );

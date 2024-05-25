@@ -74,7 +74,7 @@ export default function ProfileHeader(props) {
                 <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6} w="100%" pb="20vh">
                   {props.profile.posts && props.profile.posts.length > 0 ? (
                     props.profile.posts.map((post) => (
-                      <PostCard key={post.id} post={post} />
+                      <PostCard key={post.id} post={post} profile={props.profile} />
                     ))
                   ) : (
                     <Text>No posts yet.</Text>
