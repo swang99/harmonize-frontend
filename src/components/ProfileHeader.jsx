@@ -12,7 +12,7 @@ export default function ProfileHeader(props) {
   const addFDisc = useDisclosure();
   const followersDisc = useDisclosure();
   const followingDisc = useDisclosure();
-  console.log(props.profile.followers);
+  console.log(props.profile);
 
   return (
     <Flex py={5} px={10} bg="teal.600" color="white" height="100vh" overflowY="auto" position="relative" width="100vw" justify="center">
@@ -90,11 +90,11 @@ export default function ProfileHeader(props) {
       <ViewFollowing
         isOpen={followingDisc.isOpen}
         onClose={followingDisc.onClose}
-        following={props.profile.following}
+        profile={props.profile}
       />
       <ViewFollowers isOpen={followersDisc.isOpen}
         onClose={followersDisc.onClose}
-        followers={props.profile.followers}
+        profile={props.profile}
       />
     </Flex>
   );

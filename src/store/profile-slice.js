@@ -195,6 +195,32 @@ const createProfileSlice = (set, get) => ({
     }
   },
 
+  filterFollowing: async (userID) => {
+    try {
+      const response = await axios.get(`${ROOT_URL}users`);
+      const users = response.data;
+      const following = users.filter((user) => user.followers.includes(userID));
+      return following;
+    } catch (error) {
+      console.error('Failed to filter profiles:', error.message);
+      get().errorSlice.newError(error.message);
+      return [];
+    }
+  },
+
+  filterFollowers: async (userID) => {
+    try {
+      const response = await axios.get(`${ROOT_URL}users`);
+      const users = response.data;
+      const followers = users.filter((user) => user.following.includes(userID));
+      return followers;
+    } catch (error) {
+      console.error('Failed to filter profiles:', error.message);
+      get().errorSlice.newError(error.message);
+      return [];
+    }
+  },
+
   loadFeed: async (userID) => {
     try {
       const response = await axios.get(`${ROOT_URL}users/${userID}/feed`);
