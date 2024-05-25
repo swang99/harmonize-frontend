@@ -51,7 +51,7 @@ function Profile() {
         isOwnProfile={isOwnProfile}
         profile={profile}
         userProfile={currentProfile}
-        id={currentProfile.id}
+        id={id}
       />
     );
   };
