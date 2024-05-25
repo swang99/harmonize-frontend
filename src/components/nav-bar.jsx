@@ -39,9 +39,9 @@ const NavBar = () => {
       </Flex>
       <Button
         onClick={logout}
+        borderRadius="full"
         px={4}
         py={2}
-        rounded="md"
         colorScheme="red"
         variant="solid"
       >

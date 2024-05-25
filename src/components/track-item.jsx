@@ -169,8 +169,8 @@ function TrackItem(props) {
           w={7}
           h={7}
           cursor="pointer"
-          color="teal.900"
-          _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
+          color="gray.200"
+          _hover={{ color: 'white', transform: 'scale(1.1)' }}
           onClick={addTrackToPlaylistDisc.onOpen}
         />
       </HStack>
