@@ -190,6 +190,7 @@ const PostCard = (props) => {
             _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
             onClick={addCommentDisc.onOpen}
           />
+          {props.post.likes.length > 0 ? props.post.likes.length : null}
           <Icon
             as={liked ? FaHeart : FaRegHeart}
             w={7}
