@@ -1,31 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Box, Heading, Spacer, Text, VStack } from '@chakra-ui/react';
-// import { toast } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
+import { Box, Heading, Spacer, VStack, Text } from '@chakra-ui/react';
 import useStore from '../store';
-import { getCurrentUserPlaylists, getRecentlyPlayedTracks, getUserProfile, getUserTopArtists, getUserTopTracks } from '../utils/spotify-api';
 import { updateToken } from '../utils/SpotifyAuth';
 import PostCard from './post-card';
 
 function Feed(props) {
-  const [dataLoaded, setDataLoaded] = useState(false); // track if user data is loaded
   const [tokenUpdated, setTokenUpdated] = useState(false); // track if token is updated
   const [feed, setFeed] = useState([]); // store the user's feed
   const { height } = props;
 
   // getting posts from the store
-  const loadFeed = useStore((store) => store.profileSlice.loadFeed);
-  const handleLogin = useStore((store) => store.profileSlice.handleLogin);
-
-  // store the user's profile, top tracks, top artists, playlists, and recently played tracks
-  const [userData, setUserData] = useState({
-    profile: null,
-    topTracks: null,
-    topArtists: null,
-    userPlaylists: null,
-    recentlyPlayedTracks: null,
-  });
+  const { loadFeed, currentProfile, initialFetch } = useStore((store) => store.profileSlice);
 
   useEffect(() => {
     const update = async () => {
@@ -36,47 +22,18 @@ function Feed(props) {
         console.error('Failed to update token or fetch top tracks:', error);
       }
     };
-    update();
-  }, []);
-
-  useEffect(() => {
-    async function fetchUserData() {
-      if (tokenUpdated) {
-        try {
-          const [profile, tracks, artists, playlists, recents] = await Promise.all([
-            getUserProfile(),
-            getUserTopTracks(),
-            getUserTopArtists(),
-            getCurrentUserPlaylists(),
-            getRecentlyPlayedTracks(),
-          ]);
-
-          setUserData({
-            profile,
-            topTracks: tracks,
-            topArtists: artists,
-            userPlaylists: playlists,
-            recentlyPlayedTracks: recents,
-          });
-          setDataLoaded(true);
-        } catch (error) {
-          console.error('Failed to fetch user data:', error);
-        }
-      }
+    if (initialFetch) {
+      update();
     }
-    fetchUserData();
-  }, [tokenUpdated]);
-
+  }, [initialFetch]);
   useEffect(() => {
     const loadFeedData = async () => {
-      if (dataLoaded) {
-        const { profile, topTracks, topArtists, userPlaylists } = userData;
-        await handleLogin(profile, topTracks, topArtists, userPlaylists);
-        setFeed(await loadFeed(profile.id));
+      if (tokenUpdated && initialFetch && currentProfile.userID) {
+        setFeed(await loadFeed(currentProfile.userID));
       }
     };
     loadFeedData();
-  }, [dataLoaded, userData]);
+  }, [tokenUpdated, initialFetch, currentProfile]);
 
   const renderPosts = () => {
     if (!feed || feed.length === 0) {

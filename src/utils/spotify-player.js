@@ -34,7 +34,7 @@ const initializePlayer = async () => {
     // Ready
     spotifyPlayer.addListener('ready', ({ device_id }) => {
       console.log('Ready with Device ID', device_id);
-      useStore.setState((state) => ({ playerSlice: { ...state.playerSlice, deviceId: device_id } })); // set deviceID in zustand
+      useStore.setState((state) => ({ playerSlice: { ...state.playerSlice, deviceId: device_id } }), false, 'updateDeviceID'); // set deviceID in zustand
     });
 
     // Not Ready
