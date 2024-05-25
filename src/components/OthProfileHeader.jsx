@@ -96,7 +96,7 @@ export default function OthProfileHeader(props) {
           <Grid templateColumns="repeat(3, 1fr)" gap={6}>
             {props.profile.posts && props.profile.posts.length > 0 ? (
               props.profile.posts.map((post) => (
-                <PostCard key={post.id} post={post} />
+                <PostCard key={post.id} post={post} profile={props.profile} />
               ))
             ) : (
               <Text>No posts yet.</Text>

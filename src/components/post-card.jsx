@@ -71,6 +71,8 @@ const PostCard = (props) => {
       createdAt: props.post.createdAt,
     };
 
+    console.log('Before update: ', props.profile);
+
     await updatePost(props.profile, newPost);
   };
 
