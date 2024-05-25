@@ -27,7 +27,6 @@ function Feed(props) {
     recentlyPlayedTracks: null,
   });
 
-  console.log('Feed: ', feed);
   useEffect(() => {
     const update = async () => {
       try {
