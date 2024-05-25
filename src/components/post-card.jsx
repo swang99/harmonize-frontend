@@ -37,6 +37,7 @@ const PostCard = (props) => {
   const userProfile = useStore((store) => store.profileSlice.currentProfile);
   const updatePost = useStore((store) => store.postSlice.updatePost);
   const [liked, setLiked] = useState(props.post.likes.includes(userProfile.userID));
+  const [likes, setLikes] = useState(props.post.likes.length);
 
   useEffect(() => {
     const fetchPostData = async () => {
@@ -54,9 +55,11 @@ const PostCard = (props) => {
     let newLikes = [];
     if (liked) {
       setLiked(false);
+      setLikes(likes - 1);
       newLikes = props.post.likes.filter((user) => user !== userProfile.userID);
     } else {
       setLiked(true);
+      setLikes(likes + 1);
       newLikes = [...props.post.likes, userProfile.userID];
     }
     const newPost = {
@@ -79,7 +82,7 @@ const PostCard = (props) => {
     if (liked) {
       return (
         <HStack>
-          <Text fontSize="xl" as="b">{props.post.likes.length}</Text>
+          <Text fontSize="xl" as="b">{likes}</Text>
           <Icon
             as={FaHeart}
             w={7}
@@ -93,7 +96,7 @@ const PostCard = (props) => {
     }
     return (
       <HStack>
-        <Text fontSize="xl" as="b">{props.post.likes.length}</Text>
+        <Text fontSize="xl" as="b">{likes}</Text>
         <Icon
           as={FaRegHeart}
           w={7}
