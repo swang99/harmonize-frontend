@@ -1,7 +1,8 @@
-import { Box, HStack, Icon, useDisclosure, Heading, Avatar, VStack } from '@chakra-ui/react';
+import { Box, HStack, Icon, useDisclosure, Heading, Avatar, VStack, Text } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { CgPlayListAdd } from 'react-icons/cg';
-import { FaComment } from 'react-icons/fa';
+import { MdOutlineComment } from 'react-icons/md';
+import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getItemData } from '../utils/spotify-api';
@@ -15,23 +16,26 @@ import useStore from '../store';
  *
  * @component
  * @param {Object} props - The props object containing the post data.
- * @param {string} props.id - The ID of the post.
- * @param {string} props.type - The type of the post.
- * @param {string} props.description - The description associated with the post.
- * @param {[String]} props.comments -The comments associated with the post.
+ * @param {string} props.post.id - The ID of the post.
+ * @param {string} props.post.type - The type of the post.
+ * @param {string} props.post.description - The description associated with the post.
+ * @param {[String]} props.post.comments -The comments associated with the post.
+ * @param {[String]} props.post.likes - The likes associated with the post.
  * @param {string} props.use - The use of the PostCard component (feed, profile, etc.).
+ * @param {string} props.name - The name of the user who created the post (only for feed).
+ * @param {string} props.photo - The photo of the user who created the post (only for feed).
  * @returns {JSX.Element} The rendered Post component.
  */
 const PostCard = (props) => {
   const { post, use } = props;
   const [postItemData, setPostItemData] = useState(null);
   const { id, type } = post;
-  console.log(id, type);
   const addTrackToPlaylistDisc = useDisclosure();
   const addCommentDisc = useDisclosure();
   const { playlists } = useStore((store) => store.profileSlice);
+  const userProfile = useStore((store) => store.profileSlice.currentProfile);
+  const [liked, setLiked] = useState(props.post.likes.includes(userProfile.userID));
 
-  console.log('Post: ', post);
   useEffect(() => {
     const fetchPostData = async () => {
       try {
@@ -44,40 +48,105 @@ const PostCard = (props) => {
     fetchPostData();
   }, []);
 
-  useEffect(() => {
-    console.log('Post item data: ', postItemData);
-  }, [postItemData]);
+  const handleLike = () => {
+    if (liked) {
+      setLiked(false);
+    } else {
+      setLiked(true);
+    }
+  };
 
+  const renderLikes = () => {
+    if (liked) {
+      return (
+        <HStack>
+          <Text fontSize="xl" as="b">{props.post.likes.length}</Text>
+          <Icon
+            as={FaHeart}
+            w={7}
+            h={7}
+            color="teal.900"
+            _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
+            onClick={handleLike}
+          />
+        </HStack>
+      );
+    }
+    return (
+      <HStack>
+        <Text fontSize="xl" as="b">{props.post.likes.length}</Text>
+        <Icon
+          as={FaRegHeart}
+          w={7}
+          h={7}
+          color="teal.900"
+          _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
+          onClick={handleLike}
+        />
+      </HStack>
+    );
+  };
   const renderTrackPost = () => {
     const { name } = postItemData;
     const imageURL = postItemData.album.images[0].url;
     const artists = postItemData.artists[0].name;
 
     if (use === 'feed') {
-      console.log('Post: ', post);
-      const username = post.name;
-      const userPhoto = post.photo;
+      const username = props.name;
+      const userPhoto = props.photo;
       return (
-        <HStack w="100%" h={300}>
-          <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} w="50%" />
-          <Box p={3} w="50%">
-            <VStack>
-              <HStack>
-                <Avatar size="lg" src={userPhoto} />
-                <Heading>{username}</Heading>
+        <HStack w="100%" h={350} gap="4">
+          <TrackItem height="100%" key={id} id={id} name={name} artist={artists} imageURL={imageURL} use="feed" flex="0 1 auto" />
+          <Box w={1} h="100%" bg="gray.800" rounded="xl" />
+          <Box flex="1" h="100%">
+            <VStack w="100%" h="100%" justifyContent="space-between">
+              <HStack w="100%" justifyContent="space-between" alignSelf="flex-start" gap="4">
+                <HStack>
+                  <Avatar size="lg" src={userPhoto} />
+                  <Heading>{username}</Heading>
+                </HStack>
+                <Box justifySelf="flex-end">
+                  {renderLikes()}
+                </Box>
+              </HStack>
+              <Box alignSelf="flex-start">
+                <Text fontSize="lg" color="gray.800" w="100%" as="i">
+                  Description:
+                </Text>
+                <Text fontSize="lg" color="gray.800" w="100%" as="span">
+                  {` ${post.description}`}
+                </Text>
+              </Box>
+              <Box fontSize="lg" color="gray.800" w="100%" alignSelf="flex-start">
+                <Text as="i">Comments: </Text>
+                {post.comments.map((comment) => (
+                  <Text key={comment.id}>{`${comment.author}: ${comment.comment}`}</Text>
+                ))}
+              </Box>
+              <HStack alignSelf="flex-end" justifySelf="flex-end" gap="4">
+                <Icon
+                  as={MdOutlineComment}
+                  w={7}
+                  h={7}
+                  cursor="pointer"
+                  color="teal.900"
+                  _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
+                  onClick={addCommentDisc.onOpen}
+                />
+                <Icon
+                  as={CgPlayListAdd}
+                  w={7}
+                  h={7}
+                  cursor="pointer"
+                  color="teal.900"
+                  _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
+                  onClick={addTrackToPlaylistDisc.onOpen}
+                />
               </HStack>
             </VStack>
-            <Icon
-              as={CgPlayListAdd}
-              w={7}
-              h={7}
-              cursor="pointer"
-              color="teal.900"
-              _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
-              onClick={addTrackToPlaylistDisc.onOpen}
-            />
           </Box>
           <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={postItemData.id} playlists={playlists} />
+          <AddCommentModal isOpen={addCommentDisc.isOpen} onClose={addCommentDisc.onClose} />
         </HStack>
       );
     }
@@ -93,20 +162,25 @@ const PostCard = (props) => {
             color="teal.900"
             _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
             onClick={addTrackToPlaylistDisc.onOpen}
-          >
-            Add to Playlist
-          </Icon>
+          />
           <Icon
-            as={FaComment}
+            as={MdOutlineComment}
             w={7}
             h={7}
             cursor="pointer"
             color="teal.900"
             _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
             onClick={addCommentDisc.onOpen}
-          >
-            Add to Playlist
-          </Icon>
+          />
+          <Icon
+            as={FaRegHeart}
+            w={7}
+            h={7}
+            cursor="pointer"
+            color="teal.900"
+            _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
+            onClick={handleLike}
+          />
         </Box>
         <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={postItemData.id} playlists={playlists} />
         <AddCommentModal isOpen={addCommentDisc.isOpen}
