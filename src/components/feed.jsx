@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Box, Heading, Spacer, VStack } from '@chakra-ui/react';
+import { Box, Heading, Spacer, Text, VStack } from '@chakra-ui/react';
 // import { toast } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
@@ -80,7 +80,14 @@ function Feed(props) {
 
   const renderPosts = () => {
     if (!feed || feed.length === 0) {
-      return <p>No posts to show</p>;
+      return (
+        <Box w="100vw" h="100vh" bg="teal.600" p={10} align="center">
+          <VStack bg="white" maxW="1000px" borderRadius="lg" spacing={4} align="center" justify="center" p={10}>
+            <Text as="h1" fontSize="4xl" color="gray.700" fontWeight="bold">No posts to show</Text>
+            <Text as="h2" fontSize="2xl" color="gray.500" fontWeight="bold">For now, here are some recommendations:</Text>
+          </VStack>
+        </Box>
+      );
     }
     return (
       <VStack spacing={4} align="stretch" maxH={height} overflowY="auto" my="auto">

@@ -186,38 +186,12 @@ const PostCard = (props) => {
     );
   };
 
-  // function to render an album post
-  const renderAlbumPost = (postData) => {
-    return (
-      null
-    );
-  };
-  // function to render an artist post
-  const renderArtistPost = (postData) => {
-    return (
-      null
-    );
-  };
-
-  // function to render a playlist post
-  const renderPlaylistPost = (postData) => {
-    return (
-      null
-    );
-  };
-
   // renders the post correctly according to what type of content it contains
   const renderPost = () => {
     if (!postItemData) {
       return null;
     } else if (type === 'track') {
       return renderTrackPost(postItemData);
-    } else if (type === 'album') {
-      return renderAlbumPost(postItemData);
-    } else if (type === 'playlist') {
-      return renderArtistPost(postItemData);
-    } else if (type === 'artist') {
-      return renderPlaylistPost(postItemData);
     }
     return null;
   };

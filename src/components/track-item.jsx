@@ -8,22 +8,15 @@ import React, { useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
 import { CgPlayListAdd } from 'react-icons/cg';
+import useStore from '../store';
 import { playTrackInApp } from '../utils/spotify-player';
 import { addTrackToLikedSongs } from '../utils/spotify-api';
+import AddTrackToPlaylistModal from './add-track-to-playlist';
 
-/**
- * Renders a track item component.
- *
- * @param {Object} props - The component props.
- * @param {string} props.id - The ID of the track.
- * @param {string} props.name - The name of the track.
- * @param {string} props.artist - The artist of the track.
- * @param {string} props.imageURL - The URL of the track's image.
- * @returns {JSX.Element} The rendered track item component.
- */
 function TrackItem(props) {
   const { id, name, artist, imageURL } = props;
   const [isHovered, setIsHovered] = useState(false);
+  const { playlists } = useStore((store) => store.profileSlice);
 
   const addTrackToPlaylistDisc = useDisclosure();
 
@@ -154,6 +147,7 @@ function TrackItem(props) {
           </Box>
           {renderImage()}
         </VStack>
+        <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={id} playlists={playlists} />
       </Box>
     );
   }
@@ -193,6 +187,7 @@ function TrackItem(props) {
       >
         <FontAwesomeIcon icon={faPlay} />
       </Button>
+      <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={id} playlists={playlists} />
     </Box>
   );
 }
