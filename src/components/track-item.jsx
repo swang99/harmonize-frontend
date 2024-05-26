@@ -144,7 +144,7 @@ function TrackItem(props) {
 
   if (props.use === 'feed') {
     return (
-      <Box h="100%">
+      <Box h="100%" position="relative">
         <Image
           src={imageURL}
           alt={name}
@@ -153,6 +153,22 @@ function TrackItem(props) {
           objectFit="cover"
           transition="filter 0.3s ease-in-out"
         />
+        <Button
+          position="absolute"
+          top="50%"
+          left="50%"
+          transform="translate(-50%, -50%)"
+          colorScheme="green"
+          borderRadius="full"
+          width="50px"
+          height="50px"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          onClick={() => handlePlay()}
+        >
+          <FontAwesomeIcon icon={faPlay} />
+        </Button>
       </Box>
     );
   }
