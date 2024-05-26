@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
 import { getItemData } from '../utils/spotify-api';
 import AddCommentModal from './AddComment';
+import AddTrackToPlaylistModal from './add-track-to-playlist';
 import TrackItem from './track-item';
 
 /**
@@ -31,12 +32,14 @@ const PostCard = (props) => {
   const [postItemData, setPostItemData] = useState(null);
   const { id, type } = post;
   const addCommentDisc = useDisclosure();
-  const { fetchOtherProfile } = useStore((store) => store.profileSlice);
+  const addTrackToPlaylistDisc = useDisclosure();
+  const { fetchOtherProfile, playlists } = useStore((store) => store.profileSlice);
   const userProfile = useStore((store) => store.profileSlice.currentProfile);
   const updatePost = useStore((store) => store.postSlice.updatePost);
   const [liked, setLiked] = useState(props.post.likes.includes(userProfile.userID));
   const [likes, setLikes] = useState(props.post.likes.length);
   const openPlaylistModal = props.onPlaylistModalOpen;
+  const { setPostModalContent } = useStore((store) => store.modalSlice);
 
   useEffect(() => {
     const fetchPostData = async () => {
@@ -49,6 +52,21 @@ const PostCard = (props) => {
     };
     fetchPostData();
   }, []);
+
+  const handlePostModalOpen = () => {
+    const postModalContent = props.name ? {
+      post: props.post,
+      name: props.name,
+      photo: props.photo,
+      authorID: props.authorID,
+    } : {
+      post: props.post,
+      name: userProfile.name,
+      photo: userProfile.photo,
+      authorID: userProfile.userID,
+    };
+    setPostModalContent(postModalContent);
+  };
 
   const handleLike = async () => {
     let newLikes = [];
@@ -185,8 +203,17 @@ const PostCard = (props) => {
               </Box>
             </VStack>
           </VStack>
+          <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={postItemData.id} playlists={playlists} />
           <AddCommentModal isOpen={addCommentDisc.isOpen} onClose={addCommentDisc.onClose} post={props.post} postAuthorID={props.authorID} commentAuthorID={userProfile.userID} />
         </HStack>
+      );
+    } else if (use === 'profile') {
+      return (
+        <Box onClick={handlePostModalOpen} cursor="pointer" _hover={{ borderColor: 'teal.500', borderWidth: '3px' }}>
+          <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} />
+          <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={postItemData.id} playlists={playlists} />
+          <AddCommentModal isOpen={addCommentDisc.isOpen} onClose={addCommentDisc.onClose} post={props.post} postAuthorID={props.authorID} commentAuthorID={userProfile.userID} />
+        </Box>
       );
     }
     return (

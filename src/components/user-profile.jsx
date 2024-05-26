@@ -4,20 +4,23 @@ import {
 } from '@chakra-ui/react';
 import { IoPersonAdd } from 'react-icons/io5';
 import useStore from '../store/profile-slice';
-import PostCard from './post-card';
 import AddFriendModal from './AddFriendModal';
 import ViewFollowers from './ViewFollowers';
 import ViewFollowing from './ViewFollowing';
+import FullPostModal from './full-post-modal';
 import AddTrackToPlaylistModal from './add-track-to-playlist';
+import PostCard from './post-card';
 
 export default function ProfileHeader(props) {
   const { isOwnProfile, profile, userProfile, id: profileId } = props;
   const addFDisc = useDisclosure();
   const followersDisc = useDisclosure();
   const followingDisc = useDisclosure();
+  const postDisc = useDisclosure();
   const { followProfile, unfollowProfile, getLikedPosts } = useStore((store) => store.profileSlice);
   const [isFollowing, setIsFollowing] = useState(false);
   const [likedPosts, setLikedPosts] = useState([]);
+  const { postModalContent, clearPostModalContent } = useStore((store) => store.modalSlice);
 
   // modal shit
   const addTrackToPlaylistDisc = useDisclosure();
@@ -41,6 +44,12 @@ export default function ProfileHeader(props) {
     };
     fetchLikedPosts();
   }, []);
+  console.log('PostModalContent:', postModalContent);
+  useEffect(() => {
+    if (postModalContent) {
+      postDisc.onOpen();
+    }
+  }, [postModalContent]);
 
   const handleFollow = async () => {
     await followProfile(userProfile, profile);
@@ -63,6 +72,11 @@ export default function ProfileHeader(props) {
       </Button>
     )
   );
+
+  const handlePostDiscClose = () => {
+    clearPostModalContent();
+    postDisc.onClose();
+  };
 
   return (
     <Flex py={5} px={10} bg="teal.600" color="white" height="100vh" overflowY="auto" position="relative" width="100vw" justify="center">
@@ -153,6 +167,7 @@ export default function ProfileHeader(props) {
                         post={post}
                         profile={profile}
                         onPlaylistModalOpen={() => openPlaylistModal()}
+                        use="profile"
                       />
                     ))
                   ) : (
@@ -173,6 +188,7 @@ export default function ProfileHeader(props) {
                           photo={post.photo}
                           authorID={post.authorID}
                           onPlaylistModalOpen={() => openPlaylistModal()}
+                          use="profile"
                         />
                       </Box>
                     ))
@@ -195,6 +211,7 @@ export default function ProfileHeader(props) {
         onClose={followersDisc.onClose}
         profile={profile}
       />
+      <FullPostModal isOpen={postDisc.isOpen} onClose={handlePostDiscClose} postModalContent={postModalContent} />
       <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={trackId} />
     </Flex>
   );
