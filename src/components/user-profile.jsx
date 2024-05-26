@@ -181,16 +181,15 @@ export default function ProfileHeader(props) {
                 <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6} w="100%" pb="20vh">
                   {likedPosts && likedPosts.length > 0 ? (
                     likedPosts.map((post) => (
-                      <Box key={post._doc._id} w="100%" bg="gray.100" p={4} mx="auto" borderRadius="md" shadow="md">
-                        <PostCard
-                          post={post._doc}
-                          name={post.name}
-                          photo={post.photo}
-                          authorID={post.authorID}
-                          onPlaylistModalOpen={() => openPlaylistModal()}
-                          use="profile"
-                        />
-                      </Box>
+                      <PostCard
+                        key={post._doc._id}
+                        post={post._doc}
+                        name={post.name}
+                        photo={post.photo}
+                        authorID={post.authorID}
+                        onPlaylistModalOpen={() => openPlaylistModal()}
+                        use="profile"
+                      />
                     ))
                   ) : (
                     <Text>No liked posts yet.</Text>
