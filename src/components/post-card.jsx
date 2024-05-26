@@ -62,6 +62,7 @@ const PostCard = (props) => {
       setLikes(likes + 1);
       newLikes = [...props.post.likes, userProfile.userID];
     }
+    newLikes = [...new Set(newLikes)];
     const newPost = {
       id: props.post.id,
       type: props.post.type,
