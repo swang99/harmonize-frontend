@@ -209,7 +209,7 @@ function TrackItem(props) {
       <Image src={imageURL} alt={name} />
       <HStack p={3} position="relative">
         <VStack align="flex-start" mx={2} flex="1" spacing={1} pr="40px" maxW="100%">
-          <Box overflow="hidden" w="100%">
+          <Box overflow="hidden" w="100%" textAlign="left">
             <Text
               ref={nameRef}
               fontSize="md"
@@ -222,7 +222,7 @@ function TrackItem(props) {
               {name}
             </Text>
           </Box>
-          <Box overflow="hidden" w="100%">
+          <Box overflow="hidden" w="100%" textAlign="left">
             <Text
               ref={artistRef}
               fontSize="sm"
