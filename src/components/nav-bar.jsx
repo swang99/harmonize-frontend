@@ -1,11 +1,10 @@
-import { Button, Flex, useColorModeValue } from '@chakra-ui/react';
+import { Button, Flex } from '@chakra-ui/react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import useStore from '../store';
 import { logout } from '../utils/SpotifyAuth';
 
 const NavBar = () => {
-  const navBg = useColorModeValue('gray.100', 'gray.800');
   const navigate = useNavigate();
   const profile = useStore((store) => store.profileSlice.currentProfile);
   const token = localStorage.getItem('access_token');
@@ -19,7 +18,7 @@ const NavBar = () => {
 
   return (
     token && (
-    <Flex bg={navBg} p={4} justifyContent="space-between" alignItems="center" height={75}>
+    <Flex bg="white" p={4} justifyContent="space-between" alignItems="center" height={75}>
       <Flex align="center">
         {links.map((link) => (
           <Button

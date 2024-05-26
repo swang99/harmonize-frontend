@@ -20,18 +20,12 @@ const SpotifyPlayer = () => {
   useEffect(() => {
     const initialize = async () => {
       if (location.pathname !== '/') {
-        await initializePlayer();
+        if (!player) {
+          await initializePlayer();
+        }
       }
     };
     initialize();
-
-    // Cleanup function to disconnect the player when the component unmounts
-    return () => {
-      if (player) {
-        player.disconnect();
-        console.log('Spotify Web Playback SDK disconnected');
-      }
-    };
   }, [location.pathname]);
 
   useEffect(() => {

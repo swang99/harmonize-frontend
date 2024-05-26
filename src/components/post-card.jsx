@@ -1,15 +1,15 @@
-import { Box, HStack, Icon, useDisclosure, Heading, Avatar, VStack, Text } from '@chakra-ui/react';
+import { Avatar, Box, HStack, Icon, Text, VStack, useDisclosure } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { CgPlayListAdd } from 'react-icons/cg';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { MdOutlineComment } from 'react-icons/md';
-import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { getItemData } from '../utils/spotify-api';
-import TrackItem from './track-item';
-import AddTrackToPlaylistModal from './add-track-to-playlist';
-import AddCommentModal from './AddComment';
 import useStore from '../store';
+import { getItemData } from '../utils/spotify-api';
+import AddCommentModal from './AddComment';
+import AddTrackToPlaylistModal from './add-track-to-playlist';
+import TrackItem from './track-item';
 
 /**
  * Represents a post cardcomponent.
@@ -119,55 +119,63 @@ const PostCard = (props) => {
       const userPhoto = props.photo;
       return (
         <HStack w="100%" h={350} gap="4">
-          <TrackItem height="100%" key={id} id={id} name={name} artist={artists} imageURL={imageURL} use="feed" flex="0 1 auto" />
+          <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} use="feed" flex="1" />
           <Box w={1} h="100%" bg="gray.800" rounded="xl" />
-          <Box flex="1" h="100%">
-            <VStack w="100%" h="100%" justifyContent="space-between">
-              <HStack w="100%" justifyContent="space-between" alignSelf="flex-start" gap="4">
+          <VStack w="100%" h="100%" flex="1" spacing="0">
+            <VStack w="100%" bg="gray.700" justify="flex-start" align="flex-start" borderRadius="lg" p={3} spacing="1">
+              <Text as="h1" fontSize="2xl" fontWeight="bold" color="white">{name}</Text>
+              <Text as="h2" fontSize="lg" fontWeight="bold" color="gray.200">{artists}</Text>
+            </VStack>
+            <VStack w="100%" h="100%" flex="1" maxH="100%" align="flex-start" px={3} pt={3} overflow="hidden" position="relative">
+              <HStack w="100%" justifyContent="space-between" alignSelf="flex-start" gap="3">
                 <HStack>
-                  <Avatar size="lg" src={userPhoto} />
-                  <Heading>{username}</Heading>
+                  <Avatar size="sm" src={userPhoto} />
+                  <Text as="h2" fontSize="md" fontWeight="bold">{username}</Text>
                 </HStack>
                 <Box justifySelf="flex-end">
                   {renderLikes()}
                 </Box>
               </HStack>
-              <Box alignSelf="flex-start">
-                <Text fontSize="lg" color="gray.800" w="100%" as="i">
-                  Description:
-                </Text>
-                <Text fontSize="lg" color="gray.800" w="100%" as="span" overflowY="auto">
+              <Box alignSelf="flex-start" w="100%">
+                <Text fontWeight="bold" fontSize="md" color="gray.800" w="100%" as="span" overflowY="auto">
                   {` ${post.description}`}
                 </Text>
               </Box>
-              <Box fontSize="lg" color="gray.800" w="100%" alignSelf="flex-start" overflowY="auto">
-                <Text as="i">Comments: </Text>
-                {post.comments.map((comment) => (
-                  <Text key={comment.id}>{`${comment.author}: ${comment.comment}`}</Text>
-                ))}
+              <Box w="100%" h={1} rounded="full" bg="gray.300" />
+              <Box flex="1" w="85%" overflowY="auto">
+                <VStack w="100%" spacing="2">
+                  {post.comments.map((comment) => (
+                    <HStack key={comment.id} w="100%">
+                      <Text fontWeight="bold" fontSize="sm">{`${comment.author}: `}</Text>
+                      <Text fontSize="sm">{`${comment.comment}`}</Text>
+                    </HStack>
+                  ))}
+                </VStack>
               </Box>
-              <HStack alignSelf="flex-end" justifySelf="flex-end" gap="4">
-                <Icon
-                  as={MdOutlineComment}
-                  w={7}
-                  h={7}
-                  cursor="pointer"
-                  color="teal.900"
-                  _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
-                  onClick={addCommentDisc.onOpen}
-                />
-                <Icon
-                  as={CgPlayListAdd}
-                  w={7}
-                  h={7}
-                  cursor="pointer"
-                  color="teal.900"
-                  _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
-                  onClick={addTrackToPlaylistDisc.onOpen}
-                />
-              </HStack>
+              <Box position="absolute" bottom={3} right={3}>
+                <HStack gap="3">
+                  <Icon
+                    as={MdOutlineComment}
+                    w={6}
+                    h={6}
+                    cursor="pointer"
+                    color="teal.900"
+                    _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
+                    onClick={addCommentDisc.onOpen}
+                  />
+                  <Icon
+                    as={CgPlayListAdd}
+                    w={6}
+                    h={6}
+                    cursor="pointer"
+                    color="teal.900"
+                    _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
+                    onClick={addTrackToPlaylistDisc.onOpen}
+                  />
+                </HStack>
+              </Box>
             </VStack>
-          </Box>
+          </VStack>
           <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={postItemData.id} playlists={playlists} />
           <AddCommentModal isOpen={addCommentDisc.isOpen} onClose={addCommentDisc.onClose} post={props.post} postAuthorID={props.authorID} commentAuthorID={userProfile.userID} />
         </HStack>
