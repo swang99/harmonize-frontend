@@ -24,18 +24,6 @@ const createPostSlice = (set, get) => {
     },
 
     updatePost: async (profile, post) => {
-      /* const existingProfile = get().profileSlice.currentProfile;
-      if (existingProfile.userID !== userID) {
-        console.error('Cannot update post for different user');
-        return;
-      }
-      const updatedPosts = existingProfile.posts.map((p) => (p.id === post.id ? post : p));
-      const updatedProfile = { ...existingProfile, posts: updatedPosts };
-      set((state) => ({
-        profileSlice: { ...state.profileSlice, currentProfile: updatedProfile },
-      }), false, 'users/updatePost');
-      await get().profileSlice.updateProfile(userID, updatedProfile); */
-
       try {
         const updatedPosts = profile.posts.map((p) => (p.id === post.id ? post : p));
         const updatedProfile = { ...profile, posts: updatedPosts };
