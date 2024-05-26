@@ -28,7 +28,6 @@ export default function ProfileHeader(props) {
     const fetchLikedPosts = async () => {
       const posts = await getLikedPosts(id);
       setLikedPosts(posts);
-      console.log('Liked Posts', posts);
     };
     fetchLikedPosts();
   }, []);
