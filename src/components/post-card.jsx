@@ -136,11 +136,11 @@ const PostCard = (props) => {
                 <Text fontSize="lg" color="gray.800" w="100%" as="i">
                   Description:
                 </Text>
-                <Text fontSize="lg" color="gray.800" w="100%" as="span">
+                <Text fontSize="lg" color="gray.800" w="100%" as="span" overflowY="auto">
                   {` ${post.description}`}
                 </Text>
               </Box>
-              <Box fontSize="lg" color="gray.800" w="100%" alignSelf="flex-start">
+              <Box fontSize="lg" color="gray.800" w="100%" alignSelf="flex-start" overflowY="auto">
                 <Text as="i">Comments: </Text>
                 {post.comments.map((comment) => (
                   <Text key={comment.id}>{`${comment.author}: ${comment.comment}`}</Text>

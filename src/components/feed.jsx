@@ -12,8 +12,6 @@ function Feed(props) {
 
   // getting posts from the store
   const { loadFeed, currentProfile, initialFetch } = useStore((store) => store.profileSlice);
-
-  console.log('Feed:', feed);
   useEffect(() => {
     const update = async () => {
       try {
@@ -30,6 +28,7 @@ function Feed(props) {
   useEffect(() => {
     const loadFeedData = async () => {
       if (tokenUpdated && initialFetch && currentProfile.userID) {
+        console.log('Following', currentProfile.following);
         setFeed(await loadFeed(currentProfile.userID));
       }
     };

@@ -1,8 +1,7 @@
-/* eslint-disable react/jsx-no-bind */
 import { Box, Button, HStack, Icon, Image, Text, VStack, useDisclosure } from '@chakra-ui/react';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { CgPlayListAdd } from 'react-icons/cg';
 import { FaPlay, FaSpotify } from 'react-icons/fa';
 import { FaHeartCirclePlus } from 'react-icons/fa6';
@@ -16,9 +15,24 @@ import AddTrackToPlaylistModal from './add-track-to-playlist';
 function TrackItem(props) {
   const { id, name, artist, imageURL } = props;
   const [isHovered, setIsHovered] = useState(false);
+  const [isNameOverflowing, setIsNameOverflowing] = useState(false);
+  const [isArtistOverflowing, setIsArtistOverflowing] = useState(false);
   const playlists = useStore((store) => store.profileSlice.playlists);
+  const nameRef = useRef(null);
+  const artistRef = useRef(null);
 
   const addTrackToPlaylistDisc = useDisclosure();
+
+  useEffect(() => {
+    const checkOverflow = (ref, setState) => {
+      if (ref.current) {
+        setState(ref.current.scrollWidth > ref.current.clientWidth);
+      }
+    };
+
+    checkOverflow(nameRef, setIsNameOverflowing);
+    checkOverflow(artistRef, setIsArtistOverflowing);
+  }, [name, artist]);
 
   const handlePlay = async () => {
     try {
@@ -126,13 +140,49 @@ function TrackItem(props) {
     }
   };
 
+  const scrollingTextStyle = {
+    display: 'inline-block',
+    whiteSpace: 'nowrap',
+    animation: 'marquee 10s linear infinite',
+  };
+
+  const marqueeKeyframes = `
+    @keyframes marquee {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+  `;
+
   if (props.use === 'feed') {
     return (
-      <Box key={id} borderRadius="md" minW={250} position="relative">
+      <Box key={id} borderRadius="md" w={250} position="relative">
+        <style>{marqueeKeyframes}</style>
         <VStack display="flex" justifyContent="space-between">
           <Box alignSelf="flex-start" bg="gray.800" w="100%" rounded="md" p="3">
-            <Text fontSize="2xl" fontWeight="bold" color="white" isTruncated>{name}</Text>
-            <Text fontSize="xl" as="i" color="gray.400" isTruncated>{artist}</Text>
+            <Box overflow="hidden" w="100%">
+              <Text
+                ref={nameRef}
+                fontSize="2xl"
+                fontWeight="bold"
+                color="white"
+                isTruncated={!isNameOverflowing}
+                style={isNameOverflowing ? scrollingTextStyle : {}}
+              >
+                {name}
+              </Text>
+            </Box>
+            <Box overflow="hidden" w="100%">
+              <Text
+                ref={artistRef}
+                fontSize="xl"
+                as="i"
+                color="gray.400"
+                isTruncated={!isArtistOverflowing}
+                style={isArtistOverflowing ? scrollingTextStyle : {}}
+              >
+                {artist}
+              </Text>
+            </Box>
           </Box>
           {renderImage()}
         </VStack>
@@ -155,11 +205,35 @@ function TrackItem(props) {
 
   return (
     <Box key={id} w="100%" bg="gray.800" borderRadius="md" overflow="hidden" position="relative">
+      <style>{marqueeKeyframes}</style>
       <Image src={imageURL} alt={name} />
       <HStack p={3} position="relative">
         <VStack align="flex-start" mx={2} flex="1" spacing={1} pr="40px" maxW="100%">
-          <Text fontSize="md" fontWeight="bold" color="white" isTruncated maxW="100%">{name}</Text>
-          <Text fontSize="sm" color="gray.400" isTruncated maxW="100%">{artist} </Text>
+          <Box overflow="hidden" w="100%">
+            <Text
+              ref={nameRef}
+              fontSize="md"
+              fontWeight="bold"
+              color="white"
+              isTruncated={!isNameOverflowing}
+              style={isNameOverflowing ? scrollingTextStyle : {}}
+              maxW="100%"
+            >
+              {name}
+            </Text>
+          </Box>
+          <Box overflow="hidden" w="100%">
+            <Text
+              ref={artistRef}
+              fontSize="sm"
+              color="gray.400"
+              isTruncated={!isArtistOverflowing}
+              style={isArtistOverflowing ? scrollingTextStyle : {}}
+              maxW="100%"
+            >
+              {artist}
+            </Text>
+          </Box>
         </VStack>
         <Icon
           as={CgPlayListAdd}
