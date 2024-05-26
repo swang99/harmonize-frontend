@@ -235,6 +235,16 @@ const createProfileSlice = (set, get) => ({
       return [];
     }
   },
+
+  getLikedPosts: async (userID) => {
+    try {
+      const response = await axios.get(`${ROOT_URL}users/${userID}/liked`);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to get liked posts:', error.message);
+      return [];
+    }
+  },
 });
 
 export default createProfileSlice;

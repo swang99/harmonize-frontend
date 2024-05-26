@@ -14,14 +14,24 @@ export default function ProfileHeader(props) {
   const addFDisc = useDisclosure();
   const followersDisc = useDisclosure();
   const followingDisc = useDisclosure();
-  const { followProfile, unfollowProfile } = useStore((store) => store.profileSlice);
+  const { followProfile, unfollowProfile, getLikedPosts } = useStore((store) => store.profileSlice);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [likedPosts, setLikedPosts] = useState([]);
 
   useEffect(() => {
     if (userProfile && userProfile.following.includes(id)) {
       setIsFollowing(true);
     }
   }, [userProfile, id]);
+
+  useEffect(() => {
+    const fetchLikedPosts = async () => {
+      const posts = await getLikedPosts(id);
+      setLikedPosts(posts);
+      console.log('Liked Posts', posts);
+    };
+    fetchLikedPosts();
+  }, []);
 
   const handleFollow = async () => {
     await followProfile(userProfile, profile);
@@ -105,20 +115,22 @@ export default function ProfileHeader(props) {
           )}
         </Box>
         <Tabs variant="unstyled" align="center" defaultIndex={0} mt={4} w="100%">
-          <TabList>
+          <TabList gap={4}>
             <Tab
               fontWeight="bold"
-              _selected={{ color: 'teal.500', bg: 'white', borderRadius: 'full' }}
-              _focus={{ boxShadow: 'none' }}
-            >
-              Posts
-            </Tab>
-            <Tab
-              fontWeight="bold"
+              borderRadius="full"
               _selected={{ color: 'teal.500', bg: 'white', borderRadius: 'full' }}
               _focus={{ boxShadow: 'none' }}
             >
               Recents
+            </Tab>
+            <Tab
+              fontWeight="bold"
+              borderRadius="full"
+              _selected={{ color: 'teal.500', bg: 'white', borderRadius: 'full' }}
+              _focus={{ boxShadow: 'none' }}
+            >
+              Liked
             </Tab>
           </TabList>
           <TabPanels>
@@ -134,6 +146,19 @@ export default function ProfileHeader(props) {
                   )}
                 </Grid>
               </Box>
+            </TabPanel>
+            <TabPanel p={0}>
+              <VStack py={5} w="100%" mb={10} gap={4}>
+                {likedPosts && likedPosts.length > 0 ? (
+                  likedPosts.map((post) => (
+                    <Box key={post._doc._id} w="100%" bg="gray.100" p={4} mx="auto" borderRadius="md" shadow="md">
+                      <PostCard post={post._doc} use="feed" name={post.name} photo={post.photo} authorID={post.authorID} />
+                    </Box>
+                  ))
+                ) : (
+                  <Text>No liked posts yet.</Text>
+                )}
+              </VStack>
             </TabPanel>
           </TabPanels>
         </Tabs>

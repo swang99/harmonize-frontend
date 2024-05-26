@@ -109,6 +109,7 @@ const PostCard = (props) => {
       </HStack>
     );
   };
+
   const renderTrackPost = () => {
     const { name } = postItemData;
     const imageURL = postItemData.album.images[0].url;
@@ -126,13 +127,13 @@ const PostCard = (props) => {
               <HStack w="100%" justifyContent="space-between" alignSelf="flex-start" gap="4">
                 <HStack>
                   <Avatar size="lg" src={userPhoto} />
-                  <Heading>{username}</Heading>
+                  <Heading color="gray.800">{username}</Heading>
                 </HStack>
                 <Box justifySelf="flex-end">
                   {renderLikes()}
                 </Box>
               </HStack>
-              <Box alignSelf="flex-start">
+              <Box w="100%" textAlign="left">
                 <Text fontSize="lg" color="gray.800" w="100%" as="i">
                   Description:
                 </Text>
@@ -140,10 +141,10 @@ const PostCard = (props) => {
                   {` ${post.description}`}
                 </Text>
               </Box>
-              <Box fontSize="lg" color="gray.800" w="100%" alignSelf="flex-start" overflowY="auto">
+              <Box fontSize="lg" color="gray.800" w="100%" overflowY="auto" textAlign="left">
                 <Text as="i">Comments: </Text>
                 {post.comments.map((comment) => (
-                  <Text key={comment.id}>{`${comment.author}: ${comment.comment}`}</Text>
+                  <Text key={comment.id} textAlign="left">{`${comment.author}: ${comment.comment}`}</Text>
                 ))}
               </Box>
               <HStack alignSelf="flex-end" justifySelf="flex-end" gap="4">
@@ -176,13 +177,8 @@ const PostCard = (props) => {
     return (
       <HStack>
         <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} />
-
         <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={postItemData.id} playlists={playlists} />
-        <AddCommentModal isOpen={addCommentDisc.isOpen}
-          onClose={addCommentDisc.onClose}
-          postData={post}
-          profile={props.profile}
-        />
+        <AddCommentModal isOpen={addCommentDisc.isOpen} onClose={addCommentDisc.onClose} post={props.post} postAuthorID={props.authorID} commentAuthorID={userProfile.userID} />
       </HStack>
     );
   };
