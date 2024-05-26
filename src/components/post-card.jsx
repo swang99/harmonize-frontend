@@ -201,34 +201,3 @@ const PostCard = (props) => {
 };
 
 export default PostCard;
-
-//  <Box p={3}>
-// <Icon
-// as={CgPlayListAdd}
-// w={7}
-// h={7}
-// cursor="pointer"
-// color="teal.900"
-// _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
-// onClick={addTrackToPlaylistDisc.onOpen}
-// />
-// <Icon
-// as={MdOutlineComment}
-// w={7}
-// h={7}
-// cursor="pointer"
-// color="teal.900"
-// _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
-// onClick={addCommentDisc.onOpen}
-// />
-// {props.post.likes.length > 0 ? props.post.likes.length : null}
-// <Icon
-// as={liked ? FaHeart : FaRegHeart}
-// w={7}
-// h={7}
-// cursor="pointer"
-// color="teal.900"
-// _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
-// onClick={handleLike}
-// />
-// </Box>
