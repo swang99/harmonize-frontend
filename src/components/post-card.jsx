@@ -8,7 +8,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
 import { getItemData } from '../utils/spotify-api';
 import AddCommentModal from './AddComment';
-import AddTrackToPlaylistModal from './add-track-to-playlist';
 import TrackItem from './track-item';
 
 /**
@@ -31,13 +30,13 @@ const PostCard = (props) => {
   const { post, use } = props;
   const [postItemData, setPostItemData] = useState(null);
   const { id, type } = post;
-  const addTrackToPlaylistDisc = useDisclosure();
   const addCommentDisc = useDisclosure();
-  const { playlists, fetchOtherProfile } = useStore((store) => store.profileSlice);
+  const { fetchOtherProfile } = useStore((store) => store.profileSlice);
   const userProfile = useStore((store) => store.profileSlice.currentProfile);
   const updatePost = useStore((store) => store.postSlice.updatePost);
   const [liked, setLiked] = useState(props.post.likes.includes(userProfile.userID));
   const [likes, setLikes] = useState(props.post.likes.length);
+  const openPlaylistModal = props.onPlaylistModalOpen;
 
   useEffect(() => {
     const fetchPostData = async () => {
@@ -120,7 +119,16 @@ const PostCard = (props) => {
       const userPhoto = props.photo;
       return (
         <HStack w="100%" h={350} gap="4">
-          <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} use="feed" flex="1" />
+          <TrackItem
+            key={id}
+            id={id}
+            name={name}
+            artist={artists}
+            imageURL={imageURL}
+            onPlaylistModalOpen={() => openPlaylistModal()}
+            use="feed"
+            flex="1"
+          />
           <Box w={1} h="100%" bg="gray.800" rounded="xl" />
           <VStack w="100%" h="100%" flex="1" spacing="0">
             <VStack w="100%" bg="gray.700" justify="flex-start" align="flex-start" borderRadius="lg" p={3} spacing="1">
@@ -171,22 +179,26 @@ const PostCard = (props) => {
                     cursor="pointer"
                     color="teal.900"
                     _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
-                    onClick={addTrackToPlaylistDisc.onOpen}
+                    onClick={openPlaylistModal}
                   />
                 </HStack>
               </Box>
             </VStack>
           </VStack>
-          <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={postItemData.id} playlists={playlists} />
           <AddCommentModal isOpen={addCommentDisc.isOpen} onClose={addCommentDisc.onClose} post={props.post} postAuthorID={props.authorID} commentAuthorID={userProfile.userID} />
         </HStack>
       );
     }
     return (
       <HStack>
-        <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} />
-        <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={postItemData.id} playlists={playlists} />
-        <AddCommentModal isOpen={addCommentDisc.isOpen} onClose={addCommentDisc.onClose} post={props.post} postAuthorID={props.authorID} commentAuthorID={userProfile.userID} />
+        <TrackItem
+          key={id}
+          id={id}
+          name={name}
+          artist={artists}
+          imageURL={imageURL}
+          onPlaylistModalOpen={() => openPlaylistModal()}
+        />
       </HStack>
     );
   };

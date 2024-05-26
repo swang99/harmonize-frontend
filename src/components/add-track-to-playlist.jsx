@@ -26,7 +26,7 @@ import { addTrackToPlaylist, getCurrentUserPlaylists } from '../utils/spotify-ap
  * @returns
  */
 export default function AddTrackToPlaylistModal(props) {
-  const { trackID, playlists, isOpen, onClose } = props;
+  const { trackID, isOpen, onClose } = props;
   const [playlistsToRender, setPlaylistsToRender] = useState([]);
 
   useEffect(() => {
@@ -38,11 +38,7 @@ export default function AddTrackToPlaylistModal(props) {
       const userPlaylists = await getCurrentUserPlaylists();
       setPlaylistsToRender(userPlaylists);
     }
-    if (!playlists) {
-      fetchPlaylists();
-    } else {
-      setPlaylistsToRender(playlists);
-    }
+    fetchPlaylists();
   }, []);
 
   const handleAddTrackToPlaylist = async (playlistID) => {

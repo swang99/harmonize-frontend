@@ -8,9 +8,10 @@ import PostCard from './post-card';
 import AddFriendModal from './AddFriendModal';
 import ViewFollowers from './ViewFollowers';
 import ViewFollowing from './ViewFollowing';
+import AddTrackToPlaylistModal from './add-track-to-playlist';
 
 export default function ProfileHeader(props) {
-  const { isOwnProfile, profile, userProfile, id } = props;
+  const { isOwnProfile, profile, userProfile, id: profileId } = props;
   const addFDisc = useDisclosure();
   const followersDisc = useDisclosure();
   const followingDisc = useDisclosure();
@@ -18,15 +19,24 @@ export default function ProfileHeader(props) {
   const [isFollowing, setIsFollowing] = useState(false);
   const [likedPosts, setLikedPosts] = useState([]);
 
+  // modal shit
+  const addTrackToPlaylistDisc = useDisclosure();
+  const [trackId, setTrackId] = useState(null);
+
+  const openPlaylistModal = async (id) => {
+    setTrackId(id);
+    addTrackToPlaylistDisc.onOpen();
+  };
+
   useEffect(() => {
-    if (userProfile && userProfile.following.includes(id)) {
+    if (userProfile && userProfile.following.includes(profileId)) {
       setIsFollowing(true);
     }
-  }, [userProfile, id]);
+  }, [userProfile, profileId]);
 
   useEffect(() => {
     const fetchLikedPosts = async () => {
-      const posts = await getLikedPosts(id);
+      const posts = await getLikedPosts(profileId);
       setLikedPosts(posts);
     };
     fetchLikedPosts();
@@ -121,7 +131,7 @@ export default function ProfileHeader(props) {
               _selected={{ color: 'teal.500', bg: 'white', borderRadius: 'full' }}
               _focus={{ boxShadow: 'none' }}
             >
-              Recents
+              Posts
             </Tab>
             <Tab
               fontWeight="bold"
@@ -138,7 +148,12 @@ export default function ProfileHeader(props) {
                 <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6} w="100%" pb="20vh">
                   {profile.posts && profile.posts.length > 0 ? (
                     profile.posts.map((post) => (
-                      <PostCard key={post.id} post={post} profile={profile} />
+                      <PostCard
+                        key={post.id}
+                        post={post}
+                        profile={profile}
+                        onPlaylistModalOpen={() => openPlaylistModal()}
+                      />
                     ))
                   ) : (
                     <Text>No posts yet.</Text>
@@ -148,15 +163,23 @@ export default function ProfileHeader(props) {
             </TabPanel>
             <TabPanel p={0}>
               <VStack py={5} w="100%" mb={10} gap={4}>
-                {likedPosts && likedPosts.length > 0 ? (
-                  likedPosts.map((post) => (
-                    <Box key={post._doc._id} w="100%" bg="gray.100" p={4} mx="auto" borderRadius="md" shadow="md">
-                      <PostCard post={post._doc} use="feed" name={post.name} photo={post.photo} authorID={post.authorID} />
-                    </Box>
-                  ))
-                ) : (
-                  <Text>No liked posts yet.</Text>
-                )}
+                <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6} w="100%" pb="20vh">
+                  {likedPosts && likedPosts.length > 0 ? (
+                    likedPosts.map((post) => (
+                      <Box key={post._doc._id} w="100%" bg="gray.100" p={4} mx="auto" borderRadius="md" shadow="md">
+                        <PostCard
+                          post={post._doc}
+                          name={post.name}
+                          photo={post.photo}
+                          authorID={post.authorID}
+                          onPlaylistModalOpen={() => openPlaylistModal()}
+                        />
+                      </Box>
+                    ))
+                  ) : (
+                    <Text>No liked posts yet.</Text>
+                  )}
+                </Grid>
               </VStack>
             </TabPanel>
           </TabPanels>
@@ -172,6 +195,7 @@ export default function ProfileHeader(props) {
         onClose={followersDisc.onClose}
         profile={profile}
       />
+      <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={trackId} />
     </Flex>
   );
 }

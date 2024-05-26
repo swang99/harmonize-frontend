@@ -1,8 +1,9 @@
 /* eslint-disable react/jsx-no-bind */
-import { Box, Button, Flex, FormControl, Grid, HStack, Input } from '@chakra-ui/react';
+import { Box, Button, Flex, FormControl, Grid, HStack, Input, useDisclosure } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { getRecentlyPlayedTracks, searchSpotify } from '../utils/spotify-api';
+import AddTrackToPlaylistModal from './add-track-to-playlist';
 import TrackItem from './track-item';
 
 function SearchBar() {
@@ -10,6 +11,15 @@ function SearchBar() {
   const [query, setQuery] = useState('');
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [debounceTimeout, setDebounceTimeout] = useState(null);
+
+  // modal shit
+  const addTrackToPlaylistDisc = useDisclosure();
+  const [trackId, setTrackId] = useState(null);
+
+  const openPlaylistModal = async (id) => {
+    setTrackId(id);
+    addTrackToPlaylistDisc.onOpen();
+  };
 
   useEffect(() => {
     async function fetchRecentlyPlayed() {
@@ -64,7 +74,14 @@ function SearchBar() {
     return (
       <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6}>
         {results.map((item) => (
-          <TrackItem key={item.id} id={item.id} name={item.name} artist={item.artists[0].name} imageURL={item.album.images[0].url} />
+          <TrackItem
+            key={item.id}
+            id={item.id}
+            name={item.name}
+            artist={item.artists[0].name}
+            imageURL={item.album.images[0].url}
+            onPlaylistModalOpen={() => openPlaylistModal()}
+          />
         ))}
       </Grid>
     );
@@ -80,7 +97,14 @@ function SearchBar() {
     return (
       <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6}>
         {recentlyPlayed.map((item, index) => (
-          <TrackItem key={item.track.id} id={item.track.id} name={item.track.name} artist={item.track.artists[0].name} imageURL={item.track.album.images[0].url} />
+          <TrackItem
+            key={item.track.id}
+            id={item.track.id}
+            name={item.track.name}
+            artist={item.track.artists[0].name}
+            imageURL={item.track.album.images[0].url}
+            onPlaylistModalOpen={() => openPlaylistModal()}
+          />
         ))}
       </Grid>
     );
@@ -132,6 +156,7 @@ function SearchBar() {
           {query.length > 0 ? renderResults() : renderRecents()}
         </Box>
       </HStack>
+      <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={trackId} />
     </motion.div>
   );
 }

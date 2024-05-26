@@ -1,13 +1,22 @@
-import { Box, Heading, Spacer, Text, VStack } from '@chakra-ui/react';
+import { Box, Heading, Spacer, Text, VStack, useDisclosure } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 import useStore from '../store';
 import { updateToken } from '../utils/SpotifyAuth';
 import PostCard from './post-card';
+import AddTrackToPlaylistModal from './add-track-to-playlist';
 
 function Feed(props) {
   const [tokenUpdated, setTokenUpdated] = useState(false); // track if token is updated
   const [feed, setFeed] = useState([]); // store the user's feed
+  // modal shit
+  const addTrackToPlaylistDisc = useDisclosure();
+  const [trackId, setTrackId] = useState(null);
+
+  const openPlaylistModal = async (id) => {
+    setTrackId(id);
+    addTrackToPlaylistDisc.onOpen();
+  };
 
   // getting posts from the store
   const { loadFeed, currentProfile, initialFetch } = useStore((store) => store.profileSlice);
@@ -50,7 +59,14 @@ function Feed(props) {
         {feed.map((post) => (
           <Box>
             <Box key={post._doc._id} w="80%" minW={550} bg="gray.100" p={4} mx="auto" borderRadius="md" shadow="md">
-              <PostCard post={post._doc} use="feed" name={post.name} photo={post.photo} authorID={post.authorID} />
+              <PostCard
+                post={post._doc}
+                use="feed"
+                name={post.name}
+                photo={post.photo}
+                authorID={post.authorID}
+                onPlaylistModalOpen={() => openPlaylistModal()}
+              />
             </Box>
             <Spacer h={10} />
           </Box>
@@ -69,6 +85,7 @@ function Feed(props) {
         <Heading pl="10%" py={5} textAlign="left">Your Feed</Heading>
         {renderPosts()}
       </VStack>
+      <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={trackId} />
     </motion.div>
   );
 }

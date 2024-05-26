@@ -1,22 +1,17 @@
-import { Box, Button, HStack, Icon, Image, Text, VStack, useDisclosure } from '@chakra-ui/react';
+import { Box, Button, HStack, Icon, Image, Text, VStack } from '@chakra-ui/react';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useRef, useState } from 'react';
 import { CgPlayListAdd } from 'react-icons/cg';
 import 'react-toastify/dist/ReactToastify.css';
-import useStore from '../store';
 import { playTrackInApp } from '../utils/spotify-player';
-import AddTrackToPlaylistModal from './add-track-to-playlist';
 
 function TrackItem(props) {
   const { id, name, artist, imageURL } = props;
   const [isNameOverflowing, setIsNameOverflowing] = useState(false);
   const [isArtistOverflowing, setIsArtistOverflowing] = useState(false);
-  const playlists = useStore((store) => store.profileSlice.playlists);
   const nameRef = useRef(null);
   const artistRef = useRef(null);
-
-  const addTrackToPlaylistDisc = useDisclosure();
 
   useEffect(() => {
     const checkOverflow = (ref, setState) => {
@@ -37,97 +32,9 @@ function TrackItem(props) {
     }
   };
 
-  // const handleLike = async () => {
-  // try {
-  // await addTrackToLikedSongs(id);
-  // } catch (error) {
-  // toast.error('Failed to add track to Library');
-  // }
-  // };
-
-  // const handleSpotify = () => {
-  // const url = `https://open.spotify.com/track/${props.id}`;
-  // window.open(url, '_blank');
-  // };
-
-  // const renderImage = () => {
-  // if (isHovered) {
-  // return (
-  // <Box
-  // position="relative"
-  // onMouseEnter={() => setIsHovered(true)}
-  // onMouseLeave={() => setIsHovered(false)}
-  // >
-  // <Image
-  // src={imageURL}
-  // alt={name}
-  // h={250}
-  // w={250}
-  // flex="0 0 auto"
-  // filter="brightness(50%)"
-  // transition="filter 0.3s ease-in-out"
-  // />
-  // <Button
-  // position="absolute"
-  // top="50%"
-  // left="50%"
-  // transform="translate(-50%, -50%)"
-  // colorScheme="green"
-  // borderRadius="full"
-  // width="50px"
-  // height="50px"
-  // display="flex"
-  // alignItems="center"
-  // justifyContent="center"
-  // onClick={() => handlePlay()}
-  // >
-  // <Icon as={FaPlay} fontSize="xl" />
-  // </Button>
-  // <Button
-  // position="absolute"
-  // top="10px"
-  // right="10px"
-  // colorScheme="teal"
-  // borderRadius="full"
-  // width="50px"
-  // height="50px"
-  // display="flex"
-  // alignItems="center"
-  // justifyContent="center"
-  // onClick={handleSpotify}
-  // >
-  // <Icon as={FaSpotify} fontSize="2xl" />
-  // </Button>
-  // <Button
-  // position="absolute"
-  // top="10px"
-  // right="70px"
-  // colorScheme="red"
-  // borderRadius="full"
-  // width="50px"
-  // height="50px"
-  // display="flex"
-  // alignItems="center"
-  // justifyContent="center"
-  // onClick={handleLike}
-  // >
-  // <Icon as={FaHeartCirclePlus} fontSize="2xl" />
-  // </Button>
-  // </Box>
-  // );
-  // } else {
-  // return (
-  // <Image
-  // src={imageURL}
-  // alt={name}
-  // h="100%"
-  // w="100%"
-  // objectFit="cover"
-  // transition="filter 0.3s ease-in-out"
-  // />
-  // );
-  // }
-  // };
+  const openPlaylistModal = () => {
+    props.onPlaylistModalOpen(id);
+  };
 
   const scrollingTextStyle = {
     display: 'inline-block',
@@ -212,7 +119,7 @@ function TrackItem(props) {
           cursor="pointer"
           color="gray.200"
           _hover={{ color: 'white', transform: 'scale(1.1)', top: '30%' }}
-          onClick={addTrackToPlaylistDisc.onOpen}
+          onClick={openPlaylistModal}
           position="absolute"
           right="10px"
           top="50%"
@@ -235,7 +142,6 @@ function TrackItem(props) {
       >
         <FontAwesomeIcon icon={faPlay} />
       </Button>
-      <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={id} playlists={playlists} />
     </Box>
   );
 }
