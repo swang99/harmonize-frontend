@@ -109,6 +109,7 @@ const PostCard = (props) => {
       </HStack>
     );
   };
+
   const renderTrackPost = () => {
     const { name } = postItemData;
     const imageURL = postItemData.album.images[0].url;
@@ -184,13 +185,8 @@ const PostCard = (props) => {
     return (
       <HStack>
         <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} />
-
         <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={postItemData.id} playlists={playlists} />
-        <AddCommentModal isOpen={addCommentDisc.isOpen}
-          onClose={addCommentDisc.onClose}
-          postData={post}
-          profile={props.profile}
-        />
+        <AddCommentModal isOpen={addCommentDisc.isOpen} onClose={addCommentDisc.onClose} post={props.post} postAuthorID={props.authorID} commentAuthorID={userProfile.userID} />
       </HStack>
     );
   };
