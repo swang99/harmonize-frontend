@@ -13,6 +13,7 @@ function Feed(props) {
   // getting posts from the store
   const { loadFeed, currentProfile, initialFetch } = useStore((store) => store.profileSlice);
 
+  console.log('Feed:', feed);
   useEffect(() => {
     const update = async () => {
       try {
@@ -33,7 +34,7 @@ function Feed(props) {
       }
     };
     loadFeedData();
-  }, [tokenUpdated, initialFetch, currentProfile]);
+  }, [tokenUpdated, initialFetch]);
 
   const renderPosts = () => {
     if (!feed || feed.length === 0) {
