@@ -60,13 +60,23 @@ export default function ProfileHeader(props) {
             <Spacer />
             <VStack>
               <HStack spacing={4}>
-                <VStack justify="flex-start" align="center" onClick={followingDisc.onOpen} cursor="pointer">
+                <VStack justify="flex-start"
+                  align="center"
+                  onClick={followersDisc.onOpen}
+                  cursor="pointer"
+                  _hover={{ color: 'teal.500' }}
+                >
                   <Heading as="h3" size="md">{profile.followers.length}</Heading>
                   <Text size="md" onClick={followersDisc.onOpen} cursor="pointer">
                     Followers
                   </Text>
                 </VStack>
-                <VStack justify="flex-start" align="center" onClick={followingDisc.onOpen} cursor="pointer">
+                <VStack justify="flex-start"
+                  align="center"
+                  onClick={followingDisc.onOpen}
+                  cursor="pointer"
+                  _hover={{ color: 'teal.500' }}
+                >
                   <Heading as="h3" size="md">{profile.following.length}</Heading>
                   <Text size="md">
                     Following
