@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import useStore from '../store';
 import { updateToken } from '../utils/SpotifyAuth';
 import PostCard from './post-card';
+import TrackItem from './track-item';
 import AddTrackToPlaylistModal from './add-track-to-playlist';
 import { getRecs } from '../utils/spotify-api';
 
@@ -58,7 +59,14 @@ function Feed(props) {
             <Text as="h1" fontSize="4xl" color="gray.700" fontWeight="bold">No posts to show</Text>
             <Text as="h2" fontSize="2xl" color="gray.500" fontWeight="bold">For now, here are some recommendations:</Text>
             {recs.map((track) => (
-              <Text key={track.id}>{track.name}</Text>
+              <TrackItem
+                key={track.id}
+                id={track.id}
+                name={track.name}
+                artist={track.artists[0].name}
+                imageURL={track.album.images[0].url}
+                onPlaylistModalOpen={() => openPlaylistModal()}
+              />
             ))}
           </VStack>
         </Box>
