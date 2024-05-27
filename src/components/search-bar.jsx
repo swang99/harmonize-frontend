@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-bind */
-import { Box, Button, Flex, FormControl, Grid, HStack, Input, useDisclosure } from '@chakra-ui/react';
+import { Box, Button, Flex, FormControl, Grid, HStack, Input } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import React, { useCallback, useEffect, useState } from 'react';
 import { getRecentlyPlayedTracks, searchSpotify } from '../utils/spotify-api';
@@ -11,15 +11,6 @@ function SearchBar() {
   const [query, setQuery] = useState('');
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [debounceTimeout, setDebounceTimeout] = useState(null);
-
-  // modal shit
-  const addTrackToPlaylistDisc = useDisclosure();
-  const [trackId, setTrackId] = useState(null);
-
-  const openPlaylistModal = async (id) => {
-    setTrackId(id);
-    addTrackToPlaylistDisc.onOpen();
-  };
 
   useEffect(() => {
     async function fetchRecentlyPlayed() {
@@ -80,7 +71,6 @@ function SearchBar() {
             name={item.name}
             artist={item.artists[0].name}
             imageURL={item.album.images[0].url}
-            onPlaylistModalOpen={() => openPlaylistModal()}
           />
         ))}
       </Grid>
@@ -103,7 +93,6 @@ function SearchBar() {
             name={item.track.name}
             artist={item.track.artists[0].name}
             imageURL={item.track.album.images[0].url}
-            onPlaylistModalOpen={() => openPlaylistModal()}
           />
         ))}
       </Grid>
@@ -156,7 +145,7 @@ function SearchBar() {
           {query.length > 0 ? renderResults() : renderRecents()}
         </Box>
       </HStack>
-      <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={trackId} />
+      <AddTrackToPlaylistModal />
     </motion.div>
   );
 }

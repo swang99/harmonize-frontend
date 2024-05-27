@@ -3,10 +3,9 @@ import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 import useStore from '../store';
 import { updateToken } from '../utils/SpotifyAuth';
+import AddTrackToPlaylistModal from './add-track-to-playlist';
 import PostCard from './post-card';
 import TrackItem from './track-item';
-import AddTrackToPlaylistModal from './add-track-to-playlist';
-import { getRecs } from '../utils/spotify-api';
 
 function Feed(props) {
   const [tokenUpdated, setTokenUpdated] = useState(false); // track if token is updated
@@ -42,7 +41,8 @@ function Feed(props) {
         console.log('Following', currentProfile.following);
         setFeed(await loadFeed(currentProfile.userID));
         if (!feed || feed.length === 0) {
-          const fetchRecs = await getRecs();
+          // const fetchRecs = await getRecs();
+          const fetchRecs = [];
           console.log('Recs: ', fetchRecs);
           setRecs(fetchRecs);
         }

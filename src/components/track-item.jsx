@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useRef, useState } from 'react';
 import { CgPlayListAdd } from 'react-icons/cg';
 import 'react-toastify/dist/ReactToastify.css';
+import useStore from '../store';
 import { playTrackInApp } from '../utils/spotify-player';
 
 function TrackItem(props) {
@@ -12,6 +13,7 @@ function TrackItem(props) {
   const [isArtistOverflowing, setIsArtistOverflowing] = useState(false);
   const nameRef = useRef(null);
   const artistRef = useRef(null);
+  const openPlaylistModal = useStore((state) => state.modalSlice.playlistModal.openModal);
 
   useEffect(() => {
     const checkOverflow = (ref, setState) => {
@@ -33,10 +35,10 @@ function TrackItem(props) {
     }
   };
 
-  const openPlaylistModal = (event) => {
-    event.stopPropagation();
-    props.onPlaylistModalOpen(id);
-  };
+  // const openPlaylistModal = (event) => {
+  // event.stopPropagation();
+  // props.onPlaylistModalOpen(id);
+  // };
 
   const scrollingTextStyle = {
     display: 'inline-block',
@@ -121,7 +123,7 @@ function TrackItem(props) {
           cursor="pointer"
           color="gray.200"
           _hover={{ color: 'white', transform: 'scale(1.1)', top: '30%' }}
-          onClick={openPlaylistModal}
+          onClick={() => openPlaylistModal(id)}
           position="absolute"
           right="10px"
           top="50%"

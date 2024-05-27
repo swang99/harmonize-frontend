@@ -237,7 +237,13 @@ const PostCard = (props) => {
       );
     } else if (use === 'profile') {
       return (
-        <Box onClick={handlePostModalOpen} cursor="pointer" _hover={{ borderColor: 'teal.500', borderWidth: '3px' }}>
+        <Box onClick={handlePostModalOpen}
+          cursor="pointer"
+          transition="transform 0.1s ease-in-out"
+          _hover={{
+            transform: 'scale(1.03)',
+          }}
+        >
           <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} onPlaylistModalOpen={props.onPlaylistModalOpen} />
           <AddCommentModal isOpen={addCommentDisc.isOpen} onClose={addCommentDisc.onClose} post={props.post} postAuthorID={props.authorID} commentAuthorID={userProfile.userID} />
           <NewPostModal

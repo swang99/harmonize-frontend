@@ -175,7 +175,6 @@ export async function getCurrentUserPlaylists() {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-
     return response.data;
   } catch (error) {
     console.error('Error fetching user playlists from Spotify:', error);
@@ -404,6 +403,6 @@ export async function getRecs() {
     return response.data.tracks;
   } catch (error) {
     console.error('Error fetching recommendations:', error);
-    throw error;
+    return [];
   }
 }

@@ -101,7 +101,7 @@ const createProfileSlice = (set, get) => ({
           highlights: [],
           topTracks: tracks.items.map((item) => item.id),
           topArtists: artists.items.map((item) => item.id),
-          playlists: playlists.items.map((item) => item.id),
+          playlists: playlists.items,
           posts: [],
         };
         const response = await axios.post(`${ROOT_URL}/users`, newProfile);
@@ -116,7 +116,7 @@ const createProfileSlice = (set, get) => ({
           email: profile.email,
           topTracks: tracks.items.map((item) => item.id),
           topArtists: artists.items.map((item) => item.id),
-          playlists: playlists.items.map((item) => item.id),
+          playlists: playlists.items,
         };
         await updateHelper(profile.id, updatedProfile);
         set((state) => ({
