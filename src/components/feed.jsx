@@ -5,10 +5,12 @@ import useStore from '../store';
 import { updateToken } from '../utils/SpotifyAuth';
 import PostCard from './post-card';
 import AddTrackToPlaylistModal from './add-track-to-playlist';
+import { getRecs } from '../utils/spotify-api';
 
 function Feed(props) {
   const [tokenUpdated, setTokenUpdated] = useState(false); // track if token is updated
   const [feed, setFeed] = useState([]); // store the user's feed
+  const [recs, setRecs] = useState([]);
   // modal shit
   const addTrackToPlaylistDisc = useDisclosure();
   const [trackId, setTrackId] = useState(null);
@@ -38,6 +40,11 @@ function Feed(props) {
       if (tokenUpdated && initialFetch && currentProfile.userID) {
         console.log('Following', currentProfile.following);
         setFeed(await loadFeed(currentProfile.userID));
+        if (!feed || feed.length === 0) {
+          const fetchRecs = await getRecs();
+          console.log('Recs: ', fetchRecs);
+          setRecs(fetchRecs);
+        }
       }
     };
     loadFeedData();
@@ -50,6 +57,9 @@ function Feed(props) {
           <VStack bg="white" maxW="1000px" borderRadius="lg" spacing={4} align="center" justify="center" p={10}>
             <Text as="h1" fontSize="4xl" color="gray.700" fontWeight="bold">No posts to show</Text>
             <Text as="h2" fontSize="2xl" color="gray.500" fontWeight="bold">For now, here are some recommendations:</Text>
+            {recs.map((track) => (
+              <Text key={track.id}>{track.name}</Text>
+            ))}
           </VStack>
         </Box>
       );

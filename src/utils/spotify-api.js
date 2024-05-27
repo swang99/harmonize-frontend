@@ -382,3 +382,28 @@ export async function addTrackToLikedSongs(trackId) {
     throw error;
   }
 }
+
+export async function getRecs() {
+  let recentlyPlayed = await getRecentlyPlayedTracks();
+  recentlyPlayed = recentlyPlayed.slice(0, 5);
+  recentlyPlayed = recentlyPlayed.map((t) => t.track.id).join(',');
+  console.log(recentlyPlayed);
+
+  const accessToken = localStorage.getItem('access_token');
+  try {
+    const response = await axios.get(
+      `https://api.spotify.com/v1/recommendations?seed_tracks=${recentlyPlayed}&limit=10`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    console.log('Recommendations fetched: ', response.data);
+    return response.data.tracks;
+  } catch (error) {
+    console.error('Error fetching recommendations:', error);
+    throw error;
+  }
+}
