@@ -27,7 +27,6 @@ const PostCard = (props) => {
   const [likes, setLikes] = useState(props.post.likes.length);
   const [comments, setComments] = useState(props.post.comments);
   const openPlaylistModal = props.onPlaylistModalOpen;
-  console.log(props);
 
   const handlePostModalOpen = () => {
     const postModalContent = props.name ? {
@@ -94,7 +93,6 @@ const PostCard = (props) => {
 
   const handleNavigateUser = (friendId) => {
     navigate(`/users/${friendId}`);
-    props.onClose();
   };
 
   const renderLikes = () => {
@@ -203,13 +201,19 @@ const PostCard = (props) => {
                     <Avatar size="sm"
                       src={userPhoto}
                       cursor="pointer"
-                      onClick={() => handleNavigateUser(props.authorID)}
+                      onClick={() => handleNavigateUser(
+                        fetchOtherProfile.userID !== props.authorID
+                          ? props.authorID : userProfile.userID,
+                      )}
                     />
                     <Text as="h2"
                       fontSize="md"
                       fontWeight="bold"
                       cursor="pointer"
-                      onClick={() => handleNavigateUser(props.authorID)}
+                      onClick={() => handleNavigateUser(
+                        fetchOtherProfile.userID !== props.authorID
+                          ? props.authorID : userProfile.userID,
+                      )}
                     >{username}
                     </Text>
                   </HStack>
