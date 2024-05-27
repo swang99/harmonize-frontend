@@ -158,7 +158,7 @@ export default function ProfileHeader(props) {
                   {profile.posts && profile.posts.length > 0 ? (
                     profile.posts.map((post) => (
                       <PostCard
-                        key={post.id}
+                        key={post._id}
                         post={post}
                         profile={profile}
                         onPlaylistModalOpen={openPlaylistModal}
