@@ -72,7 +72,7 @@ const Post = (props) => {
                 <Text fontSize="sm" color="gray.600">Year: {date}</Text>
               </VStack>
             </HStack>
-            <Text fontSize="sm" color="gray.800">Comment: {props.description}</Text>
+            <Text fontSize="sm" color="gray.800">Comment: {props.comment}</Text>
             <Button colorScheme="teal" size="sm" onClick={handlePlay}>
               Play
             </Button>

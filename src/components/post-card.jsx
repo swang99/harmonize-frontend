@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { CgPlayListAdd } from 'react-icons/cg';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { MdOutlineComment } from 'react-icons/md';
+import { RepeatIcon } from '@chakra-ui/icons';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
@@ -10,6 +11,7 @@ import { getItemData } from '../utils/spotify-api';
 import AddCommentModal from './AddComment';
 import AddTrackToPlaylistModal from './add-track-to-playlist';
 import TrackItem from './track-item';
+import NewPostModal from './NewPostModal';
 
 const PostCard = (props) => {
   const { post, use, onPostModalOpen } = props;
@@ -17,6 +19,7 @@ const PostCard = (props) => {
   const { id, type } = post;
   const addCommentDisc = useDisclosure();
   const addTrackToPlaylistDisc = useDisclosure();
+  const newPostModalDisc = useDisclosure();
   const { fetchOtherProfile, playlists } = useStore((store) => store.profileSlice);
   const userProfile = useStore((store) => store.profileSlice.currentProfile);
   const updatePost = useStore((store) => store.postSlice.updatePost);
@@ -88,6 +91,11 @@ const PostCard = (props) => {
   const handleAddToPlaylistOpen = (event) => {
     event.stopPropagation();
     openPlaylistModal();
+  };
+
+  const handleNewPostOpen = (event) => {
+    event.stopPropagation();
+    newPostModalDisc.onOpen();
   };
 
   const renderLikes = () => {
@@ -166,7 +174,7 @@ const PostCard = (props) => {
               <Box flex="1" w="85%" overflowY="auto">
                 <VStack w="100%" spacing="2">
                   {post.comments.map((comment) => (
-                    <HStack key={comment.id} w="100%">
+                    <HStack key={`${comment.id}-${comment.author}`} w="100%">
                       <Text fontWeight="bold" fontSize="sm">{`${comment.author}: `}</Text>
                       <Text fontSize="sm">{`${comment.comment}`}</Text>
                     </HStack>
@@ -193,12 +201,22 @@ const PostCard = (props) => {
                     _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
                     onClick={handleAddToPlaylistOpen}
                   />
+                  <Icon
+                    as={RepeatIcon}
+                    w={6}
+                    h={6}
+                    cursor="pointer"
+                    color="teal.900"
+                    _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
+                    onClick={handleNewPostOpen}
+                  />
                 </HStack>
               </Box>
             </VStack>
           </VStack>
           <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={postItemData.id} playlists={playlists} />
           <AddCommentModal isOpen={addCommentDisc.isOpen} onClose={addCommentDisc.onClose} post={props.post} postAuthorID={props.authorID} commentAuthorID={userProfile.userID} />
+          <NewPostModal isOpen={newPostModalDisc.isOpen} onClose={newPostModalDisc.onClose} trackData={postItemData} /> {/* New Post Modal */}
         </HStack>
       );
     } else if (use === 'profile') {
@@ -207,6 +225,7 @@ const PostCard = (props) => {
           <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} onPlaylistModalOpen={props.onPlaylistModalOpen} />
           <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={postItemData.id} playlists={playlists} />
           <AddCommentModal isOpen={addCommentDisc.isOpen} onClose={addCommentDisc.onClose} post={props.post} postAuthorID={props.authorID} commentAuthorID={userProfile.userID} />
+          <NewPostModal isOpen={newPostModalDisc.isOpen} onClose={newPostModalDisc.onClose} trackData={postItemData} /> {/* New Post Modal */}
         </Box>
       );
     }
