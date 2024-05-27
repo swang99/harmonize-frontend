@@ -31,7 +31,6 @@ const NewPostModal = ({ isOpen, onClose, trackData }) => {
   };
 
   if (!trackData) return null;
-  console.log('Track data:', trackData);
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
