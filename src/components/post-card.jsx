@@ -25,6 +25,7 @@ const PostCard = (props) => {
   const updatePost = useStore((store) => store.postSlice.updatePost);
   const [liked, setLiked] = useState(props.post.likes.includes(userProfile.userID));
   const [likes, setLikes] = useState(props.post.likes.length);
+  const [comments, setComments] = useState(props.post.comments);
   const openPlaylistModal = props.onPlaylistModalOpen;
 
   useEffect(() => {
@@ -68,6 +69,7 @@ const PostCard = (props) => {
     }
     newLikes = [...new Set(newLikes)];
     const newPost = {
+      _id: props.post._id,
       id: props.post.id,
       type: props.post.type,
       description: props.post.description,
@@ -173,7 +175,7 @@ const PostCard = (props) => {
               <Box w="100%" h={1} rounded="full" bg="gray.300" />
               <Box flex="1" w="85%" overflowY="auto">
                 <VStack w="100%" spacing="2">
-                  {post.comments.map((comment) => (
+                  {comments.map((comment) => (
                     <HStack key={`${comment.id}-${comment.author}`} w="100%">
                       <Text fontWeight="bold" fontSize="sm">{`${comment.author}: `}</Text>
                       <Text fontSize="sm">{`${comment.comment}`}</Text>
@@ -215,7 +217,13 @@ const PostCard = (props) => {
             </VStack>
           </VStack>
           <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={postItemData.id} playlists={playlists} />
-          <AddCommentModal isOpen={addCommentDisc.isOpen} onClose={addCommentDisc.onClose} post={props.post} postAuthorID={props.authorID} commentAuthorID={userProfile.userID} />
+          <AddCommentModal isOpen={addCommentDisc.isOpen}
+            onClose={addCommentDisc.onClose}
+            post={props.post}
+            postAuthorID={props.authorID}
+            commentAuthorID={userProfile.userID}
+            setComments={setComments}
+          />
           <NewPostModal isOpen={newPostModalDisc.isOpen} onClose={newPostModalDisc.onClose} trackData={postItemData} /> {/* New Post Modal */}
         </HStack>
       );

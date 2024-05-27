@@ -25,7 +25,7 @@ const createPostSlice = (set, get) => {
 
     updatePost: async (profile, post) => {
       try {
-        const updatedPosts = profile.posts.map((p) => (p.id === post.id ? post : p));
+        const updatedPosts = profile.posts.map((p) => (p._id === post._id ? post : p));
         const updatedProfile = { ...profile, posts: updatedPosts };
         await axios.put(`${ROOT_URL}users/${profile.userID}`, updatedProfile);
         set((state) => ({
@@ -43,7 +43,7 @@ const createPostSlice = (set, get) => {
         console.error('Cannot delete post for different user');
         return;
       }
-      const updatedPosts = existingProfile.posts.filter((p) => p.id !== postID);
+      const updatedPosts = existingProfile.posts.filter((p) => p._id !== postID);
       const updatedProfile = { ...existingProfile, posts: updatedPosts };
       set((state) => ({
         profileSlice: { ...state.profileSlice, currentProfile: updatedProfile },

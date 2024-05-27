@@ -24,6 +24,7 @@ function AddCommentModal(props) {
 
     // construct updated post body
     const newPost = {
+      _id: props.post._id,
       id: props.post.id,
       type: props.post.type,
       description: props.post.description,
@@ -32,13 +33,14 @@ function AddCommentModal(props) {
       createdAt: props.post.createdAt,
     };
     const authorProfile = await fetchOtherProfile(props.postAuthorID);
-    await updatePost(authorProfile, newPost);
+    props.setComments(newComments);
     toast({
       title: 'Commented!',
       status: 'success',
       duration: 2000,
       isClosable: true,
     });
+    updatePost(authorProfile, newPost);
 
     setComment('');
     props.onClose();
