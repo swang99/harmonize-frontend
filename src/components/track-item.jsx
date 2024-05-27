@@ -74,7 +74,7 @@ function TrackItem(props) {
           display="flex"
           alignItems="center"
           justifyContent="center"
-          onClick={() => handlePlay()}
+          onClick={handlePlay}
         >
           <FontAwesomeIcon icon={faPlay} />
         </Button>
