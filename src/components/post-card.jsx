@@ -6,6 +6,7 @@ import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { FaRegTrashCan } from 'react-icons/fa6';
 import { MdOutlineComment } from 'react-icons/md';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router';
 import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
 import AddCommentModal from './AddComment';
@@ -17,6 +18,7 @@ const PostCard = (props) => {
   const { id, type } = post;
   const addCommentDisc = useDisclosure();
   const newPostModalDisc = useDisclosure();
+  const navigate = useNavigate();
   const { fetchOtherProfile } = useStore((store) => store.profileSlice);
   const userProfile = useStore((store) => store.profileSlice.currentProfile);
   const updatePost = useStore((store) => store.postSlice.updatePost);
@@ -25,6 +27,7 @@ const PostCard = (props) => {
   const [likes, setLikes] = useState(props.post.likes.length);
   const [comments, setComments] = useState(props.post.comments);
   const openPlaylistModal = props.onPlaylistModalOpen;
+  console.log(props);
 
   const handlePostModalOpen = () => {
     const postModalContent = props.name ? {
@@ -87,6 +90,11 @@ const PostCard = (props) => {
   const handleNewPostOpen = (event) => {
     event.stopPropagation();
     newPostModalDisc.onOpen();
+  };
+
+  const handleNavigateUser = (friendId) => {
+    navigate(`/users/${friendId}`);
+    props.onClose();
   };
 
   const renderLikes = () => {
@@ -192,8 +200,18 @@ const PostCard = (props) => {
               <VStack w="100%" h="100%" flex="1" maxH="100%" align="flex-start" px={3} pt={3} overflow="hidden" position="relative">
                 <HStack w="100%" justifyContent="space-between" alignSelf="flex-start" gap="3">
                   <HStack>
-                    <Avatar size="sm" src={userPhoto} />
-                    <Text as="h2" fontSize="md" fontWeight="bold">{username}</Text>
+                    <Avatar size="sm"
+                      src={userPhoto}
+                      cursor="pointer"
+                      onClick={() => handleNavigateUser(props.authorID)}
+                    />
+                    <Text as="h2"
+                      fontSize="md"
+                      fontWeight="bold"
+                      cursor="pointer"
+                      onClick={() => handleNavigateUser(props.authorID)}
+                    >{username}
+                    </Text>
                   </HStack>
                   <Box justifySelf="flex-end">
                     {renderLikes()}
