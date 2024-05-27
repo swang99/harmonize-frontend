@@ -14,7 +14,7 @@ import AddTrackToPlaylistModal from './add-track-to-playlist';
 import TrackItem from './track-item';
 
 const PostCard = (props) => {
-  const { post, use, onPostModalOpen } = props;
+  const { post, use, onPostModalOpen, profile } = props;
   const { id, type } = post;
   const addCommentDisc = useDisclosure();
   const addTrackToPlaylistDisc = useDisclosure();
@@ -36,9 +36,9 @@ const PostCard = (props) => {
       authorID: props.authorID,
     } : {
       post: props.post,
-      name: userProfile.name,
-      photo: userProfile.photo,
-      authorID: userProfile.userID,
+      name: profile.name,
+      photo: profile.photo,
+      authorID: profile.userID,
     };
     onPostModalOpen(postModalContent);
   };
