@@ -92,6 +92,19 @@ const PostCard = (props) => {
   };
 
   const renderLikes = () => {
+    if (use === 'feed-personal') {
+      return (
+        <HStack>
+          <Text fontSize="xl" as="b">{likes}</Text>
+          <Icon
+            as={FaRegHeart}
+            w={7}
+            h={7}
+            color="teal.900"
+          />
+        </HStack>
+      );
+    }
     if (liked) {
       return (
         <HStack>
