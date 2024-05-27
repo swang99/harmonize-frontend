@@ -1,5 +1,5 @@
 import { Avatar, Box, HStack, Icon, Text, VStack, useDisclosure } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { CgPlayListAdd } from 'react-icons/cg';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { MdOutlineComment } from 'react-icons/md';
@@ -7,7 +7,6 @@ import { RepeatIcon } from '@chakra-ui/icons';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
-import { getItemData } from '../utils/spotify-api';
 import AddCommentModal from './AddComment';
 import AddTrackToPlaylistModal from './add-track-to-playlist';
 import TrackItem from './track-item';
@@ -15,7 +14,6 @@ import NewPostModal from './NewPostModal';
 
 const PostCard = (props) => {
   const { post, use, onPostModalOpen } = props;
-  const [postItemData, setPostItemData] = useState(null);
   const { id, type } = post;
   const addCommentDisc = useDisclosure();
   const addTrackToPlaylistDisc = useDisclosure();
@@ -28,17 +26,17 @@ const PostCard = (props) => {
   const [comments, setComments] = useState(props.post.comments);
   const openPlaylistModal = props.onPlaylistModalOpen;
 
-  useEffect(() => {
-    const fetchPostData = async () => {
-      try {
-        const data = await getItemData(id, 'track');
-        setPostItemData(data);
-      } catch (error) {
-        toast.error('Failed to fetch post data:', error);
-      }
-    };
-    fetchPostData();
-  }, [id]);
+  // useEffect(() => {
+  //   const fetchPostData = async () => {
+  //     try {
+  //       const data = await getItemData(id, 'track');
+  //       setPostItemData(data);
+  //     } catch (error) {
+  //       toast.error('Failed to fetch post data:', error);
+  //     }
+  //   };
+  //   fetchPostData();
+  // }, [id]);
 
   const handlePostModalOpen = () => {
     const postModalContent = props.name ? {
@@ -69,13 +67,16 @@ const PostCard = (props) => {
     }
     newLikes = [...new Set(newLikes)];
     const newPost = {
-      _id: props.post._id,
-      id: props.post.id,
-      type: props.post.type,
-      description: props.post.description,
-      comments: props.post.comments,
+      _id: post._id,
+      id: post.id,
+      type: post.type,
+      description: post.description,
+      comments: post.comments,
       likes: newLikes,
-      createdAt: props.post.createdAt,
+      createdAt: post.createdAt,
+      songName: post.songName,
+      artists: post.artists,
+      imageURL: post.imageURL,
     };
     try {
       const authorProfile = await fetchOtherProfile(props.authorID);
@@ -132,9 +133,8 @@ const PostCard = (props) => {
   };
 
   const renderTrackPost = () => {
-    const { name } = postItemData;
-    const imageURL = postItemData.album.images[0].url;
-    const artists = postItemData.artists[0].name;
+    const name = post.songName;
+    const { imageURL, artists } = post;
 
     if (use === 'feed') {
       const username = props.name;
@@ -216,7 +216,7 @@ const PostCard = (props) => {
               </Box>
             </VStack>
           </VStack>
-          <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={postItemData.id} playlists={playlists} />
+          <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={post.id} playlists={playlists} />
           <AddCommentModal isOpen={addCommentDisc.isOpen}
             onClose={addCommentDisc.onClose}
             post={props.post}
@@ -224,16 +224,24 @@ const PostCard = (props) => {
             commentAuthorID={userProfile.userID}
             setComments={setComments}
           />
-          <NewPostModal isOpen={newPostModalDisc.isOpen} onClose={newPostModalDisc.onClose} trackData={postItemData} /> {/* New Post Modal */}
+          <NewPostModal
+            isOpen={newPostModalDisc.isOpen}
+            onClose={newPostModalDisc.onClose}
+            trackData={{ id: post.id, songName: post.songName, artists: post.artists, imageURL: post.imageURL }}
+          />
         </HStack>
       );
     } else if (use === 'profile') {
       return (
         <Box onClick={handlePostModalOpen} cursor="pointer" _hover={{ borderColor: 'teal.500', borderWidth: '3px' }}>
           <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} onPlaylistModalOpen={props.onPlaylistModalOpen} />
-          <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={postItemData.id} playlists={playlists} />
+          <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={post.id} playlists={playlists} />
           <AddCommentModal isOpen={addCommentDisc.isOpen} onClose={addCommentDisc.onClose} post={props.post} postAuthorID={props.authorID} commentAuthorID={userProfile.userID} />
-          <NewPostModal isOpen={newPostModalDisc.isOpen} onClose={newPostModalDisc.onClose} trackData={postItemData} /> {/* New Post Modal */}
+          <NewPostModal
+            isOpen={newPostModalDisc.isOpen}
+            onClose={newPostModalDisc.onClose}
+            trackData={{ id: post.id, songName: post.songName, artists: post.artists, imageURL: post.imageURL }}
+          />
         </Box>
       );
     }
@@ -252,10 +260,10 @@ const PostCard = (props) => {
   };
 
   const renderPost = () => {
-    if (!postItemData) {
+    if (!post) {
       return null;
     } else if (type === 'track') {
-      return renderTrackPost(postItemData);
+      return renderTrackPost();
     }
     return null;
   };

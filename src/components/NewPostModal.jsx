@@ -17,6 +17,9 @@ const NewPostModal = ({ isOpen, onClose, trackData }) => {
       comments: [],
       likes: [],
       createdAt: new Date().toISOString(),
+      songName: trackData.songName,
+      artists: trackData.artists,
+      imageURL: trackData.imageURL,
     };
     try {
       await createPost(userProfile.userID, newPost);

@@ -31,6 +31,9 @@ function AddCommentModal(props) {
       comments: newComments,
       likes: props.post.likes,
       createdAt: props.post.createdAt,
+      songName: props.post.songName,
+      artists: props.post.artists,
+      imageURL: props.post.imageURL,
     };
     const authorProfile = await fetchOtherProfile(props.postAuthorID);
     props.setComments(newComments);

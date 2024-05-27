@@ -59,6 +59,9 @@ const NewPostPage = () => {
         id: selectedItem.id,
         type: selectedItem.type.toLowerCase(),
         description,
+        imageURL: selectedItem.images[0].url,
+        artists: selectedItem.artists.map((artist) => artist.name).join(', '),
+        songName: selectedItem.name,
       };
       console.log('Post Object:', post); // debugging
 
