@@ -10,16 +10,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
 import AddCommentModal from './AddComment';
 import NewPostModal from './NewPostModal';
-import AddTrackToPlaylistModal from './add-track-to-playlist';
 import TrackItem from './track-item';
 
 const PostCard = (props) => {
   const { post, use, onPostModalOpen, profile } = props;
   const { id, type } = post;
   const addCommentDisc = useDisclosure();
-  const addTrackToPlaylistDisc = useDisclosure();
   const newPostModalDisc = useDisclosure();
-  const { fetchOtherProfile, playlists } = useStore((store) => store.profileSlice);
+  const { fetchOtherProfile } = useStore((store) => store.profileSlice);
   const userProfile = useStore((store) => store.profileSlice.currentProfile);
   const updatePost = useStore((store) => store.postSlice.updatePost);
   const deletePost = useStore((store) => store.postSlice.deletePost);
@@ -239,7 +237,6 @@ const PostCard = (props) => {
       return (
         <Box onClick={handlePostModalOpen} cursor="pointer" _hover={{ borderColor: 'teal.500', borderWidth: '3px' }}>
           <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} onPlaylistModalOpen={props.onPlaylistModalOpen} />
-          <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={post.id} playlists={playlists} />
           <AddCommentModal isOpen={addCommentDisc.isOpen} onClose={addCommentDisc.onClose} post={props.post} postAuthorID={props.authorID} commentAuthorID={userProfile.userID} />
           <NewPostModal
             isOpen={newPostModalDisc.isOpen}
