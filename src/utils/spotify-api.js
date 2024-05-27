@@ -179,7 +179,7 @@ export async function getCurrentUserPlaylists() {
     return response.data;
   } catch (error) {
     console.error('Error fetching user playlists from Spotify:', error);
-    throw error;
+    return {};
   }
 }
 
@@ -203,7 +203,7 @@ export async function getRecentlyPlayedTracks() {
     return response.data.items;
   } catch (error) {
     console.error('Error fetching recently played tracks from Spotify:', error);
-    throw error;
+    return {};
   }
 }
 
@@ -234,7 +234,7 @@ export async function getItemData(id, type) {
     return response.data;
   } catch (error) {
     console.error('Error Fetching Item Data from Spotify', error);
-    throw error;
+    return {};
   }
 }
 
