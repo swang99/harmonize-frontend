@@ -1,17 +1,17 @@
+import { RepeatIcon } from '@chakra-ui/icons';
 import { Avatar, Box, HStack, Icon, Text, VStack, useDisclosure } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { CgPlayListAdd } from 'react-icons/cg';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { FaRegTrashCan } from 'react-icons/fa6';
 import { MdOutlineComment } from 'react-icons/md';
-import { RepeatIcon } from '@chakra-ui/icons';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
 import AddCommentModal from './AddComment';
+import NewPostModal from './NewPostModal';
 import AddTrackToPlaylistModal from './add-track-to-playlist';
 import TrackItem from './track-item';
-import NewPostModal from './NewPostModal';
 
 const PostCard = (props) => {
   const { post, use, onPostModalOpen } = props;
@@ -221,7 +221,6 @@ const PostCard = (props) => {
               </Box>
             </VStack>
           </VStack>
-          <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={post.id} playlists={playlists} />
           <AddCommentModal isOpen={addCommentDisc.isOpen}
             onClose={addCommentDisc.onClose}
             post={props.post}
