@@ -1,55 +1,30 @@
 import React, { useState } from 'react';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  Button,
-  Textarea,
-  VStack,
-  Image,
-  useToast,
-} from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Textarea, Image, VStack, Text } from '@chakra-ui/react';
+import { toast } from 'react-toastify';
 import useStore from '../store';
+import 'react-toastify/dist/ReactToastify.css';
 
-const NewPostModal = ({ isOpen, onClose, trackId, trackImage, trackName, trackArtist }) => {
-  const [comment, setComment] = useState('');
-  const toast = useToast();
-  const { createPost, currentProfile } = useStore((state) => ({
-    createPost: state.postSlice.createPost,
-    currentProfile: state.profileSlice.currentProfile,
-  }));
+const NewPostModal = ({ isOpen, onClose, trackData }) => {
+  const [description, setDescription] = useState('');
+  const createPost = useStore((store) => store.postSlice.createPost);
+  const userProfile = useStore((store) => store.profileSlice.currentProfile);
 
   const handleSubmit = async () => {
-    if (!currentProfile) {
-      toast({
-        title: 'Error',
-        description: 'User profile not found',
-        status: 'error',
-        duration: 2000,
-        isClosable: true,
-      });
-      return;
-    }
-
-    const post = {
-      id: trackId,
+    const newPost = {
+      id: trackData.id,
       type: 'track',
-      description: comment,
+      description,
+      comments: [],
+      likes: [],
+      createdAt: new Date().toISOString(),
     };
-
-    await createPost(currentProfile.userID, post);
-    toast({
-      title: 'Post created.',
-      status: 'success',
-      duration: 2000,
-      isClosable: true,
-    });
-    setComment('');
-    onClose();
+    try {
+      await createPost(userProfile.userID, newPost);
+      toast.success('Post created successfully!');
+      onClose();
+    } catch (error) {
+      toast.error('Failed to create post.');
+    }
   };
 
   return (
@@ -59,12 +34,14 @@ const NewPostModal = ({ isOpen, onClose, trackId, trackImage, trackName, trackAr
         <ModalHeader>Create New Post</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <VStack spacing={4} align="stretch">
-            <Image src={trackImage} alt={trackName} boxSize="100px" />
+          <VStack spacing={4}>
+            <Image src={trackData.album.images[0].url} alt={trackData.name} boxSize="150px" />
+            <Text fontWeight="bold">{trackData.name}</Text>
+            <Text>{trackData.artists.map((artist) => artist.name).join(', ')}</Text>
             <Textarea
               placeholder="Add a comment"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
             />
           </VStack>
         </ModalBody>
@@ -72,7 +49,7 @@ const NewPostModal = ({ isOpen, onClose, trackId, trackImage, trackName, trackAr
           <Button colorScheme="blue" mr={3} onClick={handleSubmit}>
             Create Post
           </Button>
-          <Button onClick={onClose}>Close</Button>
+          <Button variant="ghost" onClick={onClose}>Cancel</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
