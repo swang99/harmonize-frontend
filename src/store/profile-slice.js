@@ -52,9 +52,6 @@ const createProfileSlice = (set, get) => ({
   updateProfile: async (userID, profile) => {
     try {
       await updateHelper(userID, profile);
-      set((state) => ({
-        profileSlice: { ...state.profileSlice, currentProfile: profile },
-      }), false, 'users/updateProfile');
     } catch (error) {
       console.error('Failed to update profile:', error.message);
       get().errorSlice.newError(error.message);
