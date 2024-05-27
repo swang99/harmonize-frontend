@@ -205,6 +205,7 @@ const PostCard = (props) => {
                         fetchOtherProfile.userID !== props.authorID
                           ? props.authorID : userProfile.userID,
                       )}
+                      _hover={{ borderColor: 'teal.500', borderWidth: '1px' }}
                     />
                     <Text as="h2"
                       fontSize="md"
@@ -214,6 +215,7 @@ const PostCard = (props) => {
                         fetchOtherProfile.userID !== props.authorID
                           ? props.authorID : userProfile.userID,
                       )}
+                      _hover={{ color: 'teal.500' }}
                     >{username}
                     </Text>
                   </HStack>
