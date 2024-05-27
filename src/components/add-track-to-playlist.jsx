@@ -18,17 +18,23 @@ import React, { useEffect, useState, useRef } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { addTrackToPlaylist, getCurrentUserPlaylists } from '../utils/spotify-api';
+import useStore from '../store';
 
 export default function AddTrackToPlaylistModal(props) {
   const { trackID, isOpen, onClose } = props;
   const [playlistsToRender, setPlaylistsToRender] = useState([]);
   const initialFocusRef = useRef();
   const finalFocusRef = useRef();
+  const { userProfile } = useStore((store) => store.profileSlice);
 
   useEffect(() => {
     async function fetchPlaylists() {
-      const userPlaylists = await getCurrentUserPlaylists();
-      setPlaylistsToRender(userPlaylists);
+      if (userProfile && userProfile.playlists.length > 0) {
+        setPlaylistsToRender(userProfile.playlists);
+      } else {
+        const userPlaylists = await getCurrentUserPlaylists();
+        setPlaylistsToRender(userPlaylists);
+      }
     }
     fetchPlaylists();
   }, []);
