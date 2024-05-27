@@ -6,6 +6,7 @@ import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { FaRegTrashCan } from 'react-icons/fa6';
 import { MdOutlineComment } from 'react-icons/md';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router';
 import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
 import AddCommentModal from './AddComment';
@@ -17,6 +18,7 @@ const PostCard = (props) => {
   const { id, type } = post;
   const addCommentDisc = useDisclosure();
   const newPostModalDisc = useDisclosure();
+  const navigate = useNavigate();
   const { fetchOtherProfile } = useStore((store) => store.profileSlice);
   const userProfile = useStore((store) => store.profileSlice.currentProfile);
   const updatePost = useStore((store) => store.postSlice.updatePost);
@@ -87,6 +89,10 @@ const PostCard = (props) => {
   const handleNewPostOpen = (event) => {
     event.stopPropagation();
     newPostModalDisc.onOpen();
+  };
+
+  const handleNavigateUser = (friendId) => {
+    navigate(`/users/${friendId}`);
   };
 
   const renderLikes = () => {
@@ -192,8 +198,26 @@ const PostCard = (props) => {
               <VStack w="100%" h="100%" flex="1" maxH="100%" align="flex-start" px={3} pt={3} overflow="hidden" position="relative">
                 <HStack w="100%" justifyContent="space-between" alignSelf="flex-start" gap="3">
                   <HStack>
-                    <Avatar size="sm" src={userPhoto} />
-                    <Text as="h2" fontSize="md" fontWeight="bold">{username}</Text>
+                    <Avatar size="sm"
+                      src={userPhoto}
+                      cursor="pointer"
+                      onClick={() => handleNavigateUser(
+                        fetchOtherProfile.userID !== props.authorID
+                          ? props.authorID : userProfile.userID,
+                      )}
+                      _hover={{ borderColor: 'teal.500', borderWidth: '1px' }}
+                    />
+                    <Text as="h2"
+                      fontSize="md"
+                      fontWeight="bold"
+                      cursor="pointer"
+                      onClick={() => handleNavigateUser(
+                        fetchOtherProfile.userID !== props.authorID
+                          ? props.authorID : userProfile.userID,
+                      )}
+                      _hover={{ color: 'teal.500' }}
+                    >{username}
+                    </Text>
                   </HStack>
                   <Box justifySelf="flex-end">
                     {renderLikes()}
@@ -205,7 +229,7 @@ const PostCard = (props) => {
                   </Text>
                 </Box>
                 <Box w="100%" h={1} rounded="full" bg="gray.300" />
-                <Box flex="1" w="85%" overflowY="auto">
+                <Box flex="1" w="calc(100% - 100px)" overflowY="auto">
                   <VStack w="100%" spacing="2">
                     {comments.map((comment) => (
                       <HStack key={`${comment.id}-${comment.author}`} w="100%">
