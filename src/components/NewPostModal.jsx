@@ -42,7 +42,7 @@ const NewPostModal = ({ isOpen, onClose, trackData }) => {
           <VStack spacing={4}>
             <Image src={trackData.imageURL} alt={trackData.songName} boxSize="150px" />
             <Text fontWeight="bold">{trackData.name}</Text>
-            <Text>{trackData.artists.map((artist) => artist.name).join(', ')}</Text>
+            <Text>{trackData.artists}</Text>
             <Textarea
               placeholder="Add a comment"
               value={description}
