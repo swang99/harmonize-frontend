@@ -4,22 +4,24 @@ import {
 } from '@chakra-ui/react';
 import { IoPersonAdd } from 'react-icons/io5';
 import useStore from '../store/profile-slice';
-import PostCard from './post-card';
 import AddFriendModal from './AddFriendModal';
 import ViewFollowers from './ViewFollowers';
 import ViewFollowing from './ViewFollowing';
+import FullPostModal from './full-post-modal';
 import AddTrackToPlaylistModal from './add-track-to-playlist';
+import PostCard from './post-card';
 
 export default function ProfileHeader(props) {
   const { isOwnProfile, profile, userProfile, id: profileId } = props;
   const addFDisc = useDisclosure();
   const followersDisc = useDisclosure();
   const followingDisc = useDisclosure();
+  const postDisc = useDisclosure();
   const { followProfile, unfollowProfile, getLikedPosts } = useStore((store) => store.profileSlice);
   const [isFollowing, setIsFollowing] = useState(false);
   const [likedPosts, setLikedPosts] = useState([]);
+  const [postModalContent, setPostModalContent] = useState(null);
 
-  // modal shit
   const addTrackToPlaylistDisc = useDisclosure();
   const [trackId, setTrackId] = useState(null);
 
@@ -41,6 +43,11 @@ export default function ProfileHeader(props) {
     };
     fetchLikedPosts();
   }, []);
+
+  const handlePostModalOpen = (post) => {
+    setPostModalContent(post);
+    postDisc.onOpen();
+  };
 
   const handleFollow = async () => {
     await followProfile(userProfile, profile);
@@ -153,6 +160,8 @@ export default function ProfileHeader(props) {
                         post={post}
                         profile={profile}
                         onPlaylistModalOpen={() => openPlaylistModal()}
+                        onPostModalOpen={handlePostModalOpen}
+                        use="profile"
                       />
                     ))
                   ) : (
@@ -166,15 +175,16 @@ export default function ProfileHeader(props) {
                 <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6} w="100%" pb="20vh">
                   {likedPosts && likedPosts.length > 0 ? (
                     likedPosts.map((post) => (
-                      <Box key={post._doc._id} w="100%" bg="gray.100" p={4} mx="auto" borderRadius="md" shadow="md">
-                        <PostCard
-                          post={post._doc}
-                          name={post.name}
-                          photo={post.photo}
-                          authorID={post.authorID}
-                          onPlaylistModalOpen={() => openPlaylistModal()}
-                        />
-                      </Box>
+                      <PostCard
+                        key={post._doc._id}
+                        post={post._doc}
+                        name={post.name}
+                        photo={post.photo}
+                        authorID={post.authorID}
+                        onPlaylistModalOpen={() => openPlaylistModal()}
+                        onPostModalOpen={handlePostModalOpen}
+                        use="profile"
+                      />
                     ))
                   ) : (
                     <Text>No liked posts yet.</Text>
@@ -195,6 +205,7 @@ export default function ProfileHeader(props) {
         onClose={followersDisc.onClose}
         profile={profile}
       />
+      <FullPostModal isOpen={postDisc.isOpen} onClose={postDisc.onClose} postModalContent={postModalContent} onPlaylistModalOpen={() => openPlaylistModal()} />
       <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={trackId} />
     </Flex>
   );

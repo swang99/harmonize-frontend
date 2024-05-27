@@ -51,7 +51,7 @@ function TrackItem(props) {
 
   if (props.use === 'feed') {
     return (
-      <Box h="100%" position="relative">
+      <Box h="100%" position="relative" rounded="none">
         <Image
           src={imageURL}
           alt={name}
