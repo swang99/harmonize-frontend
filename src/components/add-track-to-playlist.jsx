@@ -1,37 +1,29 @@
 import {
-  Box,
-  Button,
-  Grid,
-  GridItem,
-  Image,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Box,
+  Button,
+  Grid,
+  GridItem,
+  Image,
   Text,
 } from '@chakra-ui/react';
 import { faMusic, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { addTrackToPlaylist, getCurrentUserPlaylists } from '../utils/spotify-api';
 
-/**
- *
- * @param {*} trackID trackID of the track to add to playlist
- * @param {*} userProfile userProfile object
- * @returns
- */
 export default function AddTrackToPlaylistModal(props) {
   const { trackID, isOpen, onClose } = props;
   const [playlistsToRender, setPlaylistsToRender] = useState([]);
-
-  useEffect(() => {
-    console.log(playlistsToRender);
-  }, [playlistsToRender]);
+  const initialFocusRef = useRef();
+  const finalFocusRef = useRef();
 
   useEffect(() => {
     async function fetchPlaylists() {
@@ -43,7 +35,6 @@ export default function AddTrackToPlaylistModal(props) {
 
   const handleAddTrackToPlaylist = async (playlistID) => {
     try {
-      console.log('Track ID:', trackID, 'Playlist ID:', playlistID);
       await addTrackToPlaylist(playlistID, trackID);
       toast.success('Track added to playlist');
     } catch (error) {
@@ -54,7 +45,13 @@ export default function AddTrackToPlaylistModal(props) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="xl"
+      initialFocusRef={initialFocusRef}
+      finalFocusRef={finalFocusRef}
+    >
       <ModalOverlay />
       <ModalContent maxW="80vw" maxH="90vh">
         <ModalHeader>Add to Playlist</ModalHeader>
@@ -85,7 +82,6 @@ export default function AddTrackToPlaylistModal(props) {
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
-                  onClick={null}
                 >
                   <FontAwesomeIcon icon={faPlus} />
                 </Button>

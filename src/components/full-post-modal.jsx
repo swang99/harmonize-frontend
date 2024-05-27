@@ -7,18 +7,15 @@ import {
   ModalOverlay,
   Text,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useRef } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import PostCard from './post-card';
 
-/**
- *
- * @param {*} trackID trackID of the track to add to playlist
- * @param {*} userProfile userProfile object
- * @returns
- */
 export default function FullPostModal(props) {
   const { postModalContent, isOpen, onClose } = props;
+  const initialFocusRef = useRef();
+  const finalFocusRef = useRef();
+
   const renderPostCard = () => {
     if (!postModalContent) return <Text>No Post Content</Text>;
     return (
@@ -32,8 +29,15 @@ export default function FullPostModal(props) {
       />
     );
   };
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="xl"
+      initialFocusRef={initialFocusRef}
+      finalFocusRef={finalFocusRef}
+    >
       <ModalOverlay />
       <ModalContent maxW="80vw" maxH="90vh">
         <ModalHeader>Post</ModalHeader>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   Box, Button, Flex, Grid, HStack, Heading, Icon, Spacer, Text, VStack, Avatar, Tabs, Tab, TabList, TabPanels, TabPanel, useDisclosure,
 } from '@chakra-ui/react';
@@ -42,7 +42,7 @@ export default function ProfileHeader(props) {
       setLikedPosts(posts);
     };
     fetchLikedPosts();
-  }, []);
+  }, [getLikedPosts, profileId]);
 
   const handlePostModalOpen = (post) => {
     setPostModalContent(post);
@@ -70,6 +70,8 @@ export default function ProfileHeader(props) {
       </Button>
     )
   );
+
+  const finalRef = useRef();
 
   return (
     <Flex py={5} px={10} bg="teal.600" color="white" height="100vh" overflowY="auto" position="relative" width="100vw" justify="center">
@@ -159,7 +161,7 @@ export default function ProfileHeader(props) {
                         key={post.id}
                         post={post}
                         profile={profile}
-                        onPlaylistModalOpen={() => openPlaylistModal()}
+                        onPlaylistModalOpen={openPlaylistModal}
                         onPostModalOpen={handlePostModalOpen}
                         use="profile"
                       />
@@ -181,7 +183,7 @@ export default function ProfileHeader(props) {
                         name={post.name}
                         photo={post.photo}
                         authorID={post.authorID}
-                        onPlaylistModalOpen={() => openPlaylistModal()}
+                        onPlaylistModalOpen={openPlaylistModal}
                         onPostModalOpen={handlePostModalOpen}
                         use="profile"
                       />
@@ -195,18 +197,36 @@ export default function ProfileHeader(props) {
           </TabPanels>
         </Tabs>
       </VStack>
-      <AddFriendModal isOpen={addFDisc.isOpen} onClose={addFDisc.onClose} />
+      <AddFriendModal
+        isOpen={addFDisc.isOpen}
+        onClose={addFDisc.onClose}
+        finalFocusRef={finalRef}
+      />
       <ViewFollowing
         isOpen={followingDisc.isOpen}
         onClose={followingDisc.onClose}
+        finalFocusRef={finalRef}
         profile={profile}
       />
-      <ViewFollowers isOpen={followersDisc.isOpen}
+      <ViewFollowers
+        isOpen={followersDisc.isOpen}
         onClose={followersDisc.onClose}
+        finalFocusRef={finalRef}
         profile={profile}
       />
-      <FullPostModal isOpen={postDisc.isOpen} onClose={postDisc.onClose} postModalContent={postModalContent} onPlaylistModalOpen={() => openPlaylistModal()} />
-      <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={trackId} />
+      <FullPostModal
+        isOpen={postDisc.isOpen}
+        onClose={postDisc.onClose}
+        finalFocusRef={finalRef}
+        postModalContent={postModalContent}
+        onPlaylistModalOpen={openPlaylistModal}
+      />
+      <AddTrackToPlaylistModal
+        isOpen={addTrackToPlaylistDisc.isOpen}
+        onClose={addTrackToPlaylistDisc.onClose}
+        finalFocusRef={finalRef}
+        trackID={trackId}
+      />
     </Flex>
   );
 }
