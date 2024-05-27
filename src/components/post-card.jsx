@@ -11,22 +11,6 @@ import AddCommentModal from './AddComment';
 import AddTrackToPlaylistModal from './add-track-to-playlist';
 import TrackItem from './track-item';
 
-/**
- * Represents a post cardcomponent.
- *
- * @component
- * @param {Object} props - The props object containing the post data.
- * @param {string} props.post.id - The ID of the post.
- * @param {string} props.post.type - The type of the post.
- * @param {string} props.post.description - The description associated with the post.
- * @param {[String]} props.post.comments -The comments associated with the post.
- * @param {[String]} props.post.likes - The likes associated with the post.
- * @param {string} props.use - The use of the PostCard component (feed, profile, etc.).
- * @param {string} props.name - The name of the user who created the post (only for feed).
- * @param {string} props.authorID - The ID of the user who created the post.
- * @param {string} props.photo - The photo of the user who created the post (only for feed).
- * @returns {JSX.Element} The rendered Post component.
- */
 const PostCard = (props) => {
   const { post, use, onPostModalOpen } = props;
   const [postItemData, setPostItemData] = useState(null);
@@ -50,7 +34,7 @@ const PostCard = (props) => {
       }
     };
     fetchPostData();
-  }, []);
+  }, [id]);
 
   const handlePostModalOpen = () => {
     const postModalContent = props.name ? {
@@ -67,7 +51,8 @@ const PostCard = (props) => {
     onPostModalOpen(postModalContent);
   };
 
-  const handleLike = async () => {
+  const handleLike = async (event) => {
+    event.stopPropagation();
     let newLikes = [];
     if (liked) {
       setLiked(false);
@@ -93,6 +78,16 @@ const PostCard = (props) => {
     } catch (error) {
       toast.error('Failed to like post:', error);
     }
+  };
+
+  const handleAddCommentOpen = (event) => {
+    event.stopPropagation();
+    addCommentDisc.onOpen();
+  };
+
+  const handleAddToPlaylistOpen = (event) => {
+    event.stopPropagation();
+    openPlaylistModal();
   };
 
   const renderLikes = () => {
@@ -187,7 +182,7 @@ const PostCard = (props) => {
                     cursor="pointer"
                     color="teal.900"
                     _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
-                    onClick={addCommentDisc.onOpen}
+                    onClick={handleAddCommentOpen}
                   />
                   <Icon
                     as={CgPlayListAdd}
@@ -196,7 +191,7 @@ const PostCard = (props) => {
                     cursor="pointer"
                     color="teal.900"
                     _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
-                    onClick={openPlaylistModal}
+                    onClick={handleAddToPlaylistOpen}
                   />
                 </HStack>
               </Box>
@@ -229,7 +224,6 @@ const PostCard = (props) => {
     );
   };
 
-  // renders the post correctly according to what type of content it contains
   const renderPost = () => {
     if (!postItemData) {
       return null;

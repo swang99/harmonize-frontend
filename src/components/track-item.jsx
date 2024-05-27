@@ -24,7 +24,8 @@ function TrackItem(props) {
     checkOverflow(artistRef, setIsArtistOverflowing);
   }, [name, artist]);
 
-  const handlePlay = async () => {
+  const handlePlay = async (event) => {
+    event.stopPropagation();
     try {
       await playTrackInApp(id);
     } catch (error) {
@@ -32,7 +33,8 @@ function TrackItem(props) {
     }
   };
 
-  const openPlaylistModal = () => {
+  const openPlaylistModal = (event) => {
+    event.stopPropagation();
     props.onPlaylistModalOpen(id);
   };
 
@@ -138,7 +140,7 @@ function TrackItem(props) {
         display="flex"
         alignItems="center"
         justifyContent="center"
-        onClick={() => handlePlay()}
+        onClick={handlePlay}
       >
         <FontAwesomeIcon icon={faPlay} />
       </Button>
