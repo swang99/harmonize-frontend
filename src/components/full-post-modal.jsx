@@ -26,6 +26,7 @@ export default function FullPostModal(props) {
           use="feed-personal"
           post={postModalContent.post}
           name={postModalContent.name}
+          authorID={postModalContent.authorID}
           photo={postModalContent.photo}
           onPlaylistModalOpen={props.onPlaylistModalOpen}
         />
