@@ -22,7 +22,6 @@ export default function ProfileHeader(props) {
   const [likedPosts, setLikedPosts] = useState([]);
   const { postModalContent, clearPostModalContent } = useStore((store) => store.modalSlice);
 
-  // modal shit
   const addTrackToPlaylistDisc = useDisclosure();
   const [trackId, setTrackId] = useState(null);
 
@@ -44,7 +43,6 @@ export default function ProfileHeader(props) {
     };
     fetchLikedPosts();
   }, []);
-  console.log('PostModalContent:', postModalContent);
   useEffect(() => {
     if (postModalContent) {
       postDisc.onOpen();

@@ -6,13 +6,13 @@ const createModalSlice = (set, get) => {
      * postModalContent.photo: The photo of the post author
      * postModalContent.authorID: The ID of the post author
     */
-    postModalContent: null,
+    postModalContent: '',
 
     setPostModalContent: (content) => {
       set((state) => ({ modalSlice: { ...state.modalSlice, postModalContent: content } }), false, 'modal/setPostModalContent');
     },
     clearPostModalContent: () => {
-      set((state) => ({ modalSlice: { ...state.modalSlice, postModalContent: null } }), false, 'modal/clearPostModalContent');
+      set((state) => ({ modalSlice: { ...state.modalSlice, postModalContent: '' } }), false, 'modal/clearPostModalContent');
     },
   };
 };
