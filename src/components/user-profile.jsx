@@ -74,13 +74,13 @@ export default function ProfileHeader(props) {
   const finalRef = useRef();
 
   return (
-    <Flex py={5} px={10} bg="teal.600" color="white" height="100vh" overflowY="auto" position="relative" width="100vw" justify="center">
-      <VStack p="5%" w="100%" maxW="1000px" spacing={4}>
+    <Flex py={5} px={10} bg="white" height="100vh" overflowY="auto" position="relative" width="100vw" justify="center">
+      <VStack w="100%" maxW="1000px" spacing={4}>
         <Box position="relative" w="100%">
-          <HStack p={10} bg="white" borderRadius="xl" justify="space-between" align="center" width="100%" spacing={10} color="gray.900">
+          <HStack p={10} bg="gray.600" borderRadius="xl" justify="space-between" align="center" width="100%" spacing={10} color="gray.100" shadow>
             <Avatar w="150px" h="150px" name={profile.name} src={profile.photo} />
             <VStack justify="flex-start" align="flex-start" mb={8}>
-              <Heading as="h1" size="xl" color="gray.900">
+              <Heading as="h1" size="xl">
                 {profile.name}
               </Heading>
               <Text size="md" fontWeight="bold">Total Posts: {profile.posts.length}</Text>
@@ -92,7 +92,7 @@ export default function ProfileHeader(props) {
                   align="center"
                   onClick={followersDisc.onOpen}
                   cursor="pointer"
-                  _hover={{ color: 'teal.500' }}
+                  _hover={{ color: 'teal.400' }}
                 >
                   <Heading as="h3" size="md">{profile.followers.length}</Heading>
                   <Text size="md" onClick={followersDisc.onOpen} cursor="pointer">
@@ -103,7 +103,7 @@ export default function ProfileHeader(props) {
                   align="center"
                   onClick={followingDisc.onOpen}
                   cursor="pointer"
-                  _hover={{ color: 'teal.500' }}
+                  _hover={{ color: 'teal.400' }}
                 >
                   <Heading as="h3" size="md">{profile.following.length}</Heading>
                   <Text size="md">
@@ -126,8 +126,8 @@ export default function ProfileHeader(props) {
               right={4}
               top={4}
               cursor="pointer"
-              color="teal.600"
-              _hover={{ color: 'gray.500', transform: 'scale(1.1)' }}
+              color="gray.100"
+              _hover={{ color: 'teal.400', transform: 'scale(1.1)' }}
               onClick={addFDisc.onOpen}
             />
           )}
@@ -137,7 +137,7 @@ export default function ProfileHeader(props) {
             <Tab
               fontWeight="bold"
               borderRadius="full"
-              _selected={{ color: 'teal.500', bg: 'white', borderRadius: 'full' }}
+              _selected={{ color: 'teal.500', bg: 'gray.100', borderRadius: 'full' }}
               _focus={{ boxShadow: 'none' }}
             >
               Posts
@@ -145,7 +145,7 @@ export default function ProfileHeader(props) {
             <Tab
               fontWeight="bold"
               borderRadius="full"
-              _selected={{ color: 'teal.500', bg: 'white', borderRadius: 'full' }}
+              _selected={{ color: 'teal.500', bg: 'gray.100', borderRadius: 'full' }}
               _focus={{ boxShadow: 'none' }}
             >
               Liked
