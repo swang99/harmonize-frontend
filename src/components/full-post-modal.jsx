@@ -52,8 +52,10 @@ export default function FullPostModal(props) {
       finalFocusRef={finalFocusRef}
     >
       <ModalOverlay />
-      <ModalContent maxW="80vw" maxH="90vh">
-        <ModalHeader>Post</ModalHeader>
+      <ModalContent maxW="80vw" maxH="90vh" p={5}>
+        <ModalHeader>
+          <Text as="h1" size="2xl">Post</Text>
+        </ModalHeader>
         <ModalCloseButton />
         <ModalBody overflowY="auto">
           {renderPostCard()}

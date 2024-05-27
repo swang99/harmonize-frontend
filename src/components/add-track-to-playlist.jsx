@@ -29,10 +29,15 @@ export default function AddTrackToPlaylistModal(props) {
 
   useEffect(() => {
     async function fetchPlaylists() {
+      if (playlistsToRender.length > 0) return;
       if (userProfile && userProfile.playlists.length > 0) {
         setPlaylistsToRender(userProfile.playlists);
       } else {
         const userPlaylists = await getCurrentUserPlaylists();
+        console.log(
+          'Fetching User playlists:',
+          userPlaylists,
+        );
         setPlaylistsToRender(userPlaylists);
       }
     }
