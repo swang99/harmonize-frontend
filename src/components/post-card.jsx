@@ -2,6 +2,7 @@ import { Avatar, Box, HStack, Icon, Text, VStack, useDisclosure } from '@chakra-
 import React, { useState } from 'react';
 import { CgPlayListAdd } from 'react-icons/cg';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import { FaRegTrashCan } from 'react-icons/fa6';
 import { MdOutlineComment } from 'react-icons/md';
 import { RepeatIcon } from '@chakra-ui/icons';
 import { toast } from 'react-toastify';
@@ -21,6 +22,7 @@ const PostCard = (props) => {
   const { fetchOtherProfile, playlists } = useStore((store) => store.profileSlice);
   const userProfile = useStore((store) => store.profileSlice.currentProfile);
   const updatePost = useStore((store) => store.postSlice.updatePost);
+  const deletePost = useStore((store) => store.postSlice.deletePost);
   const [liked, setLiked] = useState(props.post.likes.includes(userProfile.userID));
   const [likes, setLikes] = useState(props.post.likes.length);
   const [comments, setComments] = useState(props.post.comments);
@@ -120,11 +122,41 @@ const PostCard = (props) => {
     );
   };
 
+  const handleDelete = async (event) => {
+    event.stopPropagation();
+    try {
+      await deletePost(props.authorID, post._id);
+      toast.success('Post deleted successfully!');
+    } catch (error) {
+      toast.error('Failed to delete post:', error);
+    }
+  };
+
+  const renderFeedButtons = () => {
+    if (use === 'feed-personal') {
+      return (
+        <HStack gap="3">
+          <Icon as={MdOutlineComment} w={6} h={6} cursor="pointer" color="teal.900" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleAddCommentOpen} />
+          <Icon as={CgPlayListAdd} w={6} h={6} cursor="pointer" color="teal.900" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleAddToPlaylistOpen} />
+          <Icon as={RepeatIcon} w={6} h={6} cursor="pointer" color="teal.900" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleNewPostOpen} />
+          <Icon as={FaRegTrashCan} w={6} h={6} cursor="pointer" color="teal.900" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleDelete} />
+        </HStack>
+      );
+    }
+    return (
+      <HStack gap="3">
+        <Icon as={MdOutlineComment} w={6} h={6} cursor="pointer" color="teal.900" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleAddCommentOpen} />
+        <Icon as={CgPlayListAdd} w={6} h={6} cursor="pointer" color="teal.900" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleAddToPlaylistOpen} />
+        <Icon as={RepeatIcon} w={6} h={6} cursor="pointer" color="teal.900" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleNewPostOpen} />
+      </HStack>
+    );
+  };
+
   const renderTrackPost = () => {
     const name = post.songName;
     const { imageURL, artists } = post;
 
-    if (use === 'feed') {
+    if (use === 'feed' || use === 'feed-personal') {
       const username = props.name;
       const userPhoto = props.photo;
       return (
@@ -172,35 +204,7 @@ const PostCard = (props) => {
                 </VStack>
               </Box>
               <Box position="absolute" bottom={3} right={3}>
-                <HStack gap="3">
-                  <Icon
-                    as={MdOutlineComment}
-                    w={6}
-                    h={6}
-                    cursor="pointer"
-                    color="teal.900"
-                    _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
-                    onClick={handleAddCommentOpen}
-                  />
-                  <Icon
-                    as={CgPlayListAdd}
-                    w={6}
-                    h={6}
-                    cursor="pointer"
-                    color="teal.900"
-                    _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
-                    onClick={handleAddToPlaylistOpen}
-                  />
-                  <Icon
-                    as={RepeatIcon}
-                    w={6}
-                    h={6}
-                    cursor="pointer"
-                    color="teal.900"
-                    _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
-                    onClick={handleNewPostOpen}
-                  />
-                </HStack>
+                {renderFeedButtons()}
               </Box>
             </VStack>
           </VStack>
