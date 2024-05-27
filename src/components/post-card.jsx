@@ -125,7 +125,7 @@ const PostCard = (props) => {
   const handleDelete = async (event) => {
     event.stopPropagation();
     try {
-      await deletePost(props.authorID, post._id);
+      await deletePost(userProfile.userID, post._id);
       toast.success('Post deleted successfully!');
     } catch (error) {
       toast.error('Failed to delete post:', error);

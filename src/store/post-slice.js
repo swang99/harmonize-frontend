@@ -39,6 +39,8 @@ const createPostSlice = (set, get) => {
 
     deletePost: async (userID, postID) => {
       const existingProfile = get().profileSlice.currentProfile;
+      console.log('This is the existing profile: ', existingProfile.userID);
+      console.log('This is the user ID: ', userID);
       if (existingProfile.userID !== userID) {
         console.error('Cannot delete post for different user');
         return;
