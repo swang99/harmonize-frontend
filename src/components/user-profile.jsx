@@ -20,7 +20,7 @@ export default function ProfileHeader(props) {
   const { followProfile, unfollowProfile, getLikedPosts } = useStore((store) => store.profileSlice);
   const [isFollowing, setIsFollowing] = useState(false);
   const [likedPosts, setLikedPosts] = useState([]);
-  const { postModalContent, clearPostModalContent } = useStore((store) => store.modalSlice);
+  const [postModalContent, setPostModalContent] = useState(null);
 
   const addTrackToPlaylistDisc = useDisclosure();
   const [trackId, setTrackId] = useState(null);
@@ -43,11 +43,11 @@ export default function ProfileHeader(props) {
     };
     fetchLikedPosts();
   }, []);
-  useEffect(() => {
-    if (postModalContent) {
-      postDisc.onOpen();
-    }
-  }, [postModalContent]);
+
+  const handlePostModalOpen = (post) => {
+    setPostModalContent(post);
+    postDisc.onOpen();
+  };
 
   const handleFollow = async () => {
     await followProfile(userProfile, profile);
@@ -70,11 +70,6 @@ export default function ProfileHeader(props) {
       </Button>
     )
   );
-
-  const handlePostDiscClose = () => {
-    clearPostModalContent();
-    postDisc.onClose();
-  };
 
   return (
     <Flex py={5} px={10} bg="teal.600" color="white" height="100vh" overflowY="auto" position="relative" width="100vw" justify="center">
@@ -165,6 +160,7 @@ export default function ProfileHeader(props) {
                         post={post}
                         profile={profile}
                         onPlaylistModalOpen={() => openPlaylistModal()}
+                        onPostModalOpen={handlePostModalOpen}
                         use="profile"
                       />
                     ))
@@ -186,6 +182,7 @@ export default function ProfileHeader(props) {
                         photo={post.photo}
                         authorID={post.authorID}
                         onPlaylistModalOpen={() => openPlaylistModal()}
+                        onPostModalOpen={handlePostModalOpen}
                         use="profile"
                       />
                     ))
@@ -208,7 +205,7 @@ export default function ProfileHeader(props) {
         onClose={followersDisc.onClose}
         profile={profile}
       />
-      <FullPostModal isOpen={postDisc.isOpen} onClose={handlePostDiscClose} postModalContent={postModalContent} />
+      <FullPostModal isOpen={postDisc.isOpen} onClose={postDisc.onClose} postModalContent={postModalContent} onPlaylistModalOpen={() => openPlaylistModal()} />
       <AddTrackToPlaylistModal isOpen={addTrackToPlaylistDisc.isOpen} onClose={addTrackToPlaylistDisc.onClose} trackID={trackId} />
     </Flex>
   );

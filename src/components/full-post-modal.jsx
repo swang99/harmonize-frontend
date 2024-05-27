@@ -20,8 +20,17 @@ import PostCard from './post-card';
 export default function FullPostModal(props) {
   const { postModalContent, isOpen, onClose } = props;
   const renderPostCard = () => {
-    if (!postModalContent) return <Text>No Content</Text>;
-    return <PostCard use="feed" post={postModalContent.post} name={postModalContent.name} authorID={postModalContent.authorID} photo={postModalContent.photo} />;
+    if (!postModalContent) return <Text>No Post Content</Text>;
+    return (
+      <PostCard
+        use="feed"
+        post={postModalContent.post}
+        name={postModalContent.name}
+        authorID={postModalContent.authorID}
+        photo={postModalContent.photo}
+        onPlaylistModalOpen={props.onPlaylistModalOpen}
+      />
+    );
   };
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xl">

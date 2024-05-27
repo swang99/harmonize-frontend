@@ -28,7 +28,7 @@ import TrackItem from './track-item';
  * @returns {JSX.Element} The rendered Post component.
  */
 const PostCard = (props) => {
-  const { post, use } = props;
+  const { post, use, onPostModalOpen } = props;
   const [postItemData, setPostItemData] = useState(null);
   const { id, type } = post;
   const addCommentDisc = useDisclosure();
@@ -39,7 +39,6 @@ const PostCard = (props) => {
   const [liked, setLiked] = useState(props.post.likes.includes(userProfile.userID));
   const [likes, setLikes] = useState(props.post.likes.length);
   const openPlaylistModal = props.onPlaylistModalOpen;
-  const { setPostModalContent } = useStore((store) => store.modalSlice);
 
   useEffect(() => {
     const fetchPostData = async () => {
@@ -65,7 +64,7 @@ const PostCard = (props) => {
       photo: userProfile.photo,
       authorID: userProfile.userID,
     };
-    setPostModalContent(postModalContent);
+    onPostModalOpen(postModalContent);
   };
 
   const handleLike = async () => {
