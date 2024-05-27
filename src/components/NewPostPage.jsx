@@ -54,14 +54,16 @@ const NewPostPage = () => {
         console.error('Profile is not loaded');
         return;
       }
-
+      console.log('Selected Item:', selectedItem); // debugging
       const post = {
         id: selectedItem.id,
         type: selectedItem.type.toLowerCase(),
         description,
-        imageURL: selectedItem.images[0].url,
+        imageURL: selectedItem.album.images[0].url,
         artists: selectedItem.artists.map((artist) => artist.name).join(', '),
         songName: selectedItem.name,
+        likes: [],
+        comments: [],
       };
       console.log('Post Object:', post); // debugging
 

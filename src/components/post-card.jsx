@@ -26,18 +26,6 @@ const PostCard = (props) => {
   const [comments, setComments] = useState(props.post.comments);
   const openPlaylistModal = props.onPlaylistModalOpen;
 
-  // useEffect(() => {
-  //   const fetchPostData = async () => {
-  //     try {
-  //       const data = await getItemData(id, 'track');
-  //       setPostItemData(data);
-  //     } catch (error) {
-  //       toast.error('Failed to fetch post data:', error);
-  //     }
-  //   };
-  //   fetchPostData();
-  // }, [id]);
-
   const handlePostModalOpen = () => {
     const postModalContent = props.name ? {
       post: props.post,

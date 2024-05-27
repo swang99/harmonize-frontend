@@ -30,6 +30,8 @@ const NewPostModal = ({ isOpen, onClose, trackData }) => {
     }
   };
 
+  if (!trackData) return null;
+  console.log('Track data:', trackData);
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -38,7 +40,7 @@ const NewPostModal = ({ isOpen, onClose, trackData }) => {
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing={4}>
-            <Image src={trackData.album.images[0].url} alt={trackData.name} boxSize="150px" />
+            <Image src={trackData.imageURL} alt={trackData.songName} boxSize="150px" />
             <Text fontWeight="bold">{trackData.name}</Text>
             <Text>{trackData.artists.map((artist) => artist.name).join(', ')}</Text>
             <Textarea
