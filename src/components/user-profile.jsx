@@ -42,7 +42,7 @@ export default function ProfileHeader(props) {
       setLikedPosts(posts);
     };
     fetchLikedPosts();
-  }, [getLikedPosts, profileId]);
+  }, [profileId]);
 
   const handlePostModalOpen = (post) => {
     setPostModalContent(post);
