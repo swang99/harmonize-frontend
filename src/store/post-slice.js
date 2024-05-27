@@ -28,9 +28,6 @@ const createPostSlice = (set, get) => {
         const updatedPosts = profile.posts.map((p) => (p._id === post._id ? post : p));
         const updatedProfile = { ...profile, posts: updatedPosts };
         await axios.put(`${ROOT_URL}users/${profile.userID}`, updatedProfile);
-        set((state) => ({
-          profileSlice: { ...state.profileSlice, currentProfile: updatedProfile },
-        }), false, 'users/updatePost');
       } catch (error) {
         console.error('Failed to update post:', error.message);
         get().errorSlice.newError(error.message);
