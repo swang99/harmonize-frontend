@@ -57,8 +57,8 @@ function Feed(props) {
     return (
       <Box mb="10vh">
         {feed.map((post) => (
-          <Box>
-            <Box key={post._doc._id} w="80%" minW={550} bg="gray.100" p={4} mx="auto" borderRadius="md" shadow="md">
+          <Box key={post._doc._id}>
+            <Box w="80%" minW={550} bg="gray.100" p={4} mx="auto" borderRadius="md" shadow="md">
               <PostCard
                 post={post._doc}
                 use="feed"
