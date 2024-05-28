@@ -89,11 +89,13 @@ function Feed(props) {
       exit={{ x: 1000, opacity: 0 }}
       transition={{ duration: 0.5, type: 'spring', stiffness: 50, damping: 12 }}
     >
-      <VStack spacing={4} align="stretch" maxH="90vh" overflowY="auto" pb="90px" px="10%">
-        <Heading py={5} textAlign="left">Your Feed</Heading>
-        {renderPosts()}
-      </VStack>
-      <AddTrackToPlaylistModal />
+      <Box position="absolute" w="100vw">
+        <VStack spacing={4} align="stretch" maxH="90vh" overflowY="auto" pb="90px" px="10%">
+          <Heading py={5} textAlign="left">Your Feed</Heading>
+          {renderPosts()}
+        </VStack>
+        <AddTrackToPlaylistModal />
+      </Box>
     </motion.div>
   );
 }
