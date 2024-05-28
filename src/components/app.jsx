@@ -1,4 +1,4 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -6,9 +6,17 @@ import AnimatedRoutes from './animated-routes';
 import NavBar from './nav-bar';
 import SpotifyPlayer from './web-player';
 
+const theme = extendTheme({
+  colors: {
+    blue: {
+      800: '#1565C0',
+      300: '#87B1E2',
+    },
+  },
+});
 const App = () => {
   return (
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <BrowserRouter>
         <ToastContainer
           position="top-center"

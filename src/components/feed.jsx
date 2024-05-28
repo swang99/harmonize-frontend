@@ -101,6 +101,7 @@ function Feed(props) {
       <Box position="absolute" w="100vw" mt={75}>
         <VStack spacing={4} align="stretch" maxH="90vh" overflowY="auto" pb="90px" px="10%">
           <Heading py={5} textAlign="left">Your Feed</Heading>
+          <Text fontSize="lg">See what your friends are liking! </Text>
           {renderPosts()}
         </VStack>
         <AddTrackToPlaylistModal />

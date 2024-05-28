@@ -1,4 +1,4 @@
-import { Button, Flex } from '@chakra-ui/react';
+import { Button, Flex, Box, Image } from '@chakra-ui/react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import useStore from '../store';
@@ -23,14 +23,15 @@ const NavBar = () => {
         justifyContent="space-between"
         alignItems="center"
         height={75}
-        boxShadow="md"
         position="fixed" // Make nav-bar fixed at the top
         width="100%" // Ensure it spans the full width
         top={0} // Align it to the top of the viewport
         left={0} // Align it to the left of the viewport
         zIndex="1000"
+        borderBottom="1px"
+        borderBottomColor="teal.500"
       >
-        <Flex align="center">
+        <Flex justifyContent="flex-end" width="100%" align="center">
           {links.map((link) => (
             <Button
               key={link.label}
@@ -39,7 +40,7 @@ const NavBar = () => {
               colorScheme="teal"
               variant="ghost"
               _hover={{
-                color: 'teal.800',
+                color: 'blue.300',
                 variant: 'solid',
               }}
             >
@@ -52,11 +53,20 @@ const NavBar = () => {
           borderRadius="full"
           px={4}
           py={2}
-          colorScheme="red"
+          ml={12}
+          colorScheme="teal"
           variant="solid"
         >
           Logout
         </Button>
+        <Box position="absolute" top={4} left={4}>
+          <Image
+            src="/src/img/logo.png"
+            alt="Your Image"
+            width="70px"
+            height="auto"
+          />
+        </Box>
       </Flex>
     )
   );
