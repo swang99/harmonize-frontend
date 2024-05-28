@@ -31,12 +31,10 @@ function Feed(props) {
   useEffect(() => {
     const loadFeedData = async () => {
       if (tokenUpdated && initialFetch && currentProfile.userID) {
-        console.log('Following', currentProfile.following);
         setFeed(await loadFeed(currentProfile.userID));
         if (!feed || feed.length === 0) {
           // const fetchRecs = await getRecs();
           const fetchRecs = [];
-          console.log('Recs: ', fetchRecs);
           setRecs(fetchRecs);
         }
       }

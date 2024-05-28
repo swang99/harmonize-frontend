@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
+import { toast } from 'react-toastify';
 import { updateToken } from './SpotifyAuth';
-import { playTrack, switchPlaybackDevice } from './spotify-api';
+import { getCurrentDevice, playTrack, switchPlaybackDevice } from './spotify-api';
 import useStore from '../store';
 
 const initializePlayer = async () => {
@@ -47,14 +48,13 @@ const initializePlayer = async () => {
     });
 
     // Error handling
-    spotifyPlayer.addListener('initialization_error', ({ message }) => { console.error(message); });
-    spotifyPlayer.addListener('authentication_error', ({ message }) => { console.error(message); });
-    spotifyPlayer.addListener('account_error', ({ message }) => { console.error(message); });
-    spotifyPlayer.addListener('playback_error', ({ message }) => { console.error(message); });
+    spotifyPlayer.addListener('initialization_error', ({ message }) => { toast.error(message); });
+    spotifyPlayer.addListener('authentication_error', ({ message }) => { toast.error(message); });
+    spotifyPlayer.addListener('account_error', ({ message }) => { toast.error(message); });
+    spotifyPlayer.addListener('playback_error', ({ message }) => { toast.error(message); });
 
     // Add player_state_changed listener
     spotifyPlayer.addListener('player_state_changed', (playerState) => {
-      console.log('State', playerState);
       if (playerState) {
         useStore.getState().playerSlice.updatePlayerState(playerState);
       }
@@ -82,10 +82,15 @@ const playTrackInApp = async (trackId) => {
   try {
     // Switch playback device
     if (!useStore.getState().playerSlice.deviceId) {
-      console.error('Device ID is not set');
+      toast.error('Player loading- wait a moment and try again');
       return;
     }
-    await switchPlaybackDevice(useStore.getState().playerSlice.deviceId);
+
+    const device = await getCurrentDevice();
+    console.log('Current device:', device);
+    if (getCurrentDevice().device_id !== useStore.getState().playerSlice.deviceId) {
+      await switchPlaybackDevice(useStore.getState().playerSlice.deviceId);
+    }
 
     // Activate player if not yet activated
     if (!useStore.getState().playerSlice.activated) {
@@ -96,7 +101,7 @@ const playTrackInApp = async (trackId) => {
     const id = await useStore.getState().playerSlice.deviceId;
     await playTrack(id, trackId);
   } catch (error) {
-    console.error('Error in playTrackInApp:', error);
+    toast.error('Error playing track-- Try again.', error);
   }
 };
 

@@ -1,13 +1,16 @@
 /* eslint-disable camelcase */
-import { Box, Button, Flex, HStack, Image, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Spacer, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, Flex, HStack, Icon, Image, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Spacer, Text, VStack } from '@chakra-ui/react';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'react-router';
+import { CgPlayListAdd } from 'react-icons/cg';
+import { RepeatIcon } from '@chakra-ui/icons';
 import useStore from '../store';
 import { initializePlayer } from '../utils/spotify-player';
 
 const SpotifyPlayer = () => {
+  // progress bar stuff
   const { position, duration, paused, currentTrack, incrementPosition, updatePosition } = useStore(
     (state) => state.playerSlice,
   );
@@ -16,6 +19,10 @@ const SpotifyPlayer = () => {
   const [progress, setProgress] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const sliderRef = useRef(null);
+
+  // modal stuff
+  const openPlaylistModal = useStore((state) => state.modalSlice.playlistModal.openModal);
+  const openNewPostModal = useStore((state) => state.modalSlice.newPostModal.openModal);
 
   useEffect(() => {
     const initialize = async () => {
@@ -83,6 +90,23 @@ const SpotifyPlayer = () => {
     const minutes = Math.floor(time / 60000);
     const seconds = Math.floor((time % 60000) / 1000).toString().padStart(2, '0');
     return `${minutes}:${seconds}`;
+  };
+
+  // Handle open new post modal
+  const handleNewPostOpen = (event) => {
+    event.stopPropagation();
+    openNewPostModal({
+      songName: currentTrack.name,
+      artists: currentTrack.artists.map((artist) => artist.name).join(', '),
+      imageURL: currentTrack.album.images[0].url,
+      id: currentTrack.id,
+    });
+  };
+
+  // Handle open playlist modal
+  const handlePlaylistModalOpen = (event) => {
+    event.stopPropagation();
+    openPlaylistModal(currentTrack.id);
   };
 
   return (
@@ -153,6 +177,28 @@ const SpotifyPlayer = () => {
           </HStack>
         </VStack>
         <Spacer />
+        <HStack position="absolute" top="50%" right="20px" transform="translateY(-50%)" flexDirection="row-reverse" spacing={5}>
+          <Icon
+            as={CgPlayListAdd}
+            w={7}
+            h={7}
+            cursor="pointer"
+            color="gray.800"
+            _hover={{ color: 'gray.900', transform: 'scale(1.1)', top: '30%' }}
+            onClick={handlePlaylistModalOpen}
+            position="relative"
+          />
+          <Icon
+            as={RepeatIcon}
+            w={5}
+            h={5}
+            cursor="pointer"
+            color="gray.800"
+            _hover={{ color: 'gray.900', transform: 'scale(1.1)', top: '30%' }}
+            onClick={handleNewPostOpen}
+            position="relative"
+          />
+        </HStack>
       </HStack>
     )
   );

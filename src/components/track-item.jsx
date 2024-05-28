@@ -5,25 +5,27 @@ import React, { useEffect, useRef, useState } from 'react';
 import { CgPlayListAdd } from 'react-icons/cg';
 import 'react-toastify/dist/ReactToastify.css';
 import { RepeatIcon } from '@chakra-ui/icons';
+import { toast } from 'react-toastify';
 import useStore from '../store';
 import { playTrackInApp } from '../utils/spotify-player';
 
 function TrackItem(props) {
-  // props stuff
-  const { id, name, artist, imageURL } = props;
+  // Destructuring props for easier access
+  const { id, name, artist, imageURL, use } = props;
 
-  // text scrolling
+  // State for text overflow detection
   const [isNameOverflowing, setIsNameOverflowing] = useState(false);
   const [isArtistOverflowing, setIsArtistOverflowing] = useState(false);
 
-  // not sure what this is
+  // Refs for text elements to check overflow
   const nameRef = useRef(null);
   const artistRef = useRef(null);
 
-  // modal shit
+  // Modal functions from Zustand store
   const openPlaylistModal = useStore((state) => state.modalSlice.playlistModal.openModal);
   const openNewPostModal = useStore((state) => state.modalSlice.newPostModal.openModal);
 
+  // Check if text is overflowing on mount and when name/artist changes
   useEffect(() => {
     const checkOverflow = (ref, setState) => {
       if (ref.current) {
@@ -35,15 +37,17 @@ function TrackItem(props) {
     checkOverflow(artistRef, setIsArtistOverflowing);
   }, [name, artist]);
 
+  // Handle play track
   const handlePlay = async (event) => {
     event.stopPropagation();
     try {
       await playTrackInApp(id);
     } catch (error) {
-      console.error('Failed to play track:', error);
+      toast.error('Failed to play track:', error);
     }
   };
 
+  // Handle open new post modal
   const handleNewPostOpen = (event) => {
     event.stopPropagation();
     openNewPostModal({
@@ -54,17 +58,20 @@ function TrackItem(props) {
     });
   };
 
+  // Handle open playlist modal
   const handlePlaylistModalOpen = (event) => {
     event.stopPropagation();
     openPlaylistModal(id);
   };
 
+  // Scrolling text style for overflowing text
   const scrollingTextStyle = {
     display: 'inline-block',
     whiteSpace: 'nowrap',
     animation: 'marquee 10s linear infinite',
   };
 
+  // Keyframes for scrolling text
   const marqueeKeyframes = `
     @keyframes marquee {
       0% { transform: translateX(100%); }
@@ -72,7 +79,8 @@ function TrackItem(props) {
     }
   `;
 
-  if (props.use === 'feed') {
+  // Render for feed use case
+  if (use === 'feed') {
     return (
       <Box h="100%" position="relative" rounded="none">
         <Image
@@ -103,6 +111,7 @@ function TrackItem(props) {
     );
   }
 
+  // Render for other use cases
   return (
     <Box key={id} w="100%" bg="gray.800" borderRadius="md" overflow="hidden" position="relative">
       <style>{marqueeKeyframes}</style>
@@ -135,7 +144,7 @@ function TrackItem(props) {
             </Text>
           </Box>
         </VStack>
-        <VStack position="absolute" top="50%" right="10px" transform="translateY(-50%)" flexDirection="row-reverse">
+        <HStack position="absolute" top="50%" right="10px" transform="translateY(-50%)" flexDirection="row-reverse">
           <Icon
             as={CgPlayListAdd}
             w={7}
@@ -156,7 +165,7 @@ function TrackItem(props) {
             onClick={handleNewPostOpen}
             position="relative"
           />
-        </VStack>
+        </HStack>
       </HStack>
       <Button
         position="absolute"

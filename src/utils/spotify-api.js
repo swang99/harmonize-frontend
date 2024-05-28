@@ -326,7 +326,7 @@ export async function getCurrentDevice() {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    console.log(response.data);
+    console.log('current device', response.data);
     return response.data;
   } catch (error) {
     console.error('Error Fetching Current Playback from Spotify', error);

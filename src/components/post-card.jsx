@@ -12,9 +12,11 @@ import AddCommentModal from './AddComment';
 import TrackItem from './track-item';
 
 const PostCard = (props) => {
-  // post data from props
+  // Destructure props for easier access
   const { post, use, onPostModalOpen, profile } = props;
   const { id, type } = post;
+
+  // Zustand store state
   const { fetchOtherProfile } = useStore((store) => store.profileSlice);
   const userProfile = useStore((store) => store.profileSlice.currentProfile);
 
@@ -248,7 +250,7 @@ const PostCard = (props) => {
           </HStack>
         </Box>
       );
-    } else if (use === 'profile') {
+    } else {
       return (
         <Box onClick={() => handlePostModalOpen()}
           cursor="pointer"
@@ -263,17 +265,6 @@ const PostCard = (props) => {
         </Box>
       );
     }
-    return (
-      <HStack>
-        <TrackItem
-          key={id}
-          id={id}
-          name={name}
-          artist={artists}
-          imageURL={imageURL}
-        />
-      </HStack>
-    );
   };
 
   const renderPost = () => {
