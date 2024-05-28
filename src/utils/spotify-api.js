@@ -99,7 +99,7 @@ export async function getUserTopTracks() {
     const response = await axios.get('https://api.spotify.com/v1/me/top/tracks', {
       params: {
         time_range: 'short_term',
-        limit: 20,
+        limit: 30,
       },
       headers: {
         Authorization: `Bearer ${accessToken}`,

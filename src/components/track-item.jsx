@@ -24,7 +24,6 @@ function TrackItem(props) {
   // Modal functions from Zustand store
   const openPlaylistModal = useStore((state) => state.modalSlice.playlistModal.openModal);
   const openNewPostModal = useStore((state) => state.modalSlice.newPostModal.openModal);
-  const openFullPostModal = useStore((state) => state.modalSlice.fullPostModal.openModal);
 
   // Check if text is overflowing on mount and when name/artist changes
   useEffect(() => {
@@ -64,8 +63,6 @@ function TrackItem(props) {
     event.stopPropagation();
     openPlaylistModal(id);
   };
-
-  
 
   // Scrolling text style for overflowing text
   const scrollingTextStyle = {
@@ -173,7 +170,7 @@ function TrackItem(props) {
       w="100%"
       h="100%"
       bg="gray.800"
-      borderBottomRadius="md"
+      borderRadius="md"
       overflow="hidden"
       position="relative"
       transition="transform 0.1s ease-in-out"

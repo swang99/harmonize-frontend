@@ -25,11 +25,9 @@ export default function ProfileHeader(props) {
   const addFDisc = useDisclosure();
   const followersDisc = useDisclosure();
   const followingDisc = useDisclosure();
-  const postDisc = useDisclosure();
   const { followProfile, unfollowProfile, getLikedPosts } = useStore((store) => store.profileSlice);
   const [isFollowing, setIsFollowing] = useState(false);
   const [likedPosts, setLikedPosts] = useState(profile.likedPosts || []);
-  const [postModalContent, setPostModalContent] = useState(null);
 
   useEffect(() => {
     if (userProfile && userProfile.following.includes(profileId)) {
@@ -44,11 +42,6 @@ export default function ProfileHeader(props) {
     };
     fetchLikedPosts();
   }, [profileId]);
-
-  const handlePostModalOpen = (post) => {
-    setPostModalContent(post);
-    postDisc.onOpen();
-  };
 
   const handleFollow = async () => {
     await followProfile(userProfile, profile);
@@ -75,7 +68,7 @@ export default function ProfileHeader(props) {
   const finalRef = useRef();
 
   return (
-    <Flex py={5} px={10} bg="white" height="100vh" overflowY="auto" position="relative" width="100vw" justify="center">
+    <Flex py={10} px={10} bg="white" height="100vh" overflowY="auto" position="relative" width="100vw" justify="center">
       <VStack w="100%" maxW="1000px" spacing={4}>
         <Box position="relative" w="100%">
           <HStack p={10} bg="gray.800" borderRadius="xl" justify="space-between" align="center" width="100%" spacing={10} color="white" shadow>
@@ -170,7 +163,6 @@ export default function ProfileHeader(props) {
                         key={post._id}
                         post={post}
                         profile={profile}
-                        onPostModalOpen={handlePostModalOpen}
                         use="profile"
                       />
                     ))}
@@ -228,7 +220,6 @@ export default function ProfileHeader(props) {
                         name={post.name}
                         photo={post.photo}
                         authorID={post.authorID}
-                        onPostModalOpen={handlePostModalOpen}
                         use="profile"
                       />
                     ))}

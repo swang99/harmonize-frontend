@@ -14,7 +14,7 @@ import TrackItem from './track-item';
 
 const PostCard = (props) => {
   // post data from props
-  const { post, use, onPostModalOpen, profile } = props;
+  const { post, use, profile } = props;
   const { id, type } = post;
   const { fetchOtherProfile } = useStore((store) => store.profileSlice);
   const userProfile = useStore((store) => store.profileSlice.currentProfile);
@@ -33,25 +33,7 @@ const PostCard = (props) => {
   // current modal stuff
   const openPlaylistModal = useStore((state) => state.modalSlice.playlistModal.openModal);
   const openNewPostModal = useStore((state) => state.modalSlice.newPostModal.openModal);
-
-  const handlePostModalOpen = (event) => {
-    const postModalContent = props.name ? {
-      post: props.post,
-      name: props.name,
-      photo: props.photo,
-      authorID: props.authorID,
-    } : {
-      post: props.post,
-      name: profile.name,
-      photo: profile.photo,
-      authorID: profile.userID,
-    };
-    onPostModalOpen(postModalContent);
-  };
-  const handleFullPostModalOpen = (event) => {
-    event.stopPropagation();
-    openFullPostModal(content);
-  };
+  const openFullPostModal = useStore((state) => state.modalSlice.fullPostModal.openModal);
 
   const handleLike = async (event) => {
     event.stopPropagation();
@@ -89,6 +71,22 @@ const PostCard = (props) => {
   const handleAddCommentOpen = (event) => {
     event.stopPropagation();
     addCommentDisc.onOpen();
+  };
+
+  const handleFullPostModalOpen = (event) => {
+    const postModalContent = props.name ? {
+      post: props.post,
+      name: props.name,
+      photo: props.photo,
+      authorID: props.authorID,
+    } : {
+      post: props.post,
+      name: profile.name,
+      photo: profile.photo,
+      authorID: profile.userID,
+    };
+    event.stopPropagation();
+    openFullPostModal(postModalContent);
   };
 
   const handleNewPostOpen = (event) => {
@@ -294,7 +292,7 @@ const PostCard = (props) => {
       );
     } else {
       return (
-        <Box onClick={() => handlePostModalOpen()}
+        <Box onClick={handleFullPostModalOpen}
           cursor="pointer"
           w="100%"
         >
