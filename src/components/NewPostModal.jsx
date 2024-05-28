@@ -1,13 +1,32 @@
-import React, { useState } from 'react';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Textarea, Image, VStack, Text } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Textarea, Image, VStack, Text, useDisclosure } from '@chakra-ui/react';
 import { toast } from 'react-toastify';
 import useStore from '../store';
 import 'react-toastify/dist/ReactToastify.css';
 
-const NewPostModal = ({ isOpen, onClose, trackData }) => {
+export default function NewPostModal() {
   const [description, setDescription] = useState('');
   const createPost = useStore((store) => store.postSlice.createPost);
   const userProfile = useStore((store) => store.profileSlice.currentProfile);
+
+  // modal shit
+  const { isOpen, trackData } = useStore((state) => state.modalSlice.newPostModal);
+  const { closeModal } = useStore((state) => state.modalSlice.newPostModal.closeModal);
+  const newPostModalDisc = useDisclosure();
+
+  useEffect(() => {
+    console.log(isOpen, trackData);
+    if (isOpen) {
+      newPostModalDisc.onOpen();
+    } else {
+      newPostModalDisc.onClose();
+    }
+  }, [isOpen, trackData]);
+
+  const onClose = async () => {
+    closeModal();
+    newPostModalDisc.onClose();
+  };
 
   const handleSubmit = async () => {
     const newPost = {
@@ -58,6 +77,4 @@ const NewPostModal = ({ isOpen, onClose, trackData }) => {
       </ModalContent>
     </Modal>
   );
-};
-
-export default NewPostModal;
+}

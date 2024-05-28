@@ -76,7 +76,7 @@ export default function ProfileHeader(props) {
     <Flex py={5} px={10} bg="white" height="100vh" overflowY="auto" position="relative" width="100vw" justify="center">
       <VStack w="100%" maxW="1000px" spacing={4}>
         <Box position="relative" w="100%">
-          <HStack p={10} bg="gray.600" borderRadius="xl" justify="space-between" align="center" width="100%" spacing={10} color="gray.100" shadow>
+          <HStack p={10} bg="gray.800" borderRadius="xl" justify="space-between" align="center" width="100%" spacing={10} color="white" shadow>
             <Avatar w="150px" h="150px" name={profile.name} src={profile.photo} />
             <VStack justify="flex-start" align="flex-start" mb={8}>
               <Heading as="h1" size="xl">
@@ -152,7 +152,7 @@ export default function ProfileHeader(props) {
           </TabList>
           <TabPanels>
             <TabPanel p={0}>
-              <Box py={5} w="100%" mb={10}>
+              <Box py={5} w="100%" mb={10} gap={4}>
                 <Grid templateColumns="repeat(auto-fill, minmax(300px, 1fr))" gap={6} w="100%" pb="20vh">
                   {profile.posts && profile.posts.length > 0 ? (
                     profile.posts.map((post) => (
@@ -172,7 +172,7 @@ export default function ProfileHeader(props) {
             </TabPanel>
             <TabPanel p={0}>
               <VStack py={5} w="100%" mb={10} gap={4}>
-                <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6} w="100%" pb="20vh">
+                <Grid templateColumns="repeat(auto-fill, minmax(300px, 1fr))" gap={6} w="100%" pb="20vh">
                   {likedPosts && likedPosts.length > 0 ? (
                     likedPosts.map((post) => (
                       <PostCard

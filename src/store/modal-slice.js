@@ -22,5 +22,27 @@ export default function createModalSlice(set, get) {
         },
       })),
     },
+    newPostModal: {
+      isOpen: false,
+      trackData: null,
+      openModal: (trackData) => set((state) => ({
+        modalSlice: {
+          newPostModal: {
+            ...state.modalSlice.newPostModal,
+            isOpen: true,
+            trackData,
+          },
+        },
+      })),
+      closeModal: () => set((state) => ({
+        modalSlice: {
+          newPostModal: {
+            ...state.modalSlice.newPostModal,
+            isOpen: false,
+            trackData: null,
+          },
+        },
+      })),
+    },
   };
 }
