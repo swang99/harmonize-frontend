@@ -154,7 +154,7 @@ const SpotifyPlayer = () => {
             </Text>
             <Box width="40vw" ref={sliderRef}>
               <Slider
-                value={progress}
+                value={progress || 0}
                 onChange={handleSliderChange}
                 onChangeEnd={handleSliderChangeEnd}
                 step={1}
