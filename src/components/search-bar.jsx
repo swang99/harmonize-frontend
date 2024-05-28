@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { getRecentlyPlayedTracks, searchSpotify } from '../utils/spotify-api';
 import AddTrackToPlaylistModal from './add-track-to-playlist';
 import TrackItem from './track-item';
+import NewPostModal from './NewPostModal';
 
 function SearchBar() {
   const [results, setResults] = useState([]);
@@ -142,6 +143,7 @@ function SearchBar() {
         </Box>
       </HStack>
       <AddTrackToPlaylistModal />
+      <NewPostModal />
     </motion.div>
   );
 }

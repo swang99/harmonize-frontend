@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import useStore from '../store';
 import { updateToken } from '../utils/SpotifyAuth';
 import AddTrackToPlaylistModal from './add-track-to-playlist';
+import NewPostModal from './NewPostModal';
 import PostCard from './post-card';
 import TrackItem from './track-item';
 
@@ -94,6 +95,7 @@ function Feed(props) {
         {renderPosts()}
       </VStack>
       <AddTrackToPlaylistModal />
+      <NewPostModal />
     </motion.div>
   );
 }

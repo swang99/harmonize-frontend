@@ -35,7 +35,6 @@ export default function AddTrackToPlaylistModal() {
   const profile = useStore((state) => state.profileSlice.currentProfile);
 
   useEffect(() => {
-    console.log('Modal state:', isOpen, trackId);
     if (isOpen) {
       playlistModalDisc.onOpen();
     } else {

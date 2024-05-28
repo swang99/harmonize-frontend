@@ -17,6 +17,7 @@ import ViewFollowing from './ViewFollowing';
 import AddTrackToPlaylistModal from './add-track-to-playlist';
 import FullPostModal from './full-post-modal';
 import PostCard from './post-card';
+import NewPostModal from './NewPostModal';
 
 export default function ProfileHeader(props) {
   const { isOwnProfile, profile, userProfile, id: profileId } = props;
@@ -217,6 +218,7 @@ export default function ProfileHeader(props) {
         finalFocusRef={finalRef}
         postModalContent={postModalContent}
       />
+      <NewPostModal />
       <AddTrackToPlaylistModal />
     </Flex>
   );

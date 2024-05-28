@@ -4,16 +4,25 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useRef, useState } from 'react';
 import { CgPlayListAdd } from 'react-icons/cg';
 import 'react-toastify/dist/ReactToastify.css';
+import { RepeatIcon } from '@chakra-ui/icons';
 import useStore from '../store';
 import { playTrackInApp } from '../utils/spotify-player';
 
 function TrackItem(props) {
+  // props stuff
   const { id, name, artist, imageURL } = props;
+
+  // text scrolling
   const [isNameOverflowing, setIsNameOverflowing] = useState(false);
   const [isArtistOverflowing, setIsArtistOverflowing] = useState(false);
+
+  // not sure what this is
   const nameRef = useRef(null);
   const artistRef = useRef(null);
+
+  // modal shit
   const openPlaylistModal = useStore((state) => state.modalSlice.playlistModal.openModal);
+  const openNewPostModal = useStore((state) => state.modalSlice.newPostModal.openModal);
 
   useEffect(() => {
     const checkOverflow = (ref, setState) => {
@@ -33,6 +42,21 @@ function TrackItem(props) {
     } catch (error) {
       console.error('Failed to play track:', error);
     }
+  };
+
+  const handleNewPostOpen = (event) => {
+    event.stopPropagation();
+    openNewPostModal({
+      songName: name,
+      artists: artist,
+      imageURL,
+      id,
+    });
+  };
+
+  const handlePlaylistModalOpen = (event) => {
+    event.stopPropagation();
+    openPlaylistModal(id);
   };
 
   const scrollingTextStyle = {
@@ -84,7 +108,7 @@ function TrackItem(props) {
       <style>{marqueeKeyframes}</style>
       <Image src={imageURL} alt={name} />
       <HStack p={3} position="relative">
-        <VStack align="flex-start" mx={2} flex="1" spacing={1} pr="40px" maxW="100%">
+        <VStack align="flex-start" ml={2} flex="1" spacing={1} pr="70px" maxW="100%">
           <Box overflow="hidden" w="100%" textAlign="left">
             <Text
               ref={nameRef}
@@ -111,19 +135,28 @@ function TrackItem(props) {
             </Text>
           </Box>
         </VStack>
-        <Icon
-          as={CgPlayListAdd}
-          w={7}
-          h={7}
-          cursor="pointer"
-          color="gray.200"
-          _hover={{ color: 'white', transform: 'scale(1.1)', top: '30%' }}
-          onClick={() => openPlaylistModal(id)}
-          position="absolute"
-          right="10px"
-          top="50%"
-          transform="translateY(-50%)"
-        />
+        <VStack position="absolute" top="50%" right="10px" transform="translateY(-50%)" flexDirection="row-reverse">
+          <Icon
+            as={CgPlayListAdd}
+            w={7}
+            h={7}
+            cursor="pointer"
+            color="gray.200"
+            _hover={{ color: 'white', transform: 'scale(1.1)', top: '30%' }}
+            onClick={handlePlaylistModalOpen}
+            position="relative"
+          />
+          <Icon
+            as={RepeatIcon}
+            w={5}
+            h={5}
+            cursor="pointer"
+            color="gray.200"
+            _hover={{ color: 'white', transform: 'scale(1.1)', top: '30%' }}
+            onClick={handleNewPostOpen}
+            position="relative"
+          />
+        </VStack>
       </HStack>
       <Button
         position="absolute"

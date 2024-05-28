@@ -5,6 +5,7 @@ export default function createModalSlice(set, get) {
       trackId: null,
       openModal: (trackId) => set((state) => ({
         modalSlice: {
+          ...state.modalSlice,
           playlistModal: {
             ...state.modalSlice.playlistModal,
             isOpen: true,
@@ -14,6 +15,7 @@ export default function createModalSlice(set, get) {
       })),
       closeModal: () => set((state) => ({
         modalSlice: {
+          ...state.modalSlice,
           playlistModal: {
             ...state.modalSlice.playlistModal,
             isOpen: false,
@@ -27,6 +29,7 @@ export default function createModalSlice(set, get) {
       trackData: null,
       openModal: (trackData) => set((state) => ({
         modalSlice: {
+          ...state.modalSlice,
           newPostModal: {
             ...state.modalSlice.newPostModal,
             isOpen: true,
@@ -36,6 +39,7 @@ export default function createModalSlice(set, get) {
       })),
       closeModal: () => set((state) => ({
         modalSlice: {
+          ...state.modalSlice,
           newPostModal: {
             ...state.modalSlice.newPostModal,
             isOpen: false,

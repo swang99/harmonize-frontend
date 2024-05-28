@@ -11,10 +11,11 @@ export default function NewPostModal() {
 
   // modal shit
   const { isOpen, trackData } = useStore((state) => state.modalSlice.newPostModal);
-  const { closeModal } = useStore((state) => state.modalSlice.newPostModal.closeModal);
+  const { closeModal } = useStore((state) => state.modalSlice.newPostModal);
   const newPostModalDisc = useDisclosure();
 
   useEffect(() => {
+    console.log('modal state', isOpen, trackData);
     console.log(isOpen, trackData);
     if (isOpen) {
       newPostModalDisc.onOpen();
@@ -62,7 +63,7 @@ export default function NewPostModal() {
             <Text fontWeight="bold">{trackData.name}</Text>
             <Text>{trackData.artists}</Text>
             <Textarea
-              placeholder="Add a comment"
+              placeholder="Add a caption..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />

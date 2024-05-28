@@ -9,7 +9,6 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
 import AddCommentModal from './AddComment';
-import NewPostModal from './NewPostModal';
 import TrackItem from './track-item';
 
 const PostCard = (props) => {
@@ -21,7 +20,6 @@ const PostCard = (props) => {
 
   // outdate modal stuff
   const addCommentDisc = useDisclosure();
-  const newPostModalDisc = useDisclosure();
 
   // update post stuff
   const updatePost = useStore((store) => store.postSlice.updatePost);
@@ -32,9 +30,9 @@ const PostCard = (props) => {
 
   // current modal stuff
   const openPlaylistModal = useStore((state) => state.modalSlice.playlistModal.openModal);
+  const openNewPostModal = useStore((state) => state.modalSlice.newPostModal.openModal);
 
   const handlePostModalOpen = (event) => {
-    event.stopPropagation();
     const postModalContent = props.name ? {
       post: props.post,
       name: props.name,
@@ -89,7 +87,7 @@ const PostCard = (props) => {
 
   const handleNewPostOpen = (event) => {
     event.stopPropagation();
-    newPostModalDisc.onOpen();
+    openNewPostModal(post);
   };
 
   const handlePlaylistModalOpen = (event) => {
@@ -162,10 +160,7 @@ const PostCard = (props) => {
             cursor="pointer"
             color="teal.900"
             _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
-            onClick={(event) => {
-              event.stopPropagation();
-              openPlaylistModal(id);
-            }}
+            onClick={handlePlaylistModalOpen}
           />
           <Icon as={RepeatIcon} w={6} h={6} cursor="pointer" color="teal.900" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleNewPostOpen} />
           <Icon as={FaRegTrashCan} w={6} h={6} cursor="pointer" color="teal.900" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleDelete} />
@@ -250,11 +245,6 @@ const PostCard = (props) => {
               commentAuthorID={userProfile.userID}
               setComments={setComments}
             />
-            <NewPostModal
-              isOpen={newPostModalDisc.isOpen}
-              onClose={newPostModalDisc.onClose}
-              trackData={{ id: post.id, songName: post.songName, artists: post.artists, imageURL: post.imageURL }}
-            />
           </HStack>
         </Box>
       );
@@ -270,11 +260,6 @@ const PostCard = (props) => {
         >
           <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} />
           <AddCommentModal isOpen={addCommentDisc.isOpen} onClose={addCommentDisc.onClose} post={props.post} postAuthorID={props.authorID} commentAuthorID={userProfile.userID} />
-          <NewPostModal
-            isOpen={newPostModalDisc.isOpen}
-            onClose={newPostModalDisc.onClose}
-            trackData={{ id: post.id, songName: post.songName, artists: post.artists, imageURL: post.imageURL }}
-          />
         </Box>
       );
     }
