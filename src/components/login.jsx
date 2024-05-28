@@ -33,7 +33,7 @@ const Login = () => {
         />
       </Box>
       <VStack p="5%" w="90%" align="center" justify="center" spacing={5} mt="50vh">
-        <Text fontsize="50px" color="gray.200">Spotify sharing made easy - new music always at your fingertips.</Text>
+        <Text fontSize="50px" color="gray.200">Spotify sharing made easy - new music always at your fingertips.</Text>
         <Button
           colorScheme="teal"
           color="white"
