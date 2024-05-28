@@ -35,17 +35,15 @@ function Feed(props) {
         const newFeed = await loadFeed(currentProfile.userID);
         setFeed(newFeed);
         useStore.setState({ profileSlice: { ...useStore.getState().profileSlice, feed: newFeed } });
-        if (!feed || feed.length === 0) {
-          const currDate = new Date().getTime();
-          const lastUpdated = new Date(currentProfile.recommendationsLastUpdated).getTime();
-          if (currDate - lastUpdated > 24 * 60 * 60 * 1000) {
-            const fetchRecs = await getRecs();
-            setRecs(fetchRecs);
-            const newProfile = { ...currentProfile, recommendationsLastUpdated: currDate, recommendations: fetchRecs };
-            updateProfile(currentProfile.userID, newProfile);
-          } else {
-            setRecs(currentProfile.recommendations);
-          }
+        const currDate = new Date().getTime();
+        const lastUpdated = new Date(currentProfile.recommendationsLastUpdated).getTime();
+        if (currDate - lastUpdated > 24 * 60 * 60 * 1000 && currentProfile.recommendationsLastUpdated) {
+          const fetchRecs = await getRecs();
+          setRecs(fetchRecs);
+          const newProfile = { ...currentProfile, recommendationsLastUpdated: currDate, recommendations: fetchRecs };
+          updateProfile(currentProfile.userID, newProfile);
+        } else {
+          setRecs(currentProfile.recommendations);
         }
       }
     };
