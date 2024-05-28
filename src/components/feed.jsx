@@ -7,6 +7,7 @@ import AddTrackToPlaylistModal from './add-track-to-playlist';
 import NewPostModal from './NewPostModal';
 import PostCard from './post-card';
 import TrackItem from './track-item';
+import { getRecs } from '../utils/spotify-api';
 
 function Feed(props) {
   const [tokenUpdated, setTokenUpdated] = useState(false); // track if token is updated
@@ -14,7 +15,7 @@ function Feed(props) {
   const [recs, setRecs] = useState([]);
 
   // getting posts from the store
-  const { loadFeed, currentProfile, initialFetch } = useStore((store) => store.profileSlice);
+  const { loadFeed, currentProfile, initialFetch, updateProfile } = useStore((store) => store.profileSlice);
   useEffect(() => {
     const update = async () => {
       try {
@@ -35,9 +36,16 @@ function Feed(props) {
         setFeed(newFeed);
         useStore.setState({ profileSlice: { ...useStore.getState().profileSlice, feed: newFeed } });
         if (!feed || feed.length === 0) {
-          // const fetchRecs = await getRecs();
-          const fetchRecs = [];
-          setRecs(fetchRecs);
+          const currDate = new Date().getTime();
+          const lastUpdated = new Date(currentProfile.recommendationsLastUpdated).getTime();
+          if (currDate - lastUpdated > 24 * 60 * 60 * 1000) {
+            const fetchRecs = await getRecs();
+            setRecs(fetchRecs);
+            const newProfile = { ...currentProfile, recommendationsLastUpdated: currDate, recommendations: fetchRecs };
+            updateProfile(currentProfile.userID, newProfile);
+          } else {
+            setRecs(currentProfile.recommendations);
+          }
         }
       }
     };
