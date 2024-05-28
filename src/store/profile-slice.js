@@ -11,6 +11,7 @@ async function updateHelper(userID, updatedProfile) {
 const createProfileSlice = (set, get) => ({
   initialFetch: false,
   currentProfile: null,
+  feed: [],
 
   fetchAllProfiles: async () => {
     try {

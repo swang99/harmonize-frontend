@@ -10,7 +10,7 @@ import TrackItem from './track-item';
 
 function Feed(props) {
   const [tokenUpdated, setTokenUpdated] = useState(false); // track if token is updated
-  const [feed, setFeed] = useState([]); // store the user's feed
+  const [feed, setFeed] = useState(useStore.getState().profileSlice.feed);
   const [recs, setRecs] = useState([]);
 
   // getting posts from the store
@@ -31,7 +31,9 @@ function Feed(props) {
   useEffect(() => {
     const loadFeedData = async () => {
       if (tokenUpdated && initialFetch && currentProfile.userID) {
-        setFeed(await loadFeed(currentProfile.userID));
+        const newFeed = await loadFeed(currentProfile.userID);
+        setFeed(newFeed);
+        useStore.setState({ profileSlice: { ...useStore.getState().profileSlice, feed: newFeed } });
         if (!feed || feed.length === 0) {
           // const fetchRecs = await getRecs();
           const fetchRecs = [];
