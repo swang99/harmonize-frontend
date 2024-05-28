@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Box, Icon, Text, Avatar, Flex, Heading, VStack, Spacer, HStack, Grid, Tab, Tabs, TabList, TabPanels, TabPanel, useDisclosure,
+  GridItem,
 } from '@chakra-ui/react';
 import { IoPersonAdd } from 'react-icons/io5';
 import PostCard from './post-card';
@@ -72,10 +73,12 @@ export default function ProfileHeader(props) {
           <TabPanels>
             <TabPanel p={0}>
               <Box py={5} w="100%" mb={10}>
-                <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6} w="100%" pb="20vh">
+                <Grid templateColumns="repeat(3, 1fr)" gap={6} w="100%" pb="20vh">
                   {props.profile.posts && props.profile.posts.length > 0 ? (
                     props.profile.posts.map((post) => (
-                      <PostCard key={post.id} post={post} profile={props.profile} />
+                      <GridItem key={post.id} w="100%">
+                        <PostCard key={post.id} post={post} profile={props.profile} />
+                      </GridItem>
                     ))
                   ) : (
                     <Text>No posts yet.</Text>

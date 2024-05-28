@@ -153,7 +153,7 @@ export default function ProfileHeader(props) {
           <TabPanels>
             <TabPanel p={0}>
               <Box py={5} w="100%" mb={10}>
-                <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6} w="100%" pb="20vh">
+                <Grid templateColumns="repeat(auto-fill, minmax(300px, 1fr))" gap={6} w="100%" pb="20vh">
                   {profile.posts && profile.posts.length > 0 ? (
                     profile.posts.map((post) => (
                       <PostCard

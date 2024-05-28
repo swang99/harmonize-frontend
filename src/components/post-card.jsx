@@ -207,8 +207,7 @@ const PostCard = (props) => {
               use="feed"
               flex="1"
             />
-            <Box w={1} h="100%" bg="gray.800" rounded="xl" />
-            <VStack w="100%" h="100%" flex="1" spacing="0">
+            <VStack pl={4} w="100%" h="100%" flex="1" spacing="0">
               <VStack w="100%" bg="gray.700" justify="flex-start" align="flex-start" borderRadius="lg" p={3} spacing="1">
                 <Text as="h1" fontSize="2xl" fontWeight="bold" color="white">{name}</Text>
                 <Text as="h2" fontSize="lg" fontWeight="bold" color="gray.200">{artists}</Text>
@@ -267,6 +266,7 @@ const PostCard = (props) => {
           _hover={{
             transform: 'scale(1.03)',
           }}
+          w="100%"
         >
           <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} />
           <AddCommentModal isOpen={addCommentDisc.isOpen} onClose={addCommentDisc.onClose} post={props.post} postAuthorID={props.authorID} commentAuthorID={userProfile.userID} />

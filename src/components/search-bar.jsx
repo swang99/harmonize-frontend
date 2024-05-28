@@ -101,16 +101,17 @@ function SearchBar() {
       exit={{ x: 1000, opacity: 0 }}
       transition={{ duration: 0.5, type: 'spring', stiffness: 50, damping: 12 }}
     >
-      <HStack bg="teal.600" w="100vw" h="100vh" display="flex" justify="center" align="flex-start" overflowY="auto">
+      <HStack bg="white" w="100vw" h="100vh" display="flex" justify="center" align="flex-start" overflowY="auto">
         <Box width="80%" p={10} borderRadius="md" mb="20vh">
           <form onSubmit={(e) => e.preventDefault()}>
             <FormControl>
-              <Flex m={10} gap="2" alignItems="center">
+              <Flex gap="2" mb={10} alignItems="center">
                 <Input
                   value={query}
-                  bg="white"
+                  rounded="full"
+                  bg="gray.100"
                   onChange={handleInputChange}
-                  placeholder="Search..."
+                  placeholder="Search for a song to play or share..."
                   size="lg"
                   height="50px"
                   color="black"
@@ -131,7 +132,7 @@ function SearchBar() {
                     },
                   }}
                 />
-                <Button colorScheme="green" type="submit" size="lg" height="50px" onClick={handleSearch}>
+                <Button colorScheme="green" rounded="full" type="submit" size="lg" height="50px" onClick={handleSearch}>
                   Search
                 </Button>
               </Flex>
