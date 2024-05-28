@@ -5,7 +5,7 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
-  Text, VStack,
+  Text, VStack, Image,
   useDisclosure,
 } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
@@ -163,9 +163,9 @@ export default function ProfileHeader(props) {
           <TabPanels>
             <TabPanel p={0}>
               <Box py={5} w="100%" mb={10} gap={4}>
-                <Grid templateColumns="repeat(auto-fill, minmax(300px, 1fr))" gap={6} w="100%" pb="20vh">
-                  {profile.posts && profile.posts.length > 0 ? (
-                    profile.posts.map((post) => (
+                {profile.posts && profile.posts.length > 0 ? (
+                  <Grid templateColumns="repeat(auto-fill, minmax(300px, 1fr))" gap={6} w="100%" pb="20vh">
+                    {profile.posts.map((post) => (
                       <PostCard
                         key={post._id}
                         post={post}
@@ -173,18 +173,27 @@ export default function ProfileHeader(props) {
                         onPostModalOpen={handlePostModalOpen}
                         use="profile"
                       />
-                    ))
-                  ) : (
-                    <Text>No posts yet.</Text>
-                  )}
-                </Grid>
+                    ))}
+                  </Grid>
+                ) : (
+                  <Box py={10}>
+                    <Text fontSize="lg" color="gray.500">No posts yet.</Text>
+                    <Image src="/src/img/empty.svg"
+                      alt="empty_posts"
+                      mx="auto"
+                      mb={4}
+                      width="400px"
+                      height="300px"
+                    />
+                  </Box>
+                )}
               </Box>
             </TabPanel>
             <TabPanel p={0}>
               <VStack py={5} w="100%" mb={10} gap={4}>
-                <Grid templateColumns="repeat(auto-fill, minmax(300px, 1fr))" gap={6} w="100%" pb="20vh">
-                  {profile.topTracks && profile.topTracks.length > 0 ? (
-                    profile.topTracks.map((track) => (
+                {profile.topTracks && profile.topTracks.length > 0 ? (
+                  <Grid templateColumns="repeat(auto-fill, minmax(300px, 1fr))" gap={6} w="100%" pb="20vh">
+                    {profile.topTracks.map((track) => (
                       <TrackItem
                         key={track.id}
                         id={track.id}
@@ -192,18 +201,27 @@ export default function ProfileHeader(props) {
                         artist={track.artists[0].name}
                         imageURL={track.album.images[0].url}
                       />
-                    ))
-                  ) : (
-                    <Text>No activity available.</Text>
-                  )}
-                </Grid>
+                    ))}
+                  </Grid>
+                ) : (
+                  <Box py={10}>
+                    <Text fontSize="lg" color="gray.500">No activity available.</Text>
+                    <Image src="/src/img/empty.svg"
+                      alt="empty_posts"
+                      mx="auto"
+                      mb={4}
+                      width="400px"
+                      height="300px"
+                    />
+                  </Box>
+                )}
               </VStack>
             </TabPanel>
             <TabPanel p={0}>
               <VStack py={5} w="100%" mb={10} gap={4}>
-                <Grid templateColumns="repeat(auto-fill, minmax(300px, 1fr))" gap={6} w="100%" pb="20vh">
-                  {likedPosts && likedPosts.length > 0 ? (
-                    likedPosts.map((post) => (
+                {likedPosts && likedPosts.length > 0 ? (
+                  <Grid templateColumns="repeat(auto-fill, minmax(300px, 1fr))" gap={6} w="100%" pb="20vh">
+                    {likedPosts.map((post) => (
                       <PostCard
                         key={post._doc._id}
                         post={post._doc}
@@ -213,11 +231,20 @@ export default function ProfileHeader(props) {
                         onPostModalOpen={handlePostModalOpen}
                         use="profile"
                       />
-                    ))
-                  ) : (
-                    <Text>No liked posts yet.</Text>
-                  )}
-                </Grid>
+                    ))}
+                  </Grid>
+                ) : (
+                  <Box py={10}>
+                    <Text fontSize="lg" color="gray.500">No liked posts yet.</Text>
+                    <Image src="/src/img/empty.svg"
+                      alt="empty_posts"
+                      mx="auto"
+                      mb={4}
+                      width="400px"
+                      height="300px"
+                    />
+                  </Box>
+                )}
               </VStack>
             </TabPanel>
           </TabPanels>

@@ -99,7 +99,12 @@ const createProfileSlice = (set, get) => ({
           following: [],
           photo: profile.images && profile.images.length > 1 ? profile.images[1].url : '',
           highlights: [],
-          topTracks: tracks,
+          topTracks: tracks.items.map((item) => ({
+            name: item.name,
+            artists: item.artists,
+            album: item.album,
+            id: item.id,
+          })),
           topArtists: artists.items.map((item) => item.id),
           playlists: playlists.items,
           posts: [],
@@ -114,9 +119,18 @@ const createProfileSlice = (set, get) => ({
           name: profile.display_name,
           photo: profile.images && profile.images.length > 1 ? profile.images[1].url : '',
           email: profile.email,
-          topTracks: tracks.items,
+          topTracks: tracks.items.map((item) => ({
+            name: item.name,
+            artists: item.artists,
+            album: item.album,
+            id: item.id,
+          })),
           topArtists: artists.items.map((item) => item.id),
-          playlists: playlists.items,
+          playlists: playlists.items.map((item) => ({
+            id: item.id,
+            name: item.name,
+            images: item.images,
+          })),
         };
         await updateHelper(profile.id, updatedProfile);
         set((state) => ({

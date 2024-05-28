@@ -112,11 +112,76 @@ function TrackItem(props) {
         </Button>
       </Box>
     );
+  } else if (props.use === 'create-post') {
+    return (
+      <Box key={id} w="100%" bg="gray.800" borderBottomRadius="md" overflow="hidden" position="relative">
+        <style>{marqueeKeyframes}</style>
+        <Image src={imageURL} alt={name} />
+        <HStack p={3} position="relative">
+          <VStack align="flex-start" mx={2} flex="1" spacing={1} maxW="100%">
+            <Box overflow="hidden" w="100%" textAlign="left">
+              <Text
+                ref={nameRef}
+                fontSize="md"
+                fontWeight="bold"
+                color="white"
+                isTruncated={!isNameOverflowing}
+                style={isNameOverflowing ? scrollingTextStyle : {}}
+                maxW="100%"
+              >
+                {name}
+              </Text>
+            </Box>
+            <Box overflow="hidden" w="100%" textAlign="left">
+              <Text
+                ref={artistRef}
+                fontSize="sm"
+                color="gray.400"
+                isTruncated={!isArtistOverflowing}
+                style={isArtistOverflowing ? scrollingTextStyle : {}}
+                maxW="100%"
+              >
+                {artist}
+              </Text>
+            </Box>
+          </VStack>
+        </HStack>
+        <Button
+          position="absolute"
+          top="50%"
+          left="50%"
+          transform="translate(-50%, -50%)"
+          colorScheme="green"
+          borderRadius="full"
+          width="50px"
+          height="50px"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          onClick={handlePlay}
+        >
+          <FontAwesomeIcon icon={faPlay} />
+        </Button>
+      </Box>
+    );
   }
 
   // Render for other use cases
   return (
-    <Box key={id} w="100%" bg="gray.800" borderRadius="md" overflow="hidden" position="relative">
+    <Box
+      key={id}
+      w="100%"
+      h="100%"
+      bg="gray.800"
+      borderBottomRadius="md"
+      overflow="hidden"
+      position="relative"
+      transition="transform 0.1s ease-in-out"
+      _hover={{
+        transform: 'scale(1.03)',
+        boxShadow: '0 0 10px 5px rgba(56, 161, 105, 0.6)', // Custom glow effect on hover
+      }}
+    >
       <style>{marqueeKeyframes}</style>
       <Image src={imageURL} alt={name} />
       <HStack p={3} position="relative">
