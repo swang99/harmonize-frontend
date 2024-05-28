@@ -165,18 +165,6 @@ function TrackItem(props) {
 
   // Render for other use cases
   return (
-    /*
-      <Box onClick={() => handlePostModalOpen()}
-          cursor="pointer"
-          transition="transform 0.1s ease-in-out"
-          _hover={{
-            transform: 'scale(1.03)',
-            boxShadow: '0 0 10px 5px rgba(56, 161, 105, 0.6)', // Custom glow effect on hover
-          }}
-          w="100%"
-          borderBottomRadius="md"
-        >
-      */
     <Box
       key={id}
       w="100%"
