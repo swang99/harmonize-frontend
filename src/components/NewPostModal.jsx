@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Textarea, Image, VStack, Text, useDisclosure } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Textarea, useDisclosure, VStack } from '@chakra-ui/react';
 import { toast } from 'react-toastify';
 import useStore from '../store';
 import 'react-toastify/dist/ReactToastify.css';
+import TrackItem from './track-item';
 
 export default function NewPostModal() {
   const [description, setDescription] = useState('');
   const createPost = useStore((store) => store.postSlice.createPost);
   const userProfile = useStore((store) => store.profileSlice.currentProfile);
 
-  // modal shit
   const { isOpen, trackData } = useStore((state) => state.modalSlice.newPostModal);
   const { closeModal } = useStore((state) => state.modalSlice.newPostModal);
   const newPostModalDisc = useDisclosure();
@@ -54,18 +54,17 @@ export default function NewPostModal() {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent maxW="30vw" maxH="80vh">
         <ModalHeader>Create New Post</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing={4}>
-            <Image src={trackData.imageURL} alt={trackData.songName} boxSize="150px" />
-            <Text fontWeight="bold">{trackData.name}</Text>
-            <Text>{trackData.artists}</Text>
+            <TrackItem use="create-post" id={trackData.id} name={trackData.songName} artist={trackData.artists} imageURL={trackData.imageURL} />
             <Textarea
               placeholder="Add a caption..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              resize="none"
             />
           </VStack>
         </ModalBody>
