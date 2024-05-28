@@ -12,11 +12,9 @@ import AddCommentModal from './AddComment';
 import TrackItem from './track-item';
 
 const PostCard = (props) => {
-  // Destructure props for easier access
+  // post data from props
   const { post, use, onPostModalOpen, profile } = props;
   const { id, type } = post;
-
-  // Zustand store state
   const { fetchOtherProfile } = useStore((store) => store.profileSlice);
   const userProfile = useStore((store) => store.profileSlice.currentProfile);
 
@@ -47,6 +45,10 @@ const PostCard = (props) => {
       authorID: profile.userID,
     };
     onPostModalOpen(postModalContent);
+  };
+  const handleFullPostModalOpen = (event) => {
+    event.stopPropagation();
+    openFullPostModal(content);
   };
 
   const handleLike = async (event) => {

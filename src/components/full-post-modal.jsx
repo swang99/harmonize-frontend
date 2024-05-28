@@ -6,40 +6,59 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import PostCard from './post-card';
 import useStore from '../store';
 
 export default function FullPostModal(props) {
-  const { postModalContent, isOpen, onClose } = props;
+  // zustand modal stuff
+  const { isOpen, content } = useStore((state) => state.modalSlice.fullPostModal);
+  const { closeModal } = useStore((state) => state.modalSlice.fullPostModal);
+
+  // chakra modal stuff
   const initialFocusRef = useRef();
   const finalFocusRef = useRef();
+  const fullPostModalDisc = useDisclosure();
+
+  // current user data
   const userProfile = useStore((store) => store.profileSlice.currentProfile);
 
+  useEffect(() => {
+    if (isOpen) {
+      fullPostModalDisc.onOpen();
+    } else {
+      fullPostModalDisc.onClose();
+    }
+  }, [isOpen, content]);
+
+  const onClose = () => {
+    closeModal();
+    fullPostModalDisc.onClose();
+  };
+
   const renderPostCard = () => {
-    if (!postModalContent) return <Text>No Post Content</Text>;
-    else if (postModalContent.authorID === userProfile.userID) {
+    if (!content) return <Text>No Post Content</Text>;
+    else if (content.authorID === userProfile.userID) {
       return (
         <PostCard
           use="feed-personal"
-          post={postModalContent.post}
-          name={postModalContent.name}
-          authorID={postModalContent.authorID}
-          photo={postModalContent.photo}
-          onPlaylistModalOpen={props.onPlaylistModalOpen}
+          post={content.post}
+          name={content.name}
+          authorID={content.authorID}
+          photo={content.photo}
         />
       );
     }
     return (
       <PostCard
         use="feed"
-        post={postModalContent.post}
-        name={postModalContent.name}
-        authorID={postModalContent.authorID}
-        photo={postModalContent.photo}
-        onPlaylistModalOpen={props.onPlaylistModalOpen}
+        post={content.post}
+        name={content.name}
+        authorID={content.authorID}
+        photo={content.photo}
       />
     );
   };

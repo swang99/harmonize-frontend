@@ -240,14 +240,9 @@ export default function ProfileHeader(props) {
         finalFocusRef={finalRef}
         profile={profile}
       />
-      <FullPostModal
-        isOpen={postDisc.isOpen}
-        onClose={postDisc.onClose}
-        finalFocusRef={finalRef}
-        postModalContent={postModalContent}
-      />
       <NewPostModal />
       <AddTrackToPlaylistModal />
+      <FullPostModal />
     </Flex>
   );
 }

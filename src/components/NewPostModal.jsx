@@ -15,8 +15,6 @@ export default function NewPostModal() {
   const newPostModalDisc = useDisclosure();
 
   useEffect(() => {
-    console.log('modal state', isOpen, trackData);
-    console.log(isOpen, trackData);
     if (isOpen) {
       newPostModalDisc.onOpen();
     } else {

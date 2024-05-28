@@ -48,5 +48,29 @@ export default function createModalSlice(set, get) {
         },
       })),
     },
+    fullPostModal: {
+      isOpen: false,
+      content: null,
+      openModal: (content) => set((state) => ({
+        modalSlice: {
+          ...state.modalSlice,
+          fullPostModal: {
+            ...state.modalSlice.fullPostModal,
+            isOpen: true,
+            content,
+          },
+        },
+      })),
+      closeModal: () => set((state) => ({
+        modalSlice: {
+          ...state.modalSlice,
+          fullPostModal: {
+            ...state.modalSlice.fullPostModal,
+            isOpen: false,
+            content: null,
+          },
+        },
+      })),
+    },
   };
 }
