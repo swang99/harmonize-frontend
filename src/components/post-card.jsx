@@ -223,7 +223,7 @@ const PostCard = (props) => {
                   </Text>
                 </Box>
                 <Box w="100%" h={1} rounded="full" bg="gray.300" />
-                <Box flex="1" w="85%" overflowY="auto">
+                <Box flex="1" w="calc(100% - 105px)" overflowY="auto">
                   <VStack w="100%" spacing="2">
                     {comments.map((comment) => (
                       <HStack key={`${comment.id}-${comment.author}`} w="100%">

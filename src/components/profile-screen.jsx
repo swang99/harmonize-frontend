@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { Text } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 import useStore from '../store';
 import { updateToken } from '../utils/SpotifyAuth';
 import ProfileHeader from './user-profile';
@@ -63,7 +63,9 @@ function Profile() {
       exit={{ x: 1000, opacity: 0 }}
       transition={{ duration: 0.5, type: 'spring', stiffness: 50, damping: 12 }}
     >
-      {renderProfile()}
+      <Box position="absolute" w="100vw" mt={75}>
+        {renderProfile()}
+      </Box>
     </motion.div>
   );
 }

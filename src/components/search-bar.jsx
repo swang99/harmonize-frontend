@@ -102,48 +102,50 @@ function SearchBar() {
       exit={{ x: 1000, opacity: 0 }}
       transition={{ duration: 0.5, type: 'spring', stiffness: 50, damping: 12 }}
     >
-      <HStack bg="white" w="100vw" h="100vh" display="flex" justify="center" align="flex-start" overflowY="auto">
-        <Box width="80%" p={10} borderRadius="md" mb="20vh">
-          <form onSubmit={(e) => e.preventDefault()}>
-            <FormControl>
-              <Flex gap="2" mb={10} alignItems="center">
-                <Input
-                  value={query}
-                  rounded="full"
-                  bg="gray.100"
-                  onChange={handleInputChange}
-                  placeholder="Search for a song to play or share..."
-                  size="lg"
-                  height="50px"
-                  color="black"
-                  autoComplete="off"
-                  border="none"
-                  _focus={{
-                    borderColor: 'transparent',
-                    boxShadow: 'none',
-                  }}
-                  sx={{
-                    '&::placeholder': {
-                      color: 'gray',
-                    },
-                    '&:hover, &:focus': {
+      <Box position="absolute" w="100vw" mt={75}>
+        <HStack bg="white" w="100vw" h="100vh" display="flex" justify="center" align="flex-start" overflowY="auto">
+          <Box width="80%" p={10} borderRadius="md" mb="20vh">
+            <form onSubmit={(e) => e.preventDefault()}>
+              <FormControl>
+                <Flex gap="2" mb={10} alignItems="center">
+                  <Input
+                    value={query}
+                    rounded="full"
+                    bg="gray.100"
+                    onChange={handleInputChange}
+                    placeholder="Search for a song to play or share..."
+                    size="lg"
+                    height="50px"
+                    color="black"
+                    autoComplete="off"
+                    border="none"
+                    _focus={{
                       borderColor: 'transparent',
-                      outline: 'none',
                       boxShadow: 'none',
-                    },
-                  }}
-                />
-                <Button colorScheme="green" rounded="full" type="submit" size="lg" height="50px" onClick={handleSearch}>
-                  Search
-                </Button>
-              </Flex>
-            </FormControl>
-          </form>
-          {query.length > 0 ? renderResults() : renderRecents()}
-        </Box>
-      </HStack>
-      <AddTrackToPlaylistModal />
-      <NewPostModal />
+                    }}
+                    sx={{
+                      '&::placeholder': {
+                        color: 'gray',
+                      },
+                      '&:hover, &:focus': {
+                        borderColor: 'transparent',
+                        outline: 'none',
+                        boxShadow: 'none',
+                      },
+                    }}
+                  />
+                  <Button colorScheme="green" rounded="full" type="submit" size="lg" height="50px" onClick={handleSearch}>
+                    Search
+                  </Button>
+                </Flex>
+              </FormControl>
+            </form>
+            {query.length > 0 ? renderResults() : renderRecents()}
+          </Box>
+        </HStack>
+        <AddTrackToPlaylistModal />
+        <NewPostModal />
+      </Box>
     </motion.div>
   );
 }
