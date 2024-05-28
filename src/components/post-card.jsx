@@ -254,10 +254,6 @@ const PostCard = (props) => {
       return (
         <Box onClick={() => handlePostModalOpen()}
           cursor="pointer"
-          transition="transform 0.1s ease-in-out"
-          _hover={{
-            transform: 'scale(1.03)',
-          }}
           w="100%"
         >
           <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} />
