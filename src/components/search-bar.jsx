@@ -101,7 +101,7 @@ function SearchBar() {
       exit={{ x: 1000, opacity: 0 }}
       transition={{ duration: 0.5, type: 'spring', stiffness: 50, damping: 12 }}
     >
-      <Box position="absolute" w="100vw">
+      <Box position="absolute" w="100vw" mt={75}>
         <HStack bg="white" w="100vw" h="100vh" display="flex" justify="center" align="flex-start" overflowY="auto">
           <Box width="80%" p={10} borderRadius="md" mb="20vh">
             <form onSubmit={(e) => e.preventDefault()}>

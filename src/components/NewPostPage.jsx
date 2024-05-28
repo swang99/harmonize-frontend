@@ -87,7 +87,7 @@ const NewPostPage = () => {
         exit={{ x: 1000, opacity: 0 }}
         transition={{ duration: 0.5, type: 'spring', stiffness: 50, damping: 12 }}
       >
-        <Box position="absolute" w="100vw">
+        <Box position="absolute" w="100vw" mt={75}>
           <VStack spacing={4} justifyContent="center" alignItems="center" height="100vh">
             <Spinner size="xl" />
             <Text>Loading profile...</Text>
@@ -104,7 +104,7 @@ const NewPostPage = () => {
       exit={{ x: 1000, opacity: 0 }}
       transition={{ duration: 0.5, type: 'spring', stiffness: 50, damping: 12 }}
     >
-      <Box position="absolute" w="100vw">
+      <Box position="absolute" w="100vw" mt={75}>
         <VStack spacing={4}>
           <form onSubmit={handleSearch}>
             <Input
