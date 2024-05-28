@@ -126,7 +126,11 @@ const createProfileSlice = (set, get) => ({
             id: item.id,
           })),
           topArtists: artists.items.map((item) => item.id),
-          playlists: playlists.items,
+          playlists: playlists.items.map((item) => ({
+            id: item.id,
+            name: item.name,
+            images: item.images,
+          })),
         };
         await updateHelper(profile.id, updatedProfile);
         set((state) => ({
