@@ -165,7 +165,7 @@ function TrackItem(props) {
 
   // Render for other use cases
   return (
-    <Box key={id} w="100%" bg="gray.800" borderRadius="md" overflow="hidden" position="relative">
+    <Box key={id} w="100%" h="100%" bg="gray.800" borderBottomRadius="md" overflow="hidden" position="relative">
       <style>{marqueeKeyframes}</style>
       <Image src={imageURL} alt={name} />
       <HStack p={3} position="relative">
