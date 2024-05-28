@@ -5,7 +5,6 @@ import Feed from './feed';
 import Login from './login';
 import Profile from './profile-screen';
 import SearchBar from './search-bar';
-import NewPostPage from './NewPostPage';
 import useStore from '../store';
 import { getCurrentUserPlaylists, getRecentlyPlayedTracks, getUserProfile, getUserTopArtists, getUserTopTracks } from '../utils/spotify-api';
 import { updateToken } from '../utils/SpotifyAuth';
@@ -114,7 +113,6 @@ const AnimatedRoutes = () => {
         <Route path="/home" element={<Feed height={routeHeight} />} />
         <Route path="/search" element={<SearchBar />} />
         <Route path="/users/:id" element={<Profile />} />
-        <Route path="/new-post" element={<NewPostPage />} />
         <Route path="*" element={<div>Post not found</div>} />
       </Routes>
     </AnimatePresence>
