@@ -7,6 +7,7 @@ import { FaRegTrashCan } from 'react-icons/fa6';
 import { MdOutlineComment } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router';
 import useStore from '../store';
 import AddCommentModal from './AddComment';
 import TrackItem from './track-item';
@@ -22,6 +23,7 @@ const PostCard = (props) => {
 
   // outdate modal stuff
   const addCommentDisc = useDisclosure();
+  const navigate = useNavigate();
 
   // update post stuff
   const updatePost = useStore((store) => store.postSlice.updatePost);
@@ -95,6 +97,25 @@ const PostCard = (props) => {
   const handlePlaylistModalOpen = (event) => {
     event.stopPropagation();
     openPlaylistModal(id);
+  };
+
+  const handleNavigateUser = (friendId) => {
+    navigate(`/users/${friendId}`);
+  };
+
+  const formatTimestamp = (ts) => {
+    const date = new Date(ts);
+
+    const formattedDate = date.toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+
+    return formattedDate;
   };
 
   const renderLikes = () => {
@@ -212,8 +233,26 @@ const PostCard = (props) => {
               <VStack w="100%" h="100%" flex="1" maxH="100%" align="flex-start" px={3} pt={3} overflow="hidden" position="relative">
                 <HStack w="100%" justifyContent="space-between" alignSelf="flex-start" gap="3">
                   <HStack>
-                    <Avatar size="sm" src={userPhoto} />
-                    <Text as="h2" fontSize="md" fontWeight="bold">{username}</Text>
+                    <Avatar size="sm"
+                      src={userPhoto}
+                      cursor="pointer"
+                      onClick={() => handleNavigateUser(
+                        fetchOtherProfile.userID !== props.authorID
+                          ? props.authorID : userProfile.userID,
+                      )}
+                    />
+                    <Text as="h2"
+                      fontSize="md"
+                      fontWeight="bold"
+                      cursor="pointer"
+                      onClick={() => handleNavigateUser(
+                        fetchOtherProfile.userID !== props.authorID
+                          ? props.authorID : userProfile.userID,
+                      )}
+                      _hover={{ color: 'teal.500' }}
+                    >
+                      {username}
+                    </Text>
                   </HStack>
                   <Box justifySelf="flex-end">
                     {renderLikes()}
@@ -238,6 +277,7 @@ const PostCard = (props) => {
                 <Box position="absolute" bottom={3} right={3}>
                   {renderFeedButtons()}
                 </Box>
+                <Text align="right">{formatTimestamp(post.createdAt)}</Text>
               </VStack>
             </VStack>
             <AddCommentModal isOpen={addCommentDisc.isOpen}
