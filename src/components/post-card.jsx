@@ -6,7 +6,6 @@ import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { FaRegTrashCan } from 'react-icons/fa6';
 import { MdOutlineComment } from 'react-icons/md';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router';
 import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
 import AddCommentModal from './AddComment';
@@ -14,21 +13,28 @@ import NewPostModal from './NewPostModal';
 import TrackItem from './track-item';
 
 const PostCard = (props) => {
+  // post data from props
   const { post, use, onPostModalOpen, profile } = props;
   const { id, type } = post;
-  const addCommentDisc = useDisclosure();
-  const newPostModalDisc = useDisclosure();
-  const navigate = useNavigate();
   const { fetchOtherProfile } = useStore((store) => store.profileSlice);
   const userProfile = useStore((store) => store.profileSlice.currentProfile);
+
+  // outdate modal stuff
+  const addCommentDisc = useDisclosure();
+  const newPostModalDisc = useDisclosure();
+
+  // update post stuff
   const updatePost = useStore((store) => store.postSlice.updatePost);
   const deletePost = useStore((store) => store.postSlice.deletePost);
   const [liked, setLiked] = useState(props.post.likes.includes(userProfile.userID));
   const [likes, setLikes] = useState(props.post.likes.length);
   const [comments, setComments] = useState(props.post.comments);
-  const openPlaylistModal = props.onPlaylistModalOpen;
 
-  const handlePostModalOpen = () => {
+  // current modal stuff
+  const openPlaylistModal = useStore((state) => state.modalSlice.playlistModal.openModal);
+
+  const handlePostModalOpen = (event) => {
+    event.stopPropagation();
     const postModalContent = props.name ? {
       post: props.post,
       name: props.name,
@@ -81,18 +87,14 @@ const PostCard = (props) => {
     addCommentDisc.onOpen();
   };
 
-  const handleAddToPlaylistOpen = (event) => {
-    event.stopPropagation();
-    openPlaylistModal();
-  };
-
   const handleNewPostOpen = (event) => {
     event.stopPropagation();
     newPostModalDisc.onOpen();
   };
 
-  const handleNavigateUser = (friendId) => {
-    navigate(`/users/${friendId}`);
+  const handlePlaylistModalOpen = (event) => {
+    event.stopPropagation();
+    openPlaylistModal(id);
   };
 
   const renderLikes = () => {
@@ -154,7 +156,17 @@ const PostCard = (props) => {
       return (
         <HStack gap="3">
           <Icon as={MdOutlineComment} w={6} h={6} cursor="pointer" color="teal.900" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleAddCommentOpen} />
-          <Icon as={CgPlayListAdd} w={6} h={6} cursor="pointer" color="teal.900" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleAddToPlaylistOpen} />
+          <Icon as={CgPlayListAdd}
+            w={6}
+            h={6}
+            cursor="pointer"
+            color="teal.900"
+            _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
+            onClick={(event) => {
+              event.stopPropagation();
+              openPlaylistModal(id);
+            }}
+          />
           <Icon as={RepeatIcon} w={6} h={6} cursor="pointer" color="teal.900" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleNewPostOpen} />
           <Icon as={FaRegTrashCan} w={6} h={6} cursor="pointer" color="teal.900" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleDelete} />
         </HStack>
@@ -163,7 +175,14 @@ const PostCard = (props) => {
     return (
       <HStack gap="3">
         <Icon as={MdOutlineComment} w={6} h={6} cursor="pointer" color="teal.900" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleAddCommentOpen} />
-        <Icon as={CgPlayListAdd} w={6} h={6} cursor="pointer" color="teal.900" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleAddToPlaylistOpen} />
+        <Icon as={CgPlayListAdd}
+          w={6}
+          h={6}
+          cursor="pointer"
+          color="teal.900"
+          _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
+          onClick={(event) => handlePlaylistModalOpen(event)}
+        />
         <Icon as={RepeatIcon} w={6} h={6} cursor="pointer" color="teal.900" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleNewPostOpen} />
       </HStack>
     );
@@ -185,7 +204,6 @@ const PostCard = (props) => {
               name={name}
               artist={artists}
               imageURL={imageURL}
-              onPlaylistModalOpen={() => openPlaylistModal()}
               use="feed"
               flex="1"
             />
@@ -198,26 +216,8 @@ const PostCard = (props) => {
               <VStack w="100%" h="100%" flex="1" maxH="100%" align="flex-start" px={3} pt={3} overflow="hidden" position="relative">
                 <HStack w="100%" justifyContent="space-between" alignSelf="flex-start" gap="3">
                   <HStack>
-                    <Avatar size="sm"
-                      src={userPhoto}
-                      cursor="pointer"
-                      onClick={() => handleNavigateUser(
-                        fetchOtherProfile.userID !== props.authorID
-                          ? props.authorID : userProfile.userID,
-                      )}
-                      _hover={{ borderColor: 'teal.500', borderWidth: '1px' }}
-                    />
-                    <Text as="h2"
-                      fontSize="md"
-                      fontWeight="bold"
-                      cursor="pointer"
-                      onClick={() => handleNavigateUser(
-                        fetchOtherProfile.userID !== props.authorID
-                          ? props.authorID : userProfile.userID,
-                      )}
-                      _hover={{ color: 'teal.500' }}
-                    >{username}
-                    </Text>
+                    <Avatar size="sm" src={userPhoto} />
+                    <Text as="h2" fontSize="md" fontWeight="bold">{username}</Text>
                   </HStack>
                   <Box justifySelf="flex-end">
                     {renderLikes()}
@@ -229,7 +229,7 @@ const PostCard = (props) => {
                   </Text>
                 </Box>
                 <Box w="100%" h={1} rounded="full" bg="gray.300" />
-                <Box flex="1" w="calc(100% - 100px)" overflowY="auto">
+                <Box flex="1" w="85%" overflowY="auto">
                   <VStack w="100%" spacing="2">
                     {comments.map((comment) => (
                       <HStack key={`${comment.id}-${comment.author}`} w="100%">
@@ -261,14 +261,14 @@ const PostCard = (props) => {
       );
     } else if (use === 'profile') {
       return (
-        <Box onClick={handlePostModalOpen}
+        <Box onClick={() => handlePostModalOpen()}
           cursor="pointer"
           transition="transform 0.1s ease-in-out"
           _hover={{
             transform: 'scale(1.03)',
           }}
         >
-          <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} onPlaylistModalOpen={props.onPlaylistModalOpen} />
+          <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} />
           <AddCommentModal isOpen={addCommentDisc.isOpen} onClose={addCommentDisc.onClose} post={props.post} postAuthorID={props.authorID} commentAuthorID={userProfile.userID} />
           <NewPostModal
             isOpen={newPostModalDisc.isOpen}
@@ -286,7 +286,6 @@ const PostCard = (props) => {
           name={name}
           artist={artists}
           imageURL={imageURL}
-          onPlaylistModalOpen={() => openPlaylistModal()}
         />
       </HStack>
     );

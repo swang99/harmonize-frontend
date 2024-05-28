@@ -23,15 +23,10 @@ function SearchBar() {
         return true;
       });
 
-      console.log('Recents', recents);
       setRecentlyPlayed(recents);
     }
     fetchRecentlyPlayed();
   }, []);
-
-  useEffect(() => {
-    console.log('Recents:', recentlyPlayed);
-  }, [recentlyPlayed]);
 
   const handleSearch = useCallback(async () => {
     if (query.length !== 0) {

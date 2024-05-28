@@ -35,11 +35,6 @@ function TrackItem(props) {
     }
   };
 
-  // const openPlaylistModal = (event) => {
-  // event.stopPropagation();
-  // props.onPlaylistModalOpen(id);
-  // };
-
   const scrollingTextStyle = {
     display: 'inline-block',
     whiteSpace: 'nowrap',
