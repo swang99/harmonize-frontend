@@ -34,7 +34,6 @@ function Feed(props) {
       if (tokenUpdated && initialFetch && currentProfile.userID) {
         const newFeed = await loadFeed(currentProfile.userID);
         setFeed(newFeed);
-        setFeed([]);
         useStore.setState({ profileSlice: { ...useStore.getState().profileSlice, feed: newFeed } });
         const currDate = new Date().getTime();
         const lastUpdated = new Date(currentProfile.recommendationsLastUpdated).getTime();
