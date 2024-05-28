@@ -54,11 +54,11 @@ export default function NewPostModal() {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent maxW="30vw" maxH="80vh">
+      <ModalContent maxW="45vw" maxH="80vh">
         <ModalHeader>Create New Post</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <VStack spacing={4}>
+          <VStack spacing={4} maxW="35vw" mx="auto">
             <TrackItem use="create-post" id={trackData.id} name={trackData.songName} artist={trackData.artists} imageURL={trackData.imageURL} />
             <Textarea
               placeholder="Add a caption..."
