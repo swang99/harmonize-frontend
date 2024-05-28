@@ -99,7 +99,7 @@ const createProfileSlice = (set, get) => ({
           following: [],
           photo: profile.images && profile.images.length > 1 ? profile.images[1].url : '',
           highlights: [],
-          topTracks: tracks.items.map((item) => item.id),
+          topTracks: tracks,
           topArtists: artists.items.map((item) => item.id),
           playlists: playlists.items,
           posts: [],
@@ -114,7 +114,7 @@ const createProfileSlice = (set, get) => ({
           name: profile.display_name,
           photo: profile.images && profile.images.length > 1 ? profile.images[1].url : '',
           email: profile.email,
-          topTracks: tracks.items.map((item) => item.id),
+          topTracks: tracks.items,
           topArtists: artists.items.map((item) => item.id),
           playlists: playlists.items,
         };

@@ -78,7 +78,6 @@ const AnimatedRoutes = () => {
     const login = async () => {
       if (dataLoaded) {
         const { profile, topTracks, topArtists, userPlaylists } = userData;
-        console.log('Logging in:', profile);
         await handleLogin(profile, topTracks, topArtists, userPlaylists);
       }
     };

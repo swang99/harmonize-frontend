@@ -18,6 +18,7 @@ import AddTrackToPlaylistModal from './add-track-to-playlist';
 import FullPostModal from './full-post-modal';
 import PostCard from './post-card';
 import NewPostModal from './NewPostModal';
+import TrackItem from './track-item';
 
 export default function ProfileHeader(props) {
   const { isOwnProfile, profile, userProfile, id: profileId } = props;
@@ -27,7 +28,7 @@ export default function ProfileHeader(props) {
   const postDisc = useDisclosure();
   const { followProfile, unfollowProfile, getLikedPosts } = useStore((store) => store.profileSlice);
   const [isFollowing, setIsFollowing] = useState(false);
-  const [likedPosts, setLikedPosts] = useState([]);
+  const [likedPosts, setLikedPosts] = useState(profile.likedPosts || []);
   const [postModalContent, setPostModalContent] = useState(null);
 
   useEffect(() => {
@@ -148,6 +149,14 @@ export default function ProfileHeader(props) {
               _selected={{ color: 'teal.500', bg: 'gray.100', borderRadius: 'full' }}
               _focus={{ boxShadow: 'none' }}
             >
+              Activity
+            </Tab>
+            <Tab
+              fontWeight="bold"
+              borderRadius="full"
+              _selected={{ color: 'teal.500', bg: 'gray.100', borderRadius: 'full' }}
+              _focus={{ boxShadow: 'none' }}
+            >
               Liked
             </Tab>
           </TabList>
@@ -170,6 +179,25 @@ export default function ProfileHeader(props) {
                   )}
                 </Grid>
               </Box>
+            </TabPanel>
+            <TabPanel p={0}>
+              <VStack py={5} w="100%" mb={10} gap={4}>
+                <Grid templateColumns="repeat(auto-fill, minmax(300px, 1fr))" gap={6} w="100%" pb="20vh">
+                  {profile.topTracks && profile.topTracks.length > 0 ? (
+                    profile.topTracks.map((track) => (
+                      <TrackItem
+                        key={track.id}
+                        id={track.id}
+                        name={track.name}
+                        artist={track.artists[0].name}
+                        imageURL={track.album.images[0].url}
+                      />
+                    ))
+                  ) : (
+                    <Text>No activity available.</Text>
+                  )}
+                </Grid>
+              </VStack>
             </TabPanel>
             <TabPanel p={0}>
               <VStack py={5} w="100%" mb={10} gap={4}>
