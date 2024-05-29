@@ -105,15 +105,31 @@ const PostCard = (props) => {
   };
 
   const formatTimestamp = (ts) => {
-    const date = new Date(ts);
-
-    const formattedDate = date.toLocaleString('en-US', {
+    const date = new Date(ts).getTime();
+    const age = new Date().getTime() - date;
+    if (age < 1000 * 60) {
+      return 'Just now';
+    }
+    const seconds = Math.floor(age / 1000);
+    if (seconds < 60) {
+      return `${seconds}s ago`;
+    }
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) {
+      return `${minutes}m ago`;
+    }
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) {
+      return `${hours}h ago`;
+    }
+    const days = Math.floor(hours / 24);
+    if (days < 7) {
+      return `${days}d ago`;
+    }
+    const formattedDate = new Date(ts).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
     });
 
     return formattedDate;
