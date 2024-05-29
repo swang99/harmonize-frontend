@@ -118,8 +118,21 @@ function Feed(props) {
     if (!feed || feed.length === 0) {
       return (
         <Box w="100%" h="100%" bg="white" p={10} align="center">
-          <VStack bg="white" maxW="1000px" borderRadius="lg" spacing={4} align="center" justify="center" p={10}>
+          <VStack bg="white" maxW="1000px" borderRadius="lg" spacing={4} align="center" p={10}>
             <Text as="h1" fontSize="4xl" color="gray.700" fontWeight="bold">No posts to show</Text>
+            <Button
+              onClick={addFDisc.onOpen}
+              color="gray.700"
+            >
+              <HStack
+                fontWeight="bold"
+                cursor="pointer"
+                fontSize="xl"
+              >
+                <Text>Add Friends!</Text>
+                <Icon as={IoPersonAdd} fontSize="2xl" />
+              </HStack>
+            </Button>
             {recs && recs.length > 0 && recs[0].id
               ? (
                 <VStack spacing={4}>
@@ -138,27 +151,14 @@ function Feed(props) {
                 </VStack>
               )
               : (
-                <VStack spacing={10}>
-                  <Button
-                    onClick={addFDisc.onOpen}
-                    color="gray.700"
-                  >
-                    <HStack
-                      fontWeight="bold"
-                      cursor="pointer"
-                      fontSize="xl"
-                    >
-                      <Text>Add Friends!</Text>
-                      <Icon as={IoPersonAdd} fontSize="2xl" />
-                    </HStack>
-                  </Button>
+                <Box>
                   {recs && recs.length > 0 ? (<Text as="h2" fontSize="2xl" color="gray.500" fontWeight="bold">No recommendations to show</Text>) : (
                     <VStack spacing={10}>
                       <Text as="h2" fontSize="2xl" color="gray.500" fontWeight="bold">Fetching Recommendations...</Text>
                       <Audio type="Circles" color="#38B2AC" height={80} width="100%" />
                     </VStack>
                   )}
-                </VStack>
+                </Box>
               )}
           </VStack>
         </Box>
