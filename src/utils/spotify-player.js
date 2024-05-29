@@ -48,10 +48,22 @@ const initializePlayer = async () => {
     });
 
     // Error handling
-    spotifyPlayer.addListener('initialization_error', ({ message }) => { toast.error(message); });
-    spotifyPlayer.addListener('authentication_error', ({ message }) => { toast.error(message); });
-    spotifyPlayer.addListener('account_error', ({ message }) => { toast.error(message); });
-    spotifyPlayer.addListener('playback_error', ({ message }) => { toast.error(message); });
+    spotifyPlayer.addListener('initialization_error', ({ message }) => {
+      console.error('Failed to initialize', message);
+      toast.error(message);
+    });
+    spotifyPlayer.addListener('authentication_error', ({ message }) => {
+      console.error('Authentication error', message);
+      toast.error(message);
+    });
+    spotifyPlayer.addListener('account_error', ({ message }) => {
+      console.error('Account error', message);
+      toast.error(message);
+    });
+    spotifyPlayer.addListener('playback_error', ({ message }) => {
+      console.error('Playback error', message);
+      toast.error(message);
+    });
 
     // Add player_state_changed listener
     spotifyPlayer.addListener('player_state_changed', (playerState) => {

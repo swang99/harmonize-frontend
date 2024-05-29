@@ -34,6 +34,7 @@ const PostCard = (props) => {
   const openPlaylistModal = useStore((state) => state.modalSlice.playlistModal.openModal);
   const openNewPostModal = useStore((state) => state.modalSlice.newPostModal.openModal);
   const openFullPostModal = useStore((state) => state.modalSlice.fullPostModal.openModal);
+  const closeFullPostModal = useStore((state) => state.modalSlice.fullPostModal.closeModal);
 
   const handleLike = async (event) => {
     event.stopPropagation();
@@ -163,6 +164,7 @@ const PostCard = (props) => {
   };
 
   const handleDelete = async (event) => {
+    closeFullPostModal();
     event.stopPropagation();
     try {
       await deletePost(userProfile.userID, post._id);

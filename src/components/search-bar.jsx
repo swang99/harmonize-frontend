@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-bind */
 import { Box, Button, Flex, FormControl, Grid, HStack, Input } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { getRecentlyPlayedTracks, searchSpotify } from '../utils/spotify-api';
 import AddTrackToPlaylistModal from './add-track-to-playlist';
 import TrackItem from './track-item';
@@ -12,8 +12,13 @@ function SearchBar() {
   const [query, setQuery] = useState('');
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [debounceTimeout, setDebounceTimeout] = useState(null);
+  const inputRef = useRef(null);
 
   useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+
     async function fetchRecentlyPlayed() {
       let recents = await getRecentlyPlayedTracks();
       const seenIds = new Set();
@@ -109,6 +114,7 @@ function SearchBar() {
               <FormControl>
                 <Flex gap="2" mb={10} alignItems="center">
                   <Input
+                    ref={inputRef}
                     value={query}
                     rounded="full"
                     bg="gray.100"

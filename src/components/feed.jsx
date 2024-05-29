@@ -1,4 +1,4 @@
-import { Box, Heading, Spacer, Text, VStack } from '@chakra-ui/react';
+import { Box, Grid, Heading, Spacer, Text, VStack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 import useStore from '../store';
@@ -57,15 +57,17 @@ function Feed(props) {
           <VStack bg="white" maxW="1000px" borderRadius="lg" spacing={4} align="center" justify="center" p={10}>
             <Text as="h1" fontSize="4xl" color="gray.700" fontWeight="bold">No posts to show</Text>
             <Text as="h2" fontSize="2xl" color="gray.500" fontWeight="bold">For now, here are some recommendations:</Text>
-            {recs.map((track) => (
-              <TrackItem
-                key={track.id}
-                id={track.id}
-                name={track.name}
-                artist={track.artists[0].name}
-                imageURL={track.album.images[0].url}
-              />
-            ))}
+            <Grid templateColumns="repeat(auto-fill, minmax(250px, 1fr))" gap={6} width="100%">
+              {recs.map((track) => (
+                <TrackItem
+                  key={track.id}
+                  id={track.id}
+                  name={track.name}
+                  artist={track.artists[0].name}
+                  imageURL={track.album.images[0].url}
+                />
+              ))}
+            </Grid>
           </VStack>
         </Box>
       );
@@ -99,7 +101,7 @@ function Feed(props) {
       <Box position="absolute" w="100vw" mt={75}>
         <VStack spacing={4} align="stretch" maxH="90vh" overflowY="auto" pb="90px" px="10%">
           <Heading py={5} textAlign="left">Your Feed</Heading>
-          <Text fontSize="lg">See what your friends are liking! </Text>
+          <Text fontSize="lg" fontWeight="bold">See what your friends are listening to! </Text>
           {renderPosts()}
         </VStack>
         <AddTrackToPlaylistModal />
