@@ -152,9 +152,9 @@ function Feed(props) {
                       <Icon as={IoPersonAdd} fontSize="2xl" />
                     </HStack>
                   </Button>
-                  {recs && recs.length > 0 ? (<Box />) : (
+                  {recs && recs.length > 0 ? (<Text as="h2" fontSize="2xl" color="gray.500" fontWeight="bold">No recommendations to show</Text>) : (
                     <VStack spacing={10}>
-                      <Text as="h2" fontSize="2xl" color="gray.500" fontWeight="bold">For now, here are some recommendations:</Text>
+                      <Text as="h2" fontSize="2xl" color="gray.500" fontWeight="bold">Fetching Recommendations...</Text>
                       <Audio type="Circles" color="#38B2AC" height={80} width="100%" />
                     </VStack>
                   )}
