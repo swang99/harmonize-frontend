@@ -93,7 +93,15 @@ const PostCard = (props) => {
   const handleNewPostOpen = (event) => {
     event.stopPropagation();
     if (use !== 'activity') openNewPostModal(post);
-    else openNewPostModal(props.songID);
+    else {
+      const trackFields = {
+        id: props.songID,
+        songName: props.songName,
+        artists: props.album.artists[0].name,
+        imageURL: props.album.images[0].url,
+      };
+      openNewPostModal(trackFields);
+    }
   };
 
   const handlePlaylistModalOpen = (event) => {
