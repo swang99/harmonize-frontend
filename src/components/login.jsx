@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router';
 import { redirectToSpotifyAuth } from '../utils/SpotifyAuth';
 import SpotifyPlayer from './web-player';
 
+
 const Login = () => {
   const navigate = useNavigate();
 
