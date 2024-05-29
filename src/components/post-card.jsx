@@ -1,6 +1,6 @@
 import { RepeatIcon } from '@chakra-ui/icons';
 import { Avatar, Box, HStack, Icon, Text, VStack, useDisclosure } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CgPlayListAdd } from 'react-icons/cg';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { FaRegTrashCan } from 'react-icons/fa6';
@@ -191,6 +191,20 @@ const PostCard = (props) => {
           <Icon as={FaRegTrashCan} w={6} h={6} cursor="pointer" color="teal.900" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleDelete} />
         </HStack>
       );
+    } else if (use === 'activity') {
+      return (
+        <HStack gap="3">
+          <Icon as={CgPlayListAdd}
+            w={6}
+            h={6}
+            cursor="pointer"
+            color="white"
+            _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
+            onClick={handlePlaylistModalOpen}
+          />
+          <Icon as={RepeatIcon} w={6} h={6} cursor="pointer" color="white" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleNewPostOpen} />
+        </HStack>
+      );
     }
     return (
       <HStack gap="3">
@@ -295,6 +309,88 @@ const PostCard = (props) => {
               commentAuthorID={userProfile.userID}
               setComments={setComments}
             />
+          </HStack>
+        </Box>
+      );
+    } else if (use === 'activity') {
+      const username = props.name;
+      const userPhoto = props.photo;
+      const [prompt, setPrompt] = useState();
+
+      const getRandPrompt = () => {
+        const prompts = [
+          ' has been listening to...',
+          ' is currently enjoying...',
+          ' can\'t get enough of...',
+          ' is vibing to...',
+          ' is grooving to...',
+        ];
+        const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
+        return randomPrompt;
+      };
+
+      useEffect(() => {
+        setPrompt(getRandPrompt(username));
+      }, []);
+
+      return (
+        <Box w="100%" bg="gray.100" borderRadius="lg" p={5} padding="5" boxShadow="md">
+          <HStack w="100%" h={350} gap="4">
+            <TrackItem
+              key={props.songID}
+              id={props.songID}
+              name={props.songName}
+              artist={artists}
+              imageURL={imageURL}
+              use="feed"
+              flex="1"
+            />
+            <VStack pl={4} w="100%" h="100%" flex="1" spacing="0">
+              <VStack w="100%" bg="gray.700" justify="flex-start" align="flex-start" flex="1" borderRadius="lg" p={3} spacing="1" position="relative">
+                <HStack>
+                  <Avatar
+                    size="2xl"
+                    src={userPhoto}
+                    cursor="pointer"
+                    margin="4"
+                    onClick={() => handleNavigateUser(
+                      fetchOtherProfile.userID !== props.authorID
+                        ? props.authorID : userProfile.userID,
+                    )}
+                  />
+                  <Text as="h2"
+                    fontSize="2xl"
+                    fontWeight="bold"
+                    cursor="pointer"
+                    color="white"
+                    marginLeft="5"
+                    onClick={() => handleNavigateUser(
+                      fetchOtherProfile.userID !== props.authorID
+                        ? props.authorID : userProfile.userID,
+                    )}
+                    _hover={{ color: 'teal.500' }}
+                  >
+                    {username}
+                  </Text>
+                  <Text as="h2"
+                    fontSize="2xl"
+                    fontWeight="bold"
+                    color="white"
+                    onClick={() => handleNavigateUser(
+                      fetchOtherProfile.userID !== props.authorID
+                        ? props.authorID : userProfile.userID,
+                    )}
+                  >
+                    {prompt}
+                  </Text>
+                </HStack>
+                <Text as="h1" fontSize="50" fontWeight="bold" marginLeft="5" color="white">{name}</Text>
+                <Text as="h2" fontSize="30" fontWeight="bold" marginLeft="5" color="gray.200">{artists}</Text>
+                <Box position="absolute" bottom={3} right={3}>
+                  {renderFeedButtons()}
+                </Box>
+              </VStack>
+            </VStack>
           </HStack>
         </Box>
       );
