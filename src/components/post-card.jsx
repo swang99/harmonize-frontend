@@ -92,12 +92,14 @@ const PostCard = (props) => {
 
   const handleNewPostOpen = (event) => {
     event.stopPropagation();
-    openNewPostModal(post);
+    if (use !== 'activity') openNewPostModal(post);
+    else openNewPostModal(props.songID);
   };
 
   const handlePlaylistModalOpen = (event) => {
     event.stopPropagation();
-    openPlaylistModal(post.id);
+    if (use !== 'activity') openPlaylistModal(post.id);
+    else openPlaylistModal(props.authorID);
   };
 
   const handleNavigateUser = (friendId) => {
