@@ -38,13 +38,11 @@ function Feed(props) {
         const currDate = new Date().getTime();
         const lastUpdated = new Date(currentProfile.recommendationsLastUpdated).getTime();
         if (currDate - lastUpdated > 24 * 60 * 60 * 1000 && currentProfile.recommendationsLastUpdated) {
-          console.log('Fetching recommendations!');
           const fetchRecs = await getRecs();
           setRecs(fetchRecs);
           const newProfile = { ...currentProfile, recommendationsLastUpdated: currDate, recommendations: fetchRecs };
           updateProfile(currentProfile.userID, newProfile);
         } else {
-          console.log('Recommendations:', currentProfile.recommendations);
           setRecs(currentProfile.recommendations);
         }
       }
