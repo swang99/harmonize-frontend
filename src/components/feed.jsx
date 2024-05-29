@@ -1,6 +1,7 @@
 import { Box, Grid, Heading, Spacer, Text, VStack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
+import { Audio } from 'react-loader-spinner';
 import useStore from '../store';
 import { updateToken } from '../utils/SpotifyAuth';
 import AddTrackToPlaylistModal from './add-track-to-playlist';
@@ -117,7 +118,7 @@ function Feed(props) {
             <Text as="h1" fontSize="4xl" color="gray.700" fontWeight="bold">No posts to show</Text>
             <Text as="h2" fontSize="2xl" color="gray.500" fontWeight="bold">For now, here are some recommendations:</Text>
             <Grid templateColumns="repeat(auto-fill, minmax(250px, 1fr))" gap={6} width="100%">
-              {recs.map((track) => (
+              {recs && recs.length > 0 ? recs.map((track) => (
                 <TrackItem
                   key={track.id}
                   id={track.id}
@@ -125,7 +126,7 @@ function Feed(props) {
                   artist={track.artists[0].name}
                   imageURL={track.album.images[0].url}
                 />
-              ))}
+              )) : <Audio type="Circles" color="#38B2AC" height={80} width="100%" />}
             </Grid>
           </VStack>
         </Box>
