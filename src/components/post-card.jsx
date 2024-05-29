@@ -26,9 +26,9 @@ const PostCard = (props) => {
   // update post stuff
   const updatePost = useStore((store) => store.postSlice.updatePost);
   const deletePost = useStore((store) => store.postSlice.deletePost);
-  const [liked, setLiked] = useState(false);
-  const [likes, setLikes] = useState(0);
-  const [comments, setComments] = useState(null);
+  const [liked, setLiked] = useState(props.post ? props.post.likes.includes(userProfile.userID) : false);
+  const [likes, setLikes] = useState(props.post ? props.post.likes.length : 0);
+  const [comments, setComments] = useState(props.post ? props.post.comments : null);
 
   // current modal stuff
   const openPlaylistModal = useStore((state) => state.modalSlice.playlistModal.openModal);
@@ -36,11 +36,6 @@ const PostCard = (props) => {
   const openFullPostModal = useStore((state) => state.modalSlice.fullPostModal.openModal);
   const closeFullPostModal = useStore((state) => state.modalSlice.fullPostModal.closeModal);
 
-  useEffect(() => {
-    setLiked(props.post.likes.includes(userProfile.userID));
-    setLikes(props.post.likes.length);
-    setComments(props.post.comments);
-  }, []);
   const handleLike = async (event) => {
     event.stopPropagation();
     let newLikes = [];
@@ -244,10 +239,9 @@ const PostCard = (props) => {
   };
 
   const renderTrackPost = () => {
-    const name = post.songName;
-    const { imageURL, artists } = post;
-
     if (use === 'feed' || use === 'feed-personal') {
+      const name = post.songName;
+      const { imageURL, artists } = post;
       const username = props.name;
       const userPhoto = props.photo;
       return (
@@ -361,8 +355,8 @@ const PostCard = (props) => {
               key={props.songID}
               id={props.songID}
               name={props.songName}
-              artist={artists}
-              imageURL={imageURL}
+              artist={props.album.artists[0].name}
+              imageURL={props.album.images[0].url}
               use="feed"
               flex="1"
             />
@@ -405,8 +399,8 @@ const PostCard = (props) => {
                     {prompt}
                   </Text>
                 </HStack>
-                <Text as="h1" fontSize="50" fontWeight="bold" marginLeft="5" color="white">{name}</Text>
-                <Text as="h2" fontSize="30" fontWeight="bold" marginLeft="5" color="gray.200">{artists}</Text>
+                <Text as="h1" fontSize="50" fontWeight="bold" marginLeft="5" color="white">{props.songName}</Text>
+                <Text as="h2" fontSize="30" fontWeight="bold" marginLeft="5" color="gray.200">{props.album.artists[0].name}</Text>
                 <Box position="absolute" bottom={3} right={3}>
                   {renderFeedButtons()}
                 </Box>
@@ -416,6 +410,8 @@ const PostCard = (props) => {
         </Box>
       );
     } else {
+      const name = post.songName;
+      const { imageURL, artists } = post;
       return (
         <Box onClick={handleFullPostModalOpen}
           cursor="pointer"
@@ -428,18 +424,9 @@ const PostCard = (props) => {
     }
   };
 
-  const renderPost = () => {
-    if (!post) {
-      return null;
-    } else if (post.type === 'track') {
-      return renderTrackPost();
-    }
-    return null;
-  };
-
   return (
     <Fade direction="up" duration="500" triggerOnce="true">
-      {renderPost()}
+      {renderTrackPost()}
     </Fade>
   );
 };
