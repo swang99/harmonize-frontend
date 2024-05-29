@@ -45,13 +45,13 @@ export default function ProfileHeader(props) {
   }, [profileId]);
 
   const handleFollow = async () => {
-    await followProfile(userProfile, profile);
+    followProfile(userProfile, profile);
     setFollowers(followers + 1);
     setIsFollowing(true);
   };
 
   const handleUnfollow = async () => {
-    await unfollowProfile(userProfile, profile);
+    unfollowProfile(userProfile, profile);
     setFollowers(followers - 1);
     setIsFollowing(false);
   };
