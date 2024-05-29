@@ -1,6 +1,6 @@
 import { RepeatIcon } from '@chakra-ui/icons';
 import { Avatar, Box, HStack, Icon, Text, VStack, useDisclosure } from '@chakra-ui/react';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CgPlayListAdd } from 'react-icons/cg';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { FaRegTrashCan } from 'react-icons/fa6';
