@@ -117,17 +117,21 @@ function Feed(props) {
           <VStack bg="white" maxW="1000px" borderRadius="lg" spacing={4} align="center" justify="center" p={10}>
             <Text as="h1" fontSize="4xl" color="gray.700" fontWeight="bold">No posts to show</Text>
             <Text as="h2" fontSize="2xl" color="gray.500" fontWeight="bold">For now, here are some recommendations:</Text>
-            <Grid templateColumns="repeat(auto-fill, minmax(250px, 1fr))" gap={6} width="100%">
-              {recs && recs.length > 0 && recs[0].id ? recs.map((track) => (
-                <TrackItem
-                  key={track.id}
-                  id={track.id}
-                  name={track.name}
-                  artist={track.artists[0].name}
-                  imageURL={track.album.images[0].url}
-                />
-              )) : <Audio type="Circles" color="#38B2AC" height={80} width="100%" />}
-            </Grid>
+            {recs && recs.length > 0 && recs[0].id
+              ? (
+                <Grid templateColumns="repeat(auto-fill, minmax(250px, 1fr))" gap={6} width="100%">
+                  {recs.map((track) => (
+                    <TrackItem
+                      key={track.id}
+                      id={track.id}
+                      name={track.name}
+                      artist={track.artists[0].name}
+                      imageURL={track.album.images[0].url}
+                    />
+                  ))}
+                </Grid>
+              )
+              : <Audio type="Circles" color="#38B2AC" height={80} width="100%" />}
           </VStack>
         </Box>
       );
