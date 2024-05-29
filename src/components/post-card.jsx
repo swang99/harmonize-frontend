@@ -1,6 +1,6 @@
 import { RepeatIcon } from '@chakra-ui/icons';
 import { Avatar, Box, HStack, Icon, Text, VStack, useDisclosure } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CgPlayListAdd } from 'react-icons/cg';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { FaRegTrashCan } from 'react-icons/fa6';
@@ -8,6 +8,7 @@ import { MdOutlineComment } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router';
+import { Fade } from 'react-awesome-reveal';
 import useStore from '../store';
 import AddCommentModal from './AddComment';
 import TrackItem from './track-item';
@@ -15,7 +16,6 @@ import TrackItem from './track-item';
 const PostCard = (props) => {
   // post data from props
   const { post, use, profile } = props;
-  const { id, type } = post;
   const { fetchOtherProfile } = useStore((store) => store.profileSlice);
   const userProfile = useStore((store) => store.profileSlice.currentProfile);
 
@@ -26,9 +26,9 @@ const PostCard = (props) => {
   // update post stuff
   const updatePost = useStore((store) => store.postSlice.updatePost);
   const deletePost = useStore((store) => store.postSlice.deletePost);
-  const [liked, setLiked] = useState(props.post.likes.includes(userProfile.userID));
-  const [likes, setLikes] = useState(props.post.likes.length);
-  const [comments, setComments] = useState(props.post.comments);
+  const [liked, setLiked] = useState(props.post ? props.post.likes.includes(userProfile.userID) : false);
+  const [likes, setLikes] = useState(props.post ? props.post.likes.length : 0);
+  const [comments, setComments] = useState(props.post ? props.post.comments : null);
 
   // current modal stuff
   const openPlaylistModal = useStore((state) => state.modalSlice.playlistModal.openModal);
@@ -97,7 +97,7 @@ const PostCard = (props) => {
 
   const handlePlaylistModalOpen = (event) => {
     event.stopPropagation();
-    openPlaylistModal(id);
+    openPlaylistModal(post.id);
   };
 
   const handleNavigateUser = (friendId) => {
@@ -105,15 +105,31 @@ const PostCard = (props) => {
   };
 
   const formatTimestamp = (ts) => {
-    const date = new Date(ts);
-
-    const formattedDate = date.toLocaleString('en-US', {
+    const date = new Date(ts).getTime();
+    const age = new Date().getTime() - date;
+    if (age < 1000 * 60) {
+      return 'Just now';
+    }
+    const seconds = Math.floor(age / 1000);
+    if (seconds < 60) {
+      return `${seconds}s ago`;
+    }
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) {
+      return `${minutes}m ago`;
+    }
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) {
+      return `${hours}h ago`;
+    }
+    const days = Math.floor(hours / 24);
+    if (days < 7) {
+      return `${days}d ago`;
+    }
+    const formattedDate = new Date(ts).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
     });
 
     return formattedDate;
@@ -191,6 +207,20 @@ const PostCard = (props) => {
           <Icon as={FaRegTrashCan} w={6} h={6} cursor="pointer" color="teal.900" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleDelete} />
         </HStack>
       );
+    } else if (use === 'activity') {
+      return (
+        <HStack gap="3">
+          <Icon as={CgPlayListAdd}
+            w={6}
+            h={6}
+            cursor="pointer"
+            color="white"
+            _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
+            onClick={handlePlaylistModalOpen}
+          />
+          <Icon as={RepeatIcon} w={6} h={6} cursor="pointer" color="white" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleNewPostOpen} />
+        </HStack>
+      );
     }
     return (
       <HStack gap="3">
@@ -209,18 +239,17 @@ const PostCard = (props) => {
   };
 
   const renderTrackPost = () => {
-    const name = post.songName;
-    const { imageURL, artists } = post;
-
     if (use === 'feed' || use === 'feed-personal') {
+      const name = post.songName;
+      const { imageURL, artists } = post;
       const username = props.name;
       const userPhoto = props.photo;
       return (
         <Box w="100%" bg="gray.200" borderRadius="lg" p={5} boxShadow="md">
           <HStack w="100%" h={350} gap="4">
             <TrackItem
-              key={id}
-              id={id}
+              key={post.id}
+              id={post.id}
               name={name}
               artist={artists}
               imageURL={imageURL}
@@ -270,7 +299,12 @@ const PostCard = (props) => {
                   <VStack w="100%" spacing="2">
                     {comments.map((comment) => (
                       <HStack key={`${comment.id}-${comment.author}`} w="100%">
-                        <Text fontWeight="bold" fontSize="sm">{`${comment.author}: `}</Text>
+                        <Text fontWeight="bold"
+                          fontSize="sm"
+                          cursor="pointer"
+                          onClick={() => handleNavigateUser(comment.author)}
+                        >{`${comment.name}: `}
+                        </Text>
                         <Text fontSize="sm">{`${comment.comment}`}</Text>
                       </HStack>
                     ))}
@@ -286,35 +320,115 @@ const PostCard = (props) => {
               onClose={addCommentDisc.onClose}
               post={props.post}
               postAuthorID={props.authorID}
+              commentAuthorName={userProfile.name}
               commentAuthorID={userProfile.userID}
               setComments={setComments}
             />
           </HStack>
         </Box>
       );
+    } else if (use === 'activity') {
+      const username = props.name;
+      const userPhoto = props.photo;
+      const [prompt, setPrompt] = useState();
+
+      const getRandPrompt = () => {
+        const prompts = [
+          ' has been listening to...',
+          ' is currently enjoying...',
+          ' can\'t get enough of...',
+          ' is vibing to...',
+          ' is grooving to...',
+        ];
+        const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
+        return randomPrompt;
+      };
+
+      useEffect(() => {
+        setPrompt(getRandPrompt(username));
+      }, []);
+
+      return (
+        <Box w="100%" bg="gray.100" borderRadius="lg" p={5} padding="5" boxShadow="md">
+          <HStack w="100%" h={350} gap="4">
+            <TrackItem
+              key={`${username}-${props.songID}`}
+              id={props.songID}
+              name={props.songName}
+              artist={props.album.artists[0].name}
+              imageURL={props.album.images[0].url}
+              use="feed"
+              flex="1"
+            />
+            <VStack pl={4} w="100%" h="100%" flex="1" spacing="0">
+              <VStack w="100%" bg="gray.700" justify="flex-start" align="flex-start" flex="1" borderRadius="lg" p={3} spacing="1" position="relative">
+                <HStack>
+                  <Avatar
+                    size="2xl"
+                    src={userPhoto}
+                    cursor="pointer"
+                    margin="4"
+                    onClick={() => handleNavigateUser(
+                      fetchOtherProfile.userID !== props.authorID
+                        ? props.authorID : userProfile.userID,
+                    )}
+                  />
+                  <Text as="h2"
+                    fontSize="2xl"
+                    fontWeight="bold"
+                    cursor="pointer"
+                    color="white"
+                    marginLeft="5"
+                    onClick={() => handleNavigateUser(
+                      fetchOtherProfile.userID !== props.authorID
+                        ? props.authorID : userProfile.userID,
+                    )}
+                    _hover={{ color: 'teal.500' }}
+                  >
+                    {username}
+                  </Text>
+                  <Text as="h2"
+                    fontSize="2xl"
+                    fontWeight="bold"
+                    color="white"
+                    onClick={() => handleNavigateUser(
+                      fetchOtherProfile.userID !== props.authorID
+                        ? props.authorID : userProfile.userID,
+                    )}
+                  >
+                    {prompt}
+                  </Text>
+                </HStack>
+                <Text as="h1" fontSize="37" fontWeight="bold" marginLeft="5" color="white">{props.songName}</Text>
+                <Text as="h2" fontSize="30" fontWeight="bold" marginLeft="5" color="gray.200">{props.album.artists[0].name}</Text>
+                <Box position="absolute" bottom={3} right={3}>
+                  {renderFeedButtons()}
+                </Box>
+              </VStack>
+            </VStack>
+          </HStack>
+        </Box>
+      );
     } else {
+      const name = post.songName;
+      const { imageURL, artists } = post;
       return (
         <Box onClick={handleFullPostModalOpen}
           cursor="pointer"
           w="100%"
         >
-          <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} />
+          <TrackItem key={post.id} id={post.id} name={name} artist={artists} imageURL={imageURL} />
           <AddCommentModal isOpen={addCommentDisc.isOpen} onClose={addCommentDisc.onClose} post={props.post} postAuthorID={props.authorID} commentAuthorID={userProfile.userID} />
         </Box>
       );
     }
   };
 
-  const renderPost = () => {
-    if (!post) {
-      return null;
-    } else if (type === 'track') {
-      return renderTrackPost();
-    }
-    return null;
-  };
-
-  return renderPost();
+  return (
+    <Fade direction="up" duration="500" triggerOnce="true">
+      {renderTrackPost()}
+    </Fade>
+  );
 };
 
 export default PostCard;

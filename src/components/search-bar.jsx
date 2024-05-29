@@ -15,9 +15,14 @@ function SearchBar() {
   const inputRef = useRef(null);
 
   useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
+    const handleKeydown = () => {
+      if (inputRef.current && document.activeElement !== inputRef.current) {
+        inputRef.current.focus();
+      }
+    };
+
+    // add event listener
+    window.addEventListener('keydown', handleKeydown);
 
     async function fetchRecentlyPlayed() {
       let recents = await getRecentlyPlayedTracks();
@@ -31,7 +36,12 @@ function SearchBar() {
 
       setRecentlyPlayed(recents);
     }
+
     fetchRecentlyPlayed();
+
+    return () => {
+      window.removeEventListener('keydown', handleKeydown);
+    };
   }, []);
 
   const handleSearch = useCallback(async () => {

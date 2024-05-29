@@ -18,6 +18,7 @@ function AddCommentModal(props) {
     // add new comment to post
     const newCmnt = {
       author: props.commentAuthorID,
+      name: props.commentAuthorName,
       comment,
     };
     const newComments = [...props.post.comments, newCmnt];
