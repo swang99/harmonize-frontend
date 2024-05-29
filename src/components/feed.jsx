@@ -57,7 +57,6 @@ function Feed(props) {
             postIndex += 1;
           }
         }
-        console.log('Combined feed:', combinedFeed);
         setFeed(combinedFeed);
         useStore.setState({ profileSlice: { ...useStore.getState().profileSlice, feed: combinedFeed } });
         const currDate = new Date().getTime();
