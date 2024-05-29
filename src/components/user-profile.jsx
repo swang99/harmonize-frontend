@@ -145,7 +145,7 @@ export default function ProfileHeader(props) {
               _selected={{ color: 'teal.500', bg: 'gray.100', borderRadius: 'full' }}
               _focus={{ boxShadow: 'none' }}
             >
-              Activity
+              Top Tracks
             </Tab>
             <Tab
               fontWeight="bold"
