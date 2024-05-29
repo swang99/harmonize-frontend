@@ -92,7 +92,7 @@ function Feed(props) {
       );
     }
     return (
-      <Box key={post.id + post.name}>
+      <Box key={post.id + post.userID}>
         <Box w="100%" justify="center">
           <PostCard
             use="activity"
