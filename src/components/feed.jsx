@@ -1,4 +1,4 @@
-import { Box, Grid, Heading, Icon, Spacer, Text, HStack, VStack, useDisclosure } from '@chakra-ui/react';
+import { Button, Box, Grid, Heading, Icon, Spacer, Text, HStack, VStack, useDisclosure } from '@chakra-ui/react';
 import { IoPersonAdd } from 'react-icons/io5';
 import { motion } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
@@ -120,35 +120,44 @@ function Feed(props) {
         <Box w="100%" h="100%" bg="white" p={10} align="center">
           <VStack bg="white" maxW="1000px" borderRadius="lg" spacing={4} align="center" justify="center" p={10}>
             <Text as="h1" fontSize="4xl" color="gray.700" fontWeight="bold">No posts to show</Text>
-            <Text as="h2" fontSize="2xl" color="gray.500" fontWeight="bold">For now, here are some recommendations:</Text>
             {recs && recs.length > 0 && recs[0].id
               ? (
-                <Grid templateColumns="repeat(auto-fill, minmax(250px, 1fr))" gap={6} width="100%">
-                  {recs.map((track) => (
-                    <TrackItem
-                      key={track.id}
-                      id={track.id}
-                      name={track.name}
-                      artist={track.artists[0].name}
-                      imageURL={track.album.images[0].url}
-                    />
-                  ))}
-                </Grid>
+                <VStack spacing={4}>
+                  <Text as="h2" fontSize="2xl" color="gray.500" fontWeight="bold">For now, here are some recommendations:</Text>
+                  <Grid templateColumns="repeat(auto-fill, minmax(250px, 1fr))" gap={6} width="100%">
+                    {recs.map((track) => (
+                      <TrackItem
+                        key={track.id}
+                        id={track.id}
+                        name={track.name}
+                        artist={track.artists[0].name}
+                        imageURL={track.album.images[0].url}
+                      />
+                    ))}
+                  </Grid>
+                </VStack>
               )
               : (
                 <VStack spacing={10}>
-                  <Audio type="Circles" color="#38B2AC" height={80} width="100%" />
-                  <HStack
-                    color="gray.500"
-                    fontWeight="bold"
-                    _hover={{ color: 'teal.400', transform: 'scale(1.1)' }}
+                  <Button
                     onClick={addFDisc.onOpen}
-                    cursor="pointer"
-                    fontSize="xl"
+                    color="gray.700"
                   >
-                    <Text>Add Friends!</Text>
-                    <Icon as={IoPersonAdd} fontSize="2xl" />
-                  </HStack>
+                    <HStack
+                      fontWeight="bold"
+                      cursor="pointer"
+                      fontSize="xl"
+                    >
+                      <Text>Add Friends!</Text>
+                      <Icon as={IoPersonAdd} fontSize="2xl" />
+                    </HStack>
+                  </Button>
+                  {recs && recs.length > 0 ? (<Box />) : (
+                    <VStack spacing={10}>
+                      <Text as="h2" fontSize="2xl" color="gray.500" fontWeight="bold">For now, here are some recommendations:</Text>
+                      <Audio type="Circles" color="#38B2AC" height={80} width="100%" />
+                    </VStack>
+                  )}
                 </VStack>
               )}
           </VStack>
