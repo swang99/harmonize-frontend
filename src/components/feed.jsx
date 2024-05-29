@@ -10,12 +10,12 @@ import TrackItem from './track-item';
 import { getRecs } from '../utils/spotify-api';
 
 function Feed(props) {
-  const [tokenUpdated, setTokenUpdated] = useState(false); // track if token is updated
+  const [tokenUpdated, setTokenUpdated] = useState(false);
   const [feed, setFeed] = useState(useStore.getState().profileSlice.feed);
   const [recs, setRecs] = useState([]);
 
   // getting posts from the store
-  const { loadFeed, currentProfile, initialFetch, updateProfile } = useStore((store) => store.profileSlice);
+  const { loadFeed, currentProfile, initialFetch, updateProfile, getFriendActivity } = useStore((store) => store.profileSlice);
   useEffect(() => {
     const update = async () => {
       try {
@@ -32,9 +32,34 @@ function Feed(props) {
   useEffect(() => {
     const loadFeedData = async () => {
       if (tokenUpdated && initialFetch && currentProfile.userID) {
-        const newFeed = await loadFeed(currentProfile.userID);
-        setFeed(newFeed);
-        useStore.setState({ profileSlice: { ...useStore.getState().profileSlice, feed: newFeed } });
+        const newFriendPosts = await loadFeed(currentProfile.userID);
+        const newFriendActivity = await getFriendActivity(currentProfile.userID);
+        // Shuffle New Friend Activity
+        for (let i = newFriendActivity.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [newFriendActivity[i], newFriendActivity[j]] = [newFriendActivity[j], newFriendActivity[i]];
+        }
+        const combinedFeed = new Array(newFriendPosts.length + newFriendActivity.length).fill(null);
+
+        // Insert friend posts in order
+        let postIndex = 0;
+        let activityIndex = 0;
+
+        for (let i = 0; i < combinedFeed.length; i += 1) {
+          if (Math.random() < 0.5 && postIndex < newFriendPosts.length) {
+            combinedFeed[i] = newFriendPosts[postIndex];
+            postIndex += 1;
+          } else if (activityIndex < newFriendActivity.length) {
+            combinedFeed[i] = newFriendActivity[activityIndex];
+            activityIndex += 1;
+          } else if (postIndex < newFriendPosts.length) {
+            combinedFeed[i] = newFriendPosts[postIndex];
+            postIndex += 1;
+          }
+        }
+        console.log('Combined feed:', combinedFeed);
+        setFeed(combinedFeed);
+        useStore.setState({ profileSlice: { ...useStore.getState().profileSlice, feed: combinedFeed } });
         const currDate = new Date().getTime();
         const lastUpdated = new Date(currentProfile.recommendationsLastUpdated).getTime();
         if (currDate - lastUpdated > 24 * 60 * 60 * 1000 && currentProfile.recommendationsLastUpdated) {
@@ -49,6 +74,41 @@ function Feed(props) {
     };
     loadFeedData();
   }, [tokenUpdated, initialFetch]);
+
+  const renderPostCard = (post) => {
+    if (post._doc) {
+      return (
+        <Box key={post._doc._id}>
+          <Box w="100%" justify="center">
+            <PostCard
+              post={post._doc}
+              use="feed"
+              name={post.name}
+              photo={post.photo}
+              authorID={post.authorID}
+            />
+          </Box>
+          <Spacer h={10} />
+        </Box>
+      );
+    }
+    return (
+      <Box key={post.id + post.name}>
+        <Box w="100%" justify="center">
+          <PostCard
+            use="activity"
+            name={post.username}
+            photo={post.photo}
+            authorID={post.userID}
+            songName={post.name}
+            songID={post.id}
+            album={post.album}
+          />
+        </Box>
+        <Spacer h={10} />
+      </Box>
+    );
+  };
 
   const renderPosts = () => {
     if (!feed || feed.length === 0) {
@@ -75,18 +135,7 @@ function Feed(props) {
     return (
       <Box>
         {feed.map((post) => (
-          <Box key={post._doc._id}>
-            <Box w="100%" justify="center">
-              <PostCard
-                post={post._doc}
-                use="feed"
-                name={post.name}
-                photo={post.photo}
-                authorID={post.authorID}
-              />
-            </Box>
-            <Spacer h={10} />
-          </Box>
+          renderPostCard(post)
         ))}
       </Box>
     );

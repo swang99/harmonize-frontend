@@ -1,6 +1,6 @@
 import { RepeatIcon } from '@chakra-ui/icons';
 import { Avatar, Box, HStack, Icon, Text, VStack, useDisclosure } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CgPlayListAdd } from 'react-icons/cg';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { FaRegTrashCan } from 'react-icons/fa6';
@@ -15,7 +15,6 @@ import TrackItem from './track-item';
 const PostCard = (props) => {
   // post data from props
   const { post, use, profile } = props;
-  const { id, type } = post;
   const { fetchOtherProfile } = useStore((store) => store.profileSlice);
   const userProfile = useStore((store) => store.profileSlice.currentProfile);
 
@@ -26,9 +25,9 @@ const PostCard = (props) => {
   // update post stuff
   const updatePost = useStore((store) => store.postSlice.updatePost);
   const deletePost = useStore((store) => store.postSlice.deletePost);
-  const [liked, setLiked] = useState(props.post.likes.includes(userProfile.userID));
-  const [likes, setLikes] = useState(props.post.likes.length);
-  const [comments, setComments] = useState(props.post.comments);
+  const [liked, setLiked] = useState(false);
+  const [likes, setLikes] = useState(0);
+  const [comments, setComments] = useState(null);
 
   // current modal stuff
   const openPlaylistModal = useStore((state) => state.modalSlice.playlistModal.openModal);
@@ -36,6 +35,11 @@ const PostCard = (props) => {
   const openFullPostModal = useStore((state) => state.modalSlice.fullPostModal.openModal);
   const closeFullPostModal = useStore((state) => state.modalSlice.fullPostModal.closeModal);
 
+  useEffect(() => {
+    setLiked(props.post.likes.includes(userProfile.userID));
+    setLikes(props.post.likes.length);
+    setComments(props.post.comments);
+  }, []);
   const handleLike = async (event) => {
     event.stopPropagation();
     let newLikes = [];
@@ -97,7 +101,7 @@ const PostCard = (props) => {
 
   const handlePlaylistModalOpen = (event) => {
     event.stopPropagation();
-    openPlaylistModal(id);
+    openPlaylistModal(post.id);
   };
 
   const handleNavigateUser = (friendId) => {
@@ -235,8 +239,8 @@ const PostCard = (props) => {
         <Box w="100%" bg="gray.200" borderRadius="lg" p={5} boxShadow="md">
           <HStack w="100%" h={350} gap="4">
             <TrackItem
-              key={id}
-              id={id}
+              key={post.id}
+              id={post.id}
               name={name}
               artist={artists}
               imageURL={imageURL}
@@ -320,7 +324,7 @@ const PostCard = (props) => {
           cursor="pointer"
           w="100%"
         >
-          <TrackItem key={id} id={id} name={name} artist={artists} imageURL={imageURL} />
+          <TrackItem key={post.id} id={post.id} name={name} artist={artists} imageURL={imageURL} />
           <AddCommentModal isOpen={addCommentDisc.isOpen} onClose={addCommentDisc.onClose} post={props.post} postAuthorID={props.authorID} commentAuthorID={userProfile.userID} />
         </Box>
       );
@@ -330,7 +334,7 @@ const PostCard = (props) => {
   const renderPost = () => {
     if (!post) {
       return null;
-    } else if (type === 'track') {
+    } else if (post.type === 'track') {
       return renderTrackPost();
     }
     return null;
