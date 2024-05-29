@@ -389,15 +389,7 @@ const PostCard = (props) => {
                   >
                     {username}
                   </Text>
-                  <Text as="h2"
-                    fontSize="2xl"
-                    fontWeight="bold"
-                    color="white"
-                    onClick={() => handleNavigateUser(
-                      fetchOtherProfile.userID !== props.authorID
-                        ? props.authorID : userProfile.userID,
-                    )}
-                  >
+                  <Text as="h2" fontSize="2xl" fontWeight="bold" color="white">
                     {prompt}
                   </Text>
                 </HStack>
