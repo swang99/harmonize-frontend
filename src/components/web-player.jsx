@@ -162,11 +162,12 @@ const SpotifyPlayer = () => {
                 max={100}
                 width="100%"
                 colorScheme="teal"
+                focusThumbOnChange={false}
               >
                 <SliderTrack bg="gray.200">
                   <SliderFilledTrack bg="teal.500" />
                 </SliderTrack>
-                <SliderThumb boxSize={4}>
+                <SliderThumb boxSize={4} onFocus={(e) => e.preventDefault()}>
                   <Box color="teal" />
                 </SliderThumb>
               </Slider>
