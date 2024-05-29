@@ -352,7 +352,7 @@ const PostCard = (props) => {
         <Box w="100%" bg="gray.100" borderRadius="lg" p={5} padding="5" boxShadow="md">
           <HStack w="100%" h={350} gap="4">
             <TrackItem
-              key={props.songID}
+              key={`${username}-${props.songID}`}
               id={props.songID}
               name={props.songName}
               artist={props.album.artists[0].name}
