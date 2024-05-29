@@ -5,6 +5,7 @@ import { ToastContainer } from 'react-toastify';
 import AnimatedRoutes from './animated-routes';
 import NavBar from './nav-bar';
 import SpotifyPlayer from './web-player';
+import '../style.scss';
 
 const theme = extendTheme({
   colors: {
