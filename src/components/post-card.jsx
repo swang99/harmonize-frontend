@@ -8,6 +8,7 @@ import { MdOutlineComment } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router';
+import { Fade } from 'react-awesome-reveal';
 import useStore from '../store';
 import AddCommentModal from './AddComment';
 import TrackItem from './track-item';
@@ -436,7 +437,11 @@ const PostCard = (props) => {
     return null;
   };
 
-  return renderPost();
+  return (
+    <Fade direction="up" duration="500" triggerOnce="true">
+      {renderPost()}
+    </Fade>
+  );
 };
 
 export default PostCard;
