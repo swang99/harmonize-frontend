@@ -1,4 +1,4 @@
-import { RepeatIcon } from '@chakra-ui/icons';
+import { FiPlusSquare } from 'react-icons/fi';
 import { Avatar, Box, HStack, Icon, Text, VStack, useDisclosure } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { CgPlayListAdd } from 'react-icons/cg';
@@ -213,7 +213,7 @@ const PostCard = (props) => {
             _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
             onClick={handlePlaylistModalOpen}
           />
-          <Icon as={RepeatIcon} w={6} h={6} cursor="pointer" color="teal.900" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleNewPostOpen} />
+          <Icon as={FiPlusSquare} w={6} h={6} cursor="pointer" color="teal.900" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleNewPostOpen} />
           <Icon as={FaRegTrashCan} w={6} h={6} cursor="pointer" color="teal.900" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleDelete} />
         </HStack>
       );
@@ -228,7 +228,7 @@ const PostCard = (props) => {
             _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
             onClick={handlePlaylistModalOpen}
           />
-          <Icon as={RepeatIcon} w={6} h={6} cursor="pointer" color="white" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleNewPostOpen} />
+          <Icon as={FiPlusSquare} w={6} h={6} cursor="pointer" color="white" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleNewPostOpen} />
         </HStack>
       );
     }
@@ -243,7 +243,7 @@ const PostCard = (props) => {
           _hover={{ color: 'teal.500', transform: 'scale(1.1)' }}
           onClick={(event) => handlePlaylistModalOpen(event)}
         />
-        <Icon as={RepeatIcon} w={6} h={6} cursor="pointer" color="teal.900" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleNewPostOpen} />
+        <Icon as={FiPlusSquare} w={6} h={6} cursor="pointer" color="teal.900" _hover={{ color: 'teal.500', transform: 'scale(1.1)' }} onClick={handleNewPostOpen} />
       </HStack>
     );
   };
