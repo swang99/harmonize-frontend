@@ -1,5 +1,5 @@
 import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Textarea, VStack, useDisclosure } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import useStore from '../store';
@@ -13,7 +13,8 @@ export default function NewPostModal() {
   const { isOpen, trackData } = useStore((state) => state.modalSlice.newPostModal);
   const { closeModal } = useStore((state) => state.modalSlice.newPostModal);
   const newPostModalDisc = useDisclosure();
-  // const initialFocusRef = useRef(); const finalFocusRef = useRef();
+  const initialFocusRef = useRef();
+  const finalFocusRef = useRef();
 
   useEffect(() => {
     if (isOpen) {
@@ -51,7 +52,7 @@ export default function NewPostModal() {
 
   if (!trackData) return null;
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} initialFocusRef={initialFocusRef} finalFocusRef={finalFocusRef}>
       <ModalOverlay />
       <ModalContent maxW="45vw" maxH="80vh">
         <ModalHeader>Create New Post</ModalHeader>
