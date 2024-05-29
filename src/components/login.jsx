@@ -1,37 +1,46 @@
-/* eslint-disable no-unused-vars */
-import { Box, Button, Heading, VStack, Image, Text } from '@chakra-ui/react';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { Button, VStack, Image, Text, Box } from '@chakra-ui/react';
 import { useNavigate } from 'react-router';
 import { Parallax, ParallaxLayer } from '@react-spring/parallax';
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 import { redirectToSpotifyAuth } from '../utils/SpotifyAuth';
-import SpotifyPlayer from './web-player';
+import Waves from './waves';
 
-import sound1 from '../img/sound1.jpeg';
 import water from '../img/water.jpeg';
-import logo from '../img/logo.png';
 import logoWhite from '../img/logoWhite.png';
 import feed from '../img/feed.png';
-import feedGif from '../img/feed.gif';
+import activityImage from '../img/activity.png';
+import postsImage from '../img/posts.png';
+
+function useParallax(value, distance) {
+  return useTransform(value, [0, 1], [-distance, distance]);
+}
 
 const Login = () => {
   const navigate = useNavigate();
+  const scrollContainerRef = useRef(null);
+  const { scrollYProgress } = useScroll({ target: scrollContainerRef });
+  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
+
+  // Use the useParallax function
+  const translateY = useParallax(scrollYProgress, 100);
 
   useEffect(() => {
     const refreshToken = localStorage.getItem('refresh_token');
     if (refreshToken) {
       navigate('/home');
     }
-  }, []);
+  }, [navigate]);
 
   return (
-    <div>
-      {/* scrolling effect */}
+    <Box ref={scrollContainerRef} overflow="hidden">
       <Parallax pages={4}>
         <ParallaxLayer
           offset={0}
           speed={1}
-          factor={1.5}
+          factor={1}
           style={{
+            transform: translateY, // Apply the transform using useParallax
             backgroundImage: `url(${water})`,
             backgroundSize: 'cover',
             backgroundPositionX: 'center',
@@ -47,7 +56,7 @@ const Login = () => {
               alt="logo"
               width="350px"
               height="auto"
-              style={{ marginTop: '-30vh' }}
+              style={{ marginTop: '-20vh' }}
             />
             <Button
               colorScheme="teal"
@@ -70,13 +79,21 @@ const Login = () => {
               style={{
                 marginLeft: '20vh',
                 marginRight: '20vh',
-
               }}
             >
               Spotify sharing made easy - new music always at your fingertips.
             </Text>
           </VStack>
         </ParallaxLayer>
+
+        <ParallaxLayer
+          offset={0.85}
+          speed={1}
+          style={{ pointerEvents: 'none', zIndex: 1 }}
+        >
+          <Waves gradientStart="#002B5B" gradientEnd="#9AC6E5" />
+        </ParallaxLayer>
+
         <ParallaxLayer
           offset={1}
           speed={0.5}
@@ -87,69 +104,48 @@ const Login = () => {
         >
           <h2>Feed Page</h2>
         </ParallaxLayer>
+
+        <ParallaxLayer
+          offset={1.95}
+          speed={1}
+          style={{ pointerEvents: 'none', zIndex: 1 }}
+        >
+          <Waves gradientStart="#9AC6E5" gradientEnd="#002B5B" />
+        </ParallaxLayer>
+
+        <ParallaxLayer
+          offset={2}
+          speed={0.5}
+          style={{
+            backgroundImage: `url(${activityImage})`,
+            backgroundSize: '90%',
+          }}
+        >
+          <h2>Activity Page</h2>
+        </ParallaxLayer>
+
+        <ParallaxLayer
+          offset={2.95}
+          speed={1}
+          style={{ pointerEvents: 'none', zIndex: 1 }}
+        >
+          <Waves gradientStart="#002B5B" gradientEnd="#9AC6E5" />
+        </ParallaxLayer>
+
+        <ParallaxLayer
+          offset={3}
+          speed={0.5}
+          style={{
+            backgroundImage: `url(${postsImage})`,
+            backgroundSize: '90%',
+          }}
+        >
+          <h2>Posts Page</h2>
+        </ParallaxLayer>
       </Parallax>
-    </div>
+      <motion.div className="progress" style={{ scaleX }} />
+    </Box>
   );
 };
 
 export default Login;
-
-// /* eslint-disable no-unused-vars */
-// import { Box, Button, Heading, VStack, Image, Text } from '@chakra-ui/react';
-// import React, { useEffect } from 'react';
-// import { useNavigate } from 'react-router';
-// import { redirectToSpotifyAuth } from '../utils/SpotifyAuth';
-// import SpotifyPlayer from './web-player';
-
-// const Login = () => {
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     const refreshToken = localStorage.getItem('refresh_token');
-//     if (refreshToken) {
-//       navigate('/home');
-//     }
-//   }, []);
-
-//   return (
-//     <div>
-//       <Box bg="teal.800" w="100vw" h="100vh" align="center">
-//         <Box bg="teal.800"
-//           position="absolute"
-//           top="0%" /* Adjust to set the position 20% down the screen */
-//           left="50%"
-//           transform="translate(-50%, -50%)"
-//           w="100vw"
-//         >
-//           <Image
-//             mt="60vh"
-//             src="/src/img/logoWhite.png"
-//             alt="logo"
-//             width="40vw"
-//             height="auto"
-//           />
-//         </Box>
-//         <VStack p="5%" w="90%" align="center" justify="center" spacing={5} mt="50vh">
-//           <Text fontSize="50px" color="gray.200">Spotify sharing made easy - new music always at your fingertips.</Text>
-//           <Button
-//             colorScheme="teal"
-//             color="white"
-//             _hover={{ bg: 'teal.600', color: 'white' }}
-//             fontSize="24px"
-//             borderRadius="full"
-//             w="300px"
-//             h="50"
-//             variant="outline"
-//             className="login-button"
-//             mt={8}
-//             onClick={redirectToSpotifyAuth}
-//           >
-//             Login with Spotify
-//           </Button>
-//         </VStack>
-//       </Box>
-//     </div>
-//   );
-// };
-
-// export default Login;
