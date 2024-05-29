@@ -238,6 +238,12 @@ const createProfileSlice = (set, get) => ({
     }
   },
 
+  /** Response Structure:
+   * name: user name
+   * photo: user photo
+   * authorID: author id
+   * _doc: track object (id, name, artists, album)
+  */
   loadFeed: async (userID) => {
     try {
       const response = await axios.get(`${ROOT_URL}users/${userID}/feed`);
@@ -248,12 +254,34 @@ const createProfileSlice = (set, get) => ({
     }
   },
 
+  /** Response Structure:
+   * name: user name
+   * photo: user photo
+   * authorID: author id
+   * _doc: track object (id, name, artists, album)
+  */
   getLikedPosts: async (userID) => {
     try {
       const response = await axios.get(`${ROOT_URL}users/${userID}/liked`);
       return response.data;
     } catch (error) {
       console.error('Failed to get liked posts:', error.message);
+      return [];
+    }
+  },
+
+  /** Response Structure:
+   * name: user name
+   * photo: user photo
+   * userID: user id
+   * _doc: track object (id, name, artists, album)
+  */
+  getFriendActivity: async (userID) => {
+    try {
+      const response = await axios.get(`${ROOT_URL}users/${userID}/friendActivity`);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to get friend activity:', error.message);
       return [];
     }
   },
