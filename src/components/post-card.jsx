@@ -270,7 +270,12 @@ const PostCard = (props) => {
                   <VStack w="100%" spacing="2">
                     {comments.map((comment) => (
                       <HStack key={`${comment.id}-${comment.author}`} w="100%">
-                        <Text fontWeight="bold" fontSize="sm">{`${comment.author}: `}</Text>
+                        <Text fontWeight="bold"
+                          fontSize="sm"
+                          cursor="pointer"
+                          onClick={() => handleNavigateUser(comment.author)}
+                        >{`${comment.name}: `}
+                        </Text>
                         <Text fontSize="sm">{`${comment.comment}`}</Text>
                       </HStack>
                     ))}
@@ -286,6 +291,7 @@ const PostCard = (props) => {
               onClose={addCommentDisc.onClose}
               post={props.post}
               postAuthorID={props.authorID}
+              commentAuthorName={userProfile.name}
               commentAuthorID={userProfile.userID}
               setComments={setComments}
             />
