@@ -399,8 +399,8 @@ const PostCard = (props) => {
                     {prompt}
                   </Text>
                 </HStack>
-                <Text as="h1" fontSize="50" fontWeight="bold" marginLeft="5" color="white">{props.songName}</Text>
-                <Text as="h2" fontSize="30" fontWeight="bold" marginLeft="5" color="gray.200">{props.album.artists[0].name}</Text>
+                <Text as="h1" fontSize="50" fontWeight="bold" marginLeft="5" color="white" isTruncated>{props.songName}</Text>
+                <Text as="h2" fontSize="30" fontWeight="bold" marginLeft="5" color="gray.200" isTruncated>{props.album.artists[0].name}</Text>
                 <Box position="absolute" bottom={3} right={3}>
                   {renderFeedButtons()}
                 </Box>
