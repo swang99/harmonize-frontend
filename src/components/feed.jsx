@@ -1,6 +1,8 @@
-import { Box, Grid, Heading, Spacer, Text, VStack } from '@chakra-ui/react';
+import { Button, Box, Grid, Heading, Icon, Spacer, Text, HStack, VStack, useDisclosure } from '@chakra-ui/react';
+import { IoPersonAdd } from 'react-icons/io5';
 import { motion } from 'framer-motion';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Audio } from 'react-loader-spinner';
 import useStore from '../store';
 import { updateToken } from '../utils/SpotifyAuth';
 import AddTrackToPlaylistModal from './add-track-to-playlist';
@@ -8,11 +10,14 @@ import NewPostModal from './NewPostModal';
 import PostCard from './post-card';
 import TrackItem from './track-item';
 import { getRecs } from '../utils/spotify-api';
+import AddFriendModal from './AddFriendModal';
 
 function Feed(props) {
   const [tokenUpdated, setTokenUpdated] = useState(false);
   const [feed, setFeed] = useState(useStore.getState().profileSlice.feed);
   const [recs, setRecs] = useState([]);
+  const addFDisc = useDisclosure();
+  const finalRef = useRef();
 
   // getting posts from the store
   const { loadFeed, currentProfile, initialFetch, updateProfile, getFriendActivity } = useStore((store) => store.profileSlice);
@@ -113,20 +118,48 @@ function Feed(props) {
     if (!feed || feed.length === 0) {
       return (
         <Box w="100%" h="100%" bg="white" p={10} align="center">
-          <VStack bg="white" maxW="1000px" borderRadius="lg" spacing={4} align="center" justify="center" p={10}>
+          <VStack bg="white" maxW="1000px" borderRadius="lg" spacing={4} align="center" p={10}>
             <Text as="h1" fontSize="4xl" color="gray.700" fontWeight="bold">No posts to show</Text>
-            <Text as="h2" fontSize="2xl" color="gray.500" fontWeight="bold">For now, here are some recommendations:</Text>
-            <Grid templateColumns="repeat(auto-fill, minmax(250px, 1fr))" gap={6} width="100%">
-              {recs.map((track) => (
-                <TrackItem
-                  key={track.id}
-                  id={track.id}
-                  name={track.name}
-                  artist={track.artists[0].name}
-                  imageURL={track.album.images[0].url}
-                />
-              ))}
-            </Grid>
+            <Button
+              onClick={addFDisc.onOpen}
+              color="gray.700"
+            >
+              <HStack
+                fontWeight="bold"
+                cursor="pointer"
+                fontSize="xl"
+              >
+                <Text>Add Friends!</Text>
+                <Icon as={IoPersonAdd} fontSize="2xl" />
+              </HStack>
+            </Button>
+            {recs && recs.length > 0 && recs[0].id
+              ? (
+                <VStack spacing={4}>
+                  <Text as="h2" fontSize="2xl" color="gray.500" fontWeight="bold">For now, here are some recommendations:</Text>
+                  <Grid templateColumns="repeat(auto-fill, minmax(250px, 1fr))" gap={6} width="100%">
+                    {recs.map((track) => (
+                      <TrackItem
+                        key={track.id}
+                        id={track.id}
+                        name={track.name}
+                        artist={track.artists[0].name}
+                        imageURL={track.album.images[0].url}
+                      />
+                    ))}
+                  </Grid>
+                </VStack>
+              )
+              : (
+                <Box>
+                  {recs && recs.length > 0 ? (<Text as="h2" fontSize="2xl" color="gray.500" fontWeight="bold">No recommendations to show</Text>) : (
+                    <VStack spacing={10}>
+                      <Text as="h2" fontSize="2xl" color="gray.500" fontWeight="bold">Fetching Recommendations...</Text>
+                      <Audio type="Circles" color="#38B2AC" height={80} width="100%" />
+                    </VStack>
+                  )}
+                </Box>
+              )}
           </VStack>
         </Box>
       );
@@ -155,6 +188,11 @@ function Feed(props) {
         <AddTrackToPlaylistModal />
         <NewPostModal />
       </Box>
+      <AddFriendModal
+        isOpen={addFDisc.isOpen}
+        onClose={addFDisc.onClose}
+        finalFocusRef={finalRef}
+      />
     </motion.div>
   );
 }

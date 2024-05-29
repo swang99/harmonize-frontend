@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useRef, useState } from 'react';
 import { CgPlayListAdd } from 'react-icons/cg';
 import 'react-toastify/dist/ReactToastify.css';
-import { RepeatIcon } from '@chakra-ui/icons';
+import { FiPlusSquare } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import useStore from '../store';
 import { playTrackInApp } from '../utils/spotify-player';
@@ -221,7 +221,7 @@ function TrackItem(props) {
             position="relative"
           />
           <Icon
-            as={RepeatIcon}
+            as={FiPlusSquare}
             w={5}
             h={5}
             cursor="pointer"

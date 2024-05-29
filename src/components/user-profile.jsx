@@ -28,6 +28,7 @@ export default function ProfileHeader(props) {
   const { followProfile, unfollowProfile, getLikedPosts } = useStore((store) => store.profileSlice);
   const [isFollowing, setIsFollowing] = useState(false);
   const [likedPosts, setLikedPosts] = useState(profile.likedPosts || []);
+  const [followers, setFollowers] = useState(profile.followers.length || 0);
 
   useEffect(() => {
     if (userProfile && userProfile.following.includes(profileId)) {
@@ -44,12 +45,14 @@ export default function ProfileHeader(props) {
   }, [profileId]);
 
   const handleFollow = async () => {
-    await followProfile(userProfile, profile);
+    followProfile(userProfile, profile);
+    setFollowers(followers + 1);
     setIsFollowing(true);
   };
 
   const handleUnfollow = async () => {
-    await unfollowProfile(userProfile, profile);
+    unfollowProfile(userProfile, profile);
+    setFollowers(followers - 1);
     setIsFollowing(false);
   };
 
@@ -88,7 +91,7 @@ export default function ProfileHeader(props) {
                   cursor="pointer"
                   _hover={{ color: 'teal.400' }}
                 >
-                  <Heading as="h3" size="md">{profile.followers.length}</Heading>
+                  <Heading as="h3" size="md">{followers}</Heading>
                   <Text size="md" onClick={followersDisc.onOpen} cursor="pointer">
                     Followers
                   </Text>
@@ -160,7 +163,7 @@ export default function ProfileHeader(props) {
                   <Grid templateColumns="repeat(auto-fill, minmax(300px, 1fr))" gap={6} w="100%" pb="20vh">
                     {profile.posts.map((post) => (
                       <PostCard
-                        key={post._id}
+                        key={post._id + post.authorID}
                         post={post}
                         profile={profile}
                         use="profile"

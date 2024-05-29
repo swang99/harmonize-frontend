@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'react-router';
 import { CgPlayListAdd } from 'react-icons/cg';
-import { RepeatIcon } from '@chakra-ui/icons';
+import { FiPlusSquare } from 'react-icons/fi';
 import useStore from '../store';
 import { initializePlayer } from '../utils/spotify-player';
 
@@ -190,7 +190,7 @@ const SpotifyPlayer = () => {
             position="relative"
           />
           <Icon
-            as={RepeatIcon}
+            as={FiPlusSquare}
             w={5}
             h={5}
             cursor="pointer"

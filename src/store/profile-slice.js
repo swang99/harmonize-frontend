@@ -84,6 +84,7 @@ const createProfileSlice = (set, get) => ({
   },
 
   handleLogin: async (profile, tracks, artists, playlists) => {
+    console.log(playlists);
     try {
       const fetchProfileResponse = await axios.get(`${ROOT_URL}users/${profile.id}`);
       set((state) => ({
