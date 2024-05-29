@@ -160,7 +160,7 @@ export default function ProfileHeader(props) {
                   <Grid templateColumns="repeat(auto-fill, minmax(300px, 1fr))" gap={6} w="100%" pb="20vh">
                     {profile.posts.map((post) => (
                       <PostCard
-                        key={post._id}
+                        key={post._id + post.authorID}
                         post={post}
                         profile={profile}
                         use="profile"

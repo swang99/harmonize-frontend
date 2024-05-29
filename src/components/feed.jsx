@@ -118,7 +118,7 @@ function Feed(props) {
             <Text as="h1" fontSize="4xl" color="gray.700" fontWeight="bold">No posts to show</Text>
             <Text as="h2" fontSize="2xl" color="gray.500" fontWeight="bold">For now, here are some recommendations:</Text>
             <Grid templateColumns="repeat(auto-fill, minmax(250px, 1fr))" gap={6} width="100%">
-              {recs && recs.length > 0 ? recs.map((track) => (
+              {recs && recs.length > 0 && recs[0].id ? recs.map((track) => (
                 <TrackItem
                   key={track.id}
                   id={track.id}
