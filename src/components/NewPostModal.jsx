@@ -25,6 +25,7 @@ export default function NewPostModal() {
   }, [isOpen, trackData]);
 
   const onClose = async () => {
+    setDescription('');
     closeModal();
     newPostModalDisc.onClose();
   };
@@ -54,11 +55,11 @@ export default function NewPostModal() {
   return (
     <Modal isOpen={isOpen} onClose={onClose} initialFocusRef={initialFocusRef} finalFocusRef={finalFocusRef}>
       <ModalOverlay />
-      <ModalContent maxW="45vw" maxH="80vh">
+      <ModalContent maxW="45vw">
         <ModalHeader>Create New Post</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <VStack spacing={4} maxW={300} mx="auto" maxH="75vh">
+          <VStack spacing={4} maxW="20vw" mx="auto">
             <TrackItem use="create-post" id={trackData.id} name={trackData.songName} artist={trackData.artists} imageURL={trackData.imageURL} />
             <Textarea
               placeholder="Add a caption..."
