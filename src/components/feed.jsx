@@ -1,6 +1,7 @@
-import { Box, Grid, Heading, Spacer, Text, VStack } from '@chakra-ui/react';
+import { Box, Grid, Heading, Icon, Spacer, Text, HStack, VStack, useDisclosure } from '@chakra-ui/react';
+import { IoPersonAdd } from 'react-icons/io5';
 import { motion } from 'framer-motion';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Audio } from 'react-loader-spinner';
 import useStore from '../store';
 import { updateToken } from '../utils/SpotifyAuth';
@@ -9,11 +10,14 @@ import NewPostModal from './NewPostModal';
 import PostCard from './post-card';
 import TrackItem from './track-item';
 import { getRecs } from '../utils/spotify-api';
+import AddFriendModal from './AddFriendModal';
 
 function Feed(props) {
   const [tokenUpdated, setTokenUpdated] = useState(false);
   const [feed, setFeed] = useState(useStore.getState().profileSlice.feed);
   const [recs, setRecs] = useState([]);
+  const addFDisc = useDisclosure();
+  const finalRef = useRef();
 
   // getting posts from the store
   const { loadFeed, currentProfile, initialFetch, updateProfile, getFriendActivity } = useStore((store) => store.profileSlice);
@@ -131,7 +135,22 @@ function Feed(props) {
                   ))}
                 </Grid>
               )
-              : <Audio type="Circles" color="#38B2AC" height={80} width="100%" />}
+              : (
+                <VStack spacing={10}>
+                  <Audio type="Circles" color="#38B2AC" height={80} width="100%" />
+                  <HStack
+                    color="gray.500"
+                    fontWeight="bold"
+                    _hover={{ color: 'teal.400', transform: 'scale(1.1)' }}
+                    onClick={addFDisc.onOpen}
+                    cursor="pointer"
+                    fontSize="xl"
+                  >
+                    <Text>Add Friends!</Text>
+                    <Icon as={IoPersonAdd} fontSize="2xl" />
+                  </HStack>
+                </VStack>
+              )}
           </VStack>
         </Box>
       );
@@ -160,6 +179,11 @@ function Feed(props) {
         <AddTrackToPlaylistModal />
         <NewPostModal />
       </Box>
+      <AddFriendModal
+        isOpen={addFDisc.isOpen}
+        onClose={addFDisc.onClose}
+        finalFocusRef={finalRef}
+      />
     </motion.div>
   );
 }
