@@ -13,6 +13,7 @@ Welcome to Harmonize, the ultimate social experience for music lovers! Sign in w
 - [Frontend](https://harmonize-client.onrender.com) [Repo](https://github.com/dartmouth-cs52-24s/project-client-spotify-sharing):
   - Node.js
   - React
+  - Zustand for state management
   - Chakra UI - Frontend Components Library
   - Spotify API - Authorization and using data
 - [Backend](https://project-api-spotify-sharing.onrender.com) [Repo](https://github.com/dartmouth-cs52-24s/project-api-spotify-sharing)
