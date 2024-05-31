@@ -1,6 +1,6 @@
 # Harmonize
 
-![Team Photo](src/img/team_photo_1.jpg?raw=true)
+![Team Photo](src/img/team_photo_1.JPG?raw=true)
 
 Figma:
 [Our Figma link](https://www.figma.com/design/d1LRKIo9vALvQktj60IxuR/mockup-draft-1?node-id=0%3A1&t=XEGMeyuZymvdAH84-1)
