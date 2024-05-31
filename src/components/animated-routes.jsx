@@ -113,7 +113,7 @@ const AnimatedRoutes = () => {
         <Route path="/home" element={<Feed height={routeHeight} />} />
         <Route path="/search" element={<SearchBar />} />
         <Route path="/users/:id" element={<Profile />} />
-        <Route path="*" element={<div>Post not found</div>} />
+        <Route path="*" element={<Feed height={routeHeight} />} />
       </Routes>
     </AnimatePresence>
   );
