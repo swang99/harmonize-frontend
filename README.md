@@ -26,7 +26,7 @@ TODO:  descriptions of code organization and tools and libraries used
 ### Frontend:
 - Clone Repo, npm install, npm run dev
 - In src/store/profile-slice.js, ensure that the ROOT_URL points to whichever backend/DB you want to use (default is the deployed backend).
-- To gain access to the Spotify API Client ID (in src/utils/SpotifyAuth.js), ask Brendan to add you to the Spotify API app. Alternatively, [create](https://developer.spotify.com/dashboard/create) a new Spotify API app and set the Redirect URI to the /home page of your Frontend (could be [http://localhost:5173/home](http://localhost:5173/home)) or the deployed url. Select the Web API and Web Playback SDK options.
+- To gain access to the Spotify API Client ID (in src/utils/SpotifyAuth.js), ask Brendan to add you to the Spotify API app. Alternatively, [create](https://developer.spotify.com/dashboard/create) a new Spotify API app and set the Redirect URI to the /home page of your Frontend (could be [http://localhost:5173/home](http://localhost:5173/home)) or the deployed url. Select the Web API and Web Playback SDK options. Note: Users must have Spotify Premium to access the Web Playback SDK Features (playing music in app).
 
 ### Backend:
 - Clone Repo, npm install, npm start
