@@ -2,10 +2,10 @@
 
 ![Team Photo](src/img/team_photo_1.JPG?raw=true)
 
-Figma:
+## Figma:
 [Our Figma link](https://www.figma.com/design/d1LRKIo9vALvQktj60IxuR/mockup-draft-1?node-id=0%3A1&t=XEGMeyuZymvdAH84-1)
 
-Our App:
+## Our App:
 Welcome to Harmonize, the ultimate social experience for music lovers! Sign in with your Spotify account and dive into a vibrant community of music enthusiasts. Follow your friends to discover the songs they’re loving, or share your own favorite tracks with personalized posts. Connect, share, and celebrate music together with Harmonize!
 
 
@@ -51,3 +51,4 @@ TODO:  descriptions of code organization and tools and libraries used
 Emily Gao, Eric Leung, Ben Sheldon, Brendan Shaw, & Stephen Wang
 
 ## Acknowledgments
+We want to give a big thank you to @timofei7 for guiding us through Full-Stack Web Dev and helping us fix issues! Also, thanks to @dstarr25 for helping us resolve bugs and for answering many questions. Lastly, thank you to everyone who helped test Harmonize!
