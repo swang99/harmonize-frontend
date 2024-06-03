@@ -173,7 +173,7 @@ export default function ProfileHeader(props) {
                 ) : (
                   <Box py={10}>
                     <Text fontSize="lg" color="gray.500">No posts yet.</Text>
-                    <Image src="/src/img/empty.svg"
+                    <Image src="../img/empty.svg"
                       alt="empty_posts"
                       mx="auto"
                       mb={4}
@@ -201,7 +201,7 @@ export default function ProfileHeader(props) {
                 ) : (
                   <Box py={10}>
                     <Text fontSize="lg" color="gray.500">No activity available.</Text>
-                    <Image src="/src/img/empty.svg"
+                    <Image src="../img/empty.svg"
                       alt="empty_posts"
                       mx="auto"
                       mb={4}
@@ -230,7 +230,7 @@ export default function ProfileHeader(props) {
                 ) : (
                   <Box py={10}>
                     <Text fontSize="lg" color="gray.500">No liked posts yet.</Text>
-                    <Image src="/src/img/empty.svg"
+                    <Image src="../img/empty.svg"
                       alt="empty_posts"
                       mx="auto"
                       mb={4}
