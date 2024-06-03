@@ -20,6 +20,8 @@ import PostCard from './post-card';
 import NewPostModal from './NewPostModal';
 import TrackItem from './track-item';
 
+import placeholderImg from '../img/empty.svg';
+
 export default function ProfileHeader(props) {
   const { isOwnProfile, profile, userProfile, id: profileId } = props;
   const addFDisc = useDisclosure();
@@ -173,7 +175,7 @@ export default function ProfileHeader(props) {
                 ) : (
                   <Box py={10}>
                     <Text fontSize="lg" color="gray.500">No posts yet.</Text>
-                    <Image src="../img/empty.svg"
+                    <Image src={placeholderImg}
                       alt="empty_posts"
                       mx="auto"
                       mb={4}
@@ -201,7 +203,7 @@ export default function ProfileHeader(props) {
                 ) : (
                   <Box py={10}>
                     <Text fontSize="lg" color="gray.500">No activity available.</Text>
-                    <Image src="../img/empty.svg"
+                    <Image src={placeholderImg}
                       alt="empty_posts"
                       mx="auto"
                       mb={4}
@@ -230,7 +232,7 @@ export default function ProfileHeader(props) {
                 ) : (
                   <Box py={10}>
                     <Text fontSize="lg" color="gray.500">No liked posts yet.</Text>
-                    <Image src="../img/empty.svg"
+                    <Image src={placeholderImg}
                       alt="empty_posts"
                       mx="auto"
                       mb={4}
