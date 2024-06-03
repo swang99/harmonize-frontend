@@ -2,7 +2,9 @@ import axios from 'axios';
 
 // const clientId = '28aa68c6ae6243589d5733382d57d5c2';
 const clientId = 'ebac8a8761564ca69406d12794affc74';
-const redirectUri = 'http://localhost:5173/home';
+// const redirectUri = 'http://localhost:5173/home';
+const redirectUri = 'https://harmonize-client.onrender.com/home';
+
 const scope = 'user-read-private user-read-email user-top-read user-read-recently-played streaming user-read-playback-state user-modify-playback-state playlist-modify-public '
   + 'playlist-modify-private user-library-modify';
 const authUrl = new URL('https://accounts.spotify.com/authorize');
