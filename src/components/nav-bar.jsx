@@ -3,6 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import useStore from '../store';
 import { logout } from '../utils/SpotifyAuth';
+import logo from '../img/logo.png';
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -61,7 +62,7 @@ const NavBar = () => {
         </Button>
         <Box position="absolute" top={4} left={4} onClick={() => navigate('/home')} cursor="pointer">
           <Image
-            src="../img/logo.png"
+            src={logo}
             alt="Your Image"
             width="70px"
             height="auto"
