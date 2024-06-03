@@ -61,7 +61,7 @@ const NavBar = () => {
         </Button>
         <Box position="absolute" top={4} left={4} onClick={() => navigate('/home')} cursor="pointer">
           <Image
-            src="/src/img/logo.png"
+            src="../img/logo.png"
             alt="Your Image"
             width="70px"
             height="auto"
